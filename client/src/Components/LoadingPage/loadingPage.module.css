@@ -14,6 +14,12 @@ body {
     overflow-y: hidden;
 }
 
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .left, .right {
     animation: opacity 1.5s ease;
 }

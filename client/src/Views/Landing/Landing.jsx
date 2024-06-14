@@ -4,8 +4,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Lenis from "@studio-freight/lenis";
 import { Animation } from "../../Components/LoadingPage/loadingPage";
+import useViewportWidth from "../../Components/Hooks/useViewportSize";
 
 const Landing = () => {
+  const width = useViewportWidth();
+  const [isMobileNavbarOpen, setMobileNavbar] = useState(false);
   const [navBarOption, setNavBarOption] = useState("home");
 
   const [isLoading, setLoading] = useState(true);
@@ -43,78 +46,209 @@ const Landing = () => {
 
   return (
     <div className={style.background}>
-      {/* {isLoading === true ? (
-        <Animation animation={true} />
+      {isLoading === true ? (
+        <Animation animation={true} width={width} />
       ) : (
-        <Animation animation={false} />
-      )} */}
-      <nav className={style.navBarContainer}>
-        <div className={style.navBar}>
-          <div className={style.logoSpace}>
-            <picture className={style.logoContainer}>
-              <img
-                className={style.logo}
-                src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718250070/Logo-portfolio_jxapuu.png"
-                alt=""
-                onClick={() => setNavBarOption("home")}
-              />
-            </picture>
-          </div>
+        <Animation animation={false} width={width} />
+      )}
+      {width > 800 ? (
+        <div className={style.navBarContainer}>
+          <div className={style.navBar}>
+            <div className={style.logoSpace}>
+              <picture className={style.logoContainer}>
+                <img
+                  className={style.logo}
+                  src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718250070/Logo-portfolio_jxapuu.png"
+                  alt=""
+                  onClick={() => setNavBarOption("home")}
+                />
+              </picture>
+            </div>
 
-          <div className={style.textSpace}>
-            <a
-              className={`${style.navText} ${
-                navBarOption == "about" && style.navTextActive
-              }`}
-              onClick={() => setNavBarOption("about")}
-            >
-              About
-            </a>
-            <a
-              className={`${style.navText} ${
-                navBarOption == "works" && style.navTextActive
-              }`}
-              onClick={() => setNavBarOption("works")}
-            >
-              Works
-            </a>
-            <a
-              className={`${style.navText} ${
-                navBarOption == "products" && style.navTextActive
-              }`}
-              onClick={() => setNavBarOption("products")}
-            >
-              Products
-            </a>
-            <a
-              className={`${style.navText} ${
-                navBarOption == "contact" && style.navTextActive
-              }`}
-              onClick={() => setNavBarOption("contact")}
-            >
-              Contact
-            </a>
+            <div className={style.textSpace}>
+              <a
+                className={`${style.navText} ${
+                  navBarOption == "about" && style.navTextActive
+                }`}
+                onClick={() => setNavBarOption("about")}
+              >
+                About
+              </a>
+              <a
+                className={`${style.navText} ${
+                  navBarOption == "works" && style.navTextActive
+                }`}
+                onClick={() => setNavBarOption("works")}
+              >
+                Works
+              </a>
+              <a
+                className={`${style.navText} ${
+                  navBarOption == "products" && style.navTextActive
+                }`}
+                onClick={() => setNavBarOption("products")}
+              >
+                Products
+              </a>
+              <a
+                className={`${style.navText} ${
+                  navBarOption == "contact" && style.navTextActive
+                }`}
+                onClick={() => setNavBarOption("contact")}
+              >
+                Contact
+              </a>
+            </div>
           </div>
         </div>
-      </nav>
+      ) : (
+        <div className={style.navBarContainer2}>
+          <motion.div
+            initial={{ height: 50 }}
+            animate={{ height: isMobileNavbarOpen === true ? 275 : 50 }}
+            transition={{ duration: 0.5, type: "spring" }}
+            className={style.navBarModal}
+          >
+            <div className={style.navBarMobile}>
+              <div className={style.logoSpace}>
+                <picture className={style.logoContainer}>
+                  <img
+                    className={style.logo}
+                    src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718250070/Logo-portfolio_jxapuu.png"
+                    alt=""
+                    onClick={() => setNavBarOption("home")}
+                  />
+                </picture>
+              </div>
+
+              <div className={style.iconMenuNavbar}>
+                <button
+                  onClick={() => {
+                    setMobileNavbar(!isMobileNavbarOpen);
+                  }}
+                  className={style.iconMenuNavbarButton}
+                >
+                  <p>
+                    <svg
+                      style={{ rotate: "0deg" }}
+                      viewBox="0 0 24 24"
+                      width="25"
+                      height="25"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12C18 12.5523 18.4477 13 19 13Z"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13Z"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </p>
+                </button>
+              </div>
+            </div>
+            <div className={style.navTextModalContainer}>
+              <div className={style.textModalContainer}>
+                <a
+                  onClick={() => {
+                    setNavBarOption("about");
+                    setTimeout(() => {
+                      setMobileNavbar(false);
+                    }, 500);
+                  }}
+                  className={`${style.navTextModal} ${
+                    navBarOption == "about" && style.navTextModalActive
+                  }`}
+                >
+                  About
+                </a>
+              </div>
+              <div className={style.textModalContainer}>
+                <a
+                  onClick={() => {
+                    setNavBarOption("works");
+                    setTimeout(() => {
+                      setMobileNavbar(false);
+                    }, 500);
+                  }}
+                  className={`${style.navTextModal} ${
+                    navBarOption == "works" && style.navTextModalActive
+                  }`}
+                >
+                  Works
+                </a>
+              </div>
+              <div className={style.textModalContainer}>
+                <a
+                  onClick={() => {
+                    setNavBarOption("products");
+                    setTimeout(() => {
+                      setMobileNavbar(false);
+                    }, 500);
+                  }}
+                  className={`${style.navTextModal} ${
+                    navBarOption == "products" && style.navTextModalActive
+                  }`}
+                >
+                  Products
+                </a>
+              </div>
+              <div className={style.textModalContainer}>
+                <a
+                  onClick={() => {
+                    setNavBarOption("contact");
+                    setTimeout(() => {
+                      setMobileNavbar(false);
+                    }, 500);
+                  }}
+                  className={`${style.navTextModal} ${
+                    navBarOption == "contact" && style.navTextModalActive
+                  }`}
+                >
+                  Contact me
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       <motion.section className={style.section1}>
         <div className={style.section1Background}>
-          {/* <Spline
+          <Spline
             className={style.Spline}
             scene="https://prod.spline.design/nHIP8O8JfrR8GePB/scene.splinecode"
             onLoad={() => setLoading(false)}
-          /> */}
+          />
         </div>
         <div className={style.leftSide}>
           <div className={style.leftTop}>
             <div className={style.mainContainer}>
-              <div className={style.pictureContainer}>
+              <motion.div
+                viewport={{ once: true, amount: 1 }}
+                className={style.pictureContainer}
+              >
                 <img
                   className={style.img}
                   src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718074229/sss_livrub.png"
                   alt=""
                 />
-              </div>
+              </motion.div>
               <div className={style.text1Container}>
                 <h1 className={style.headerText1}>
                   Hi, I'm <label className={style.myName}>Pablo</label>
@@ -134,12 +268,21 @@ const Landing = () => {
               </div>
 
               <div className={style.text3Container}>
-                <h3 className={style.headerText3}>
-                  Specializing in creating visually appealing and intuitive
-                  designs, I ensure every project is eye-catching on the
-                  front-end and rock-solid on the back-end. Let's join forces to
-                  develop designs that stand out and deliver results.
-                </h3>
+                {width > 800 ? (
+                  <h3 className={style.headerText3}>
+                    Specializing in creating visually appealing and intuitive
+                    designs, I ensure every project is eye-catching on the
+                    front-end and rock-solid on the back-end. Let's join forces
+                    to develop designs that stand out and deliver results.
+                  </h3>
+                ) : (
+                  <div className={style.headerText3Aux}>
+                    <h3 className={style.headerText3}>
+                      Creating eye-catching web designs and rock-solid back-end
+                      solutions. Let's make your project stand out.
+                    </h3>
+                  </div>
+                )}
               </div>
 
               <div className={style.buttonContainer}>
@@ -180,8 +323,16 @@ const Landing = () => {
           </div>
         </div> */}
       </motion.section>
-      <motion.section className={style.section2}>
-        <motion.footer style={{opacity}} ref={targetRef} className={style.footer}>
+      <motion.section
+        className={style.section2}
+        onViewportEnter={() => setNavBarOption("about")}
+        viewport={{ once: true, amount: 1.0 }}
+      >
+        <motion.footer
+          style={{ opacity }}
+          ref={targetRef}
+          className={style.footer}
+        >
           <motion.div
             animate={{
               x: ["0%", "-89.8%"],
@@ -380,7 +531,6 @@ const Landing = () => {
         </motion.footer>
       </motion.section>
       <motion.section className={style.section3}>sess</motion.section>
-      <motion.section className={style.section4}>jejos</motion.section>
     </div>
   );
 };
