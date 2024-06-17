@@ -10,12 +10,74 @@ export function Animation({ animation, width }) {
         y: animation === false && "-100vh",
       }}
       transition={{
-        duration: 2.5,
+        duration: 0,
         type: "spring",
-        delay: animation === false && 1.2,
+        delay: animation === false && 3,
       }}
       className={style.background}
     >
+      <div className={style.backgroundsContainer}>
+        <motion.div
+          initial={{ y: 0 }}
+          animate={{
+            y: animation === false && "-100vh",
+          }}
+          transition={{
+            duration: 2,
+            type: "spring",
+            delay: animation === false && 1.2,
+          }}
+          className={style.backgroundSection1}
+        ></motion.div>
+        <motion.div
+          initial={{ y: 0 }}
+          animate={{
+            y: animation === false && "-100vh",
+          }}
+          transition={{
+            duration: 2,
+            type: "spring",
+            delay: animation === false && 1.4,
+          }}
+          className={style.backgroundSection2}
+        ></motion.div>
+        <motion.div
+          initial={{ y: 0 }}
+          animate={{
+            y: animation === false && "-100vh",
+          }}
+          transition={{
+            duration: 2,
+            type: "spring",
+            delay: animation === false && 1.6,
+          }}
+          className={style.backgroundSection3}
+        ></motion.div>
+        <motion.div
+          initial={{ y: 0 }}
+          animate={{
+            y: animation === false && "-100vh",
+          }}
+          transition={{
+            duration: 2,
+            type: "spring",
+            delay: animation === false && 1.8,
+          }}
+          className={style.backgroundSection4}
+        ></motion.div>
+        <motion.div
+          initial={{ y: 0 }}
+          animate={{
+            y: animation === false && "-100vh",
+          }}
+          transition={{
+            duration: 2,
+            type: "spring",
+            delay: animation === false && 2,
+          }}
+          className={style.backgroundSection5}
+        ></motion.div>
+      </div>
       <motion.div
         initial={{ scale: width < 800 ? 0.8 : 1 }}
         className={style.loader}

@@ -1,15 +1,22 @@
-import { GET_USERS } from "./actions";
+import { LOADED, SECTION } from "./actions";
 
 let initialstate = {
-    users: []
+    isLoading: true,
+    section: "home"
 };
 
 let reducer = (state = initialstate, action) => {
     switch (action.type) {
-        case GET_USERS:
+        case LOADED:
             return {
                 ...state,
-                users: action.payload,
+                isLoading: false
+            }
+
+        case SECTION:
+            return {
+                ...state,
+                section: action.payload
             }
 
         default:
