@@ -1,0 +1,45 @@
+.giant {
+    height: 90px;
+    width: 90px;
+    border-radius: 20px;
+}
+
+.large {
+    height: 70px;
+    width: 70px;
+    border-radius: 20px;
+    user-select: none;
+}
+
+.medium {
+    height: 50px;
+    width: 50px;
+    border-radius: 15px;
+
+}
+
+.small {
+    height: 45px;
+    width: 45px;
+    border-radius: 15px;
+}
+
+@media (max-width: 500px) {
+    .large {
+        height: 60px;
+        width: 60px;
+        border-radius: 15px;
+    }
+
+    .medium {
+        height: 50px;
+        width: 50px;
+        border-radius: 15px;
+    }
+
+    .small {
+        height: 35px;
+        width: 35px;
+        border-radius: 15px;
+    }
+}

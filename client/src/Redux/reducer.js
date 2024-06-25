@@ -1,8 +1,9 @@
-import { LOADED, SECTION } from "./actions";
+import { LOADED, SECTION, END_ANIMATION } from "./actions";
 
 let initialstate = {
     isLoading: true,
-    section: "home"
+    section: "home",
+    iconOutsideViewport: ""
 };
 
 let reducer = (state = initialstate, action) => {
@@ -19,6 +20,11 @@ let reducer = (state = initialstate, action) => {
                 section: action.payload
             }
 
+        case END_ANIMATION:
+            return {
+                ...state,
+                iconOutsideViewport: action.payload
+            }
         default:
             return { ...state }
 

@@ -10,6 +10,8 @@ import Navbar from "./Sections/Navbar/navbar";
 import Section1 from "./Sections/section1/section1";
 import Section2 from "./Sections/section2/section2";
 import Section3 from "./Sections/section3/section3";
+import Section4 from "./Sections/section4/section4";
+import Section5 from "./Sections/section5/section5";
 
 const Landing = () => {
   const width = useViewportWidth();
@@ -17,7 +19,7 @@ const Landing = () => {
 
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1,
+      duration: 2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       direction: "vertical", // vertical, horizontal
       gestureDirection: "both", // vertical, horizontal, both
@@ -42,8 +44,7 @@ const Landing = () => {
 
   const { scrollYProgress } = useScroll();
   return (
-    <div className={style.background}
-   >
+    <div className={style.background}>
       {isLoading === true ? (
         <Animation animation={true} width={width} />
       ) : (
@@ -59,6 +60,8 @@ const Landing = () => {
       <Section1 />
       <Section2 />
       <Section3 />
+      <Section4 />
+      <Section5 />
     </div>
   );
 };

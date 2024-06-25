@@ -13,11 +13,11 @@ const Section1 = () => {
   const targetRef = useRef(null);
   const { scrollYProgress } = useScroll();
 
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.4]);
-  const rotateX = useTransform(scrollYProgress, [0, 0.5], [0, 30]);
-  const rotate = useTransform(scrollYProgress, [0, 0.5], [0, -20]);
+  const scale = useTransform(scrollYProgress, [0, 0.3], [1, 0.4]);
+  const rotateX = useTransform(scrollYProgress, [0, 0.3], [0, 30]);
+  const rotate = useTransform(scrollYProgress, [0, 0.3], [0, -20]);
 
-  const borderRadius = useTransform(scrollYProgress, [0, 0.07], [0, 40]);
+  const borderRadius = useTransform(scrollYProgress, [0, 0.1], [0, 30]);
   return (
     <div className={style.test}>
       <motion.section
@@ -30,13 +30,6 @@ const Section1 = () => {
         }}
         className={style.section1}
       >
-        <div className={style.section1Background}>
-          <Spline
-            className={style.Spline}
-            scene="https://prod.spline.design/nHIP8O8JfrR8GePB/scene.splinecode"
-            onLoad={() => dispatch(setLoaded())}
-          />
-        </div>
         <div className={style.leftSide}>
           <div className={style.leftTop}>
             <div className={style.mainContainer}>
@@ -127,6 +120,13 @@ const Section1 = () => {
               </div>
             </div>
           </div>
+        </div>{" "}
+        <div className={style.section1Background}>
+          <Spline
+            className={style.Spline}
+            scene="https://prod.spline.design/Y-QUYxldOQgyp3mN/scene.splinecode"
+            onLoad={() => dispatch(setLoaded())}
+          />
         </div>
       </motion.section>
     </div>

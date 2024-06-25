@@ -10,7 +10,7 @@ const Section1Footer = () => {
     target: targetRef,
     offset: ["start end", "center start"],
   });
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.9], [1, 0]);
   const auxCarouselWidth = 600 * 2;
 
   return (

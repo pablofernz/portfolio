@@ -2,7 +2,7 @@ import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
 import style from "./navbar.module.css";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { setSection } from "../../../../Redux/actions";
 const Navbar = () => {
   const width = useViewportWidth();
@@ -10,10 +10,34 @@ const Navbar = () => {
   const sectionState = useSelector((state) => state.section);
 
   const dispatch = useDispatch();
+
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.scrollY;
+
+      setVisible(prevScrollPos > currentScrollPos);
+
+      setPrevScrollPos(currentScrollPos);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [prevScrollPos]);
   return (
     <div>
       {width > 800 ? (
-        <div className={style.navBarContainer}>
+        <motion.div
+          initial={{ y: "0px" }}
+          animate={{ y: !visible ? "-100px" : "0px" }}
+          transition={{ duration: 0.5, type: "spring" }}
+          className={style.navBarContainer}
+        >
           <div className={style.navBar}>
             <div className={style.logoSpace}>
               <picture className={style.logoContainer}>
@@ -61,12 +85,15 @@ const Navbar = () => {
               </a>
             </div>
           </div>
-        </div>
+        </motion.div>
       ) : (
         <div className={style.navBarContainer2}>
           <motion.div
             initial={{ height: 50 }}
-            animate={{ height: isMobileNavbarOpen === true ? 275 : 50 }}
+            animate={{
+              height: isMobileNavbarOpen === true ? 275 : 50,
+              y: !visible && isMobileNavbarOpen === false ? "-100px" : "0px",
+            }}
             transition={{ duration: 0.5, type: "spring" }}
             className={style.navBarModal}
           >
