@@ -1,5 +1,6 @@
 .background {
-    height: 190vh;
+    /* height: 190vh; */
+    height: 100vh;
     /* Incrementar la altura para permitir el desplazamiento */
     width: 100vw;
     background-color: rgb(0, 0, 0);

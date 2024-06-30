@@ -1,3 +1,6 @@
+import axios from "axios"
+
+
 export const LOADED = 'LOADED'
 export const SECTION = 'SECTION'
 export const END_ANIMATION = 'END_ANIMATION'
@@ -25,5 +28,17 @@ export const setAnimacionEnd = (icon) => {
             type: END_ANIMATION,
             payload: icon
         })
+    }
+}
+
+
+export const getRecommendations = async () => {
+
+    try {
+        const res = await axios.get("http://localhost:3001/recomendation/get")
+
+        return res.data
+    } catch (error) {
+        return error
     }
 }

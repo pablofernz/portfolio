@@ -112,14 +112,13 @@ const IconComponent = ({ icon, reference }) => {
     {
       name: "Slack",
       url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718900377/slack_cf6lg2.png",
-      size: "medium",
+      size: "large",
     },
   ];
 
   const chosedData = iconsData.filter(
     (iconChosed) => iconChosed.name == icon
   )[0];
-  
 
   const ref = useRef(reference);
   return (

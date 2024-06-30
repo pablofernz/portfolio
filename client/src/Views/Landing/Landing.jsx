@@ -1,6 +1,6 @@
 import style from "./Landing.module.css";
 import { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Lenis from "@studio-freight/lenis";
 import useViewportWidth from "../../Components/Hooks/useViewportSize";
 import { Animation } from "../../Components/LoadingPage/loadingPage";
@@ -12,8 +12,19 @@ import Section2 from "./Sections/section2/section2";
 import Section3 from "./Sections/section3/section3";
 import Section4 from "./Sections/section4/section4";
 import Section5 from "./Sections/section5/section5";
+import { getRecommendations } from "../../Redux/actions";
 
 const Landing = () => {
+  const getRecommendation = async () => {
+    const recommendations = await getRecommendations();
+
+    console.log(recommendations);
+  };
+
+
+  useEffect(() => {
+    getRecommendation()
+  })
   const width = useViewportWidth();
   const isLoading = useSelector((state) => state.isLoading);
 
@@ -45,23 +56,25 @@ const Landing = () => {
   const { scrollYProgress } = useScroll();
   return (
     <div className={style.background}>
-      {isLoading === true ? (
+      {/* {isLoading === true ? (
         <Animation animation={true} width={width} />
       ) : (
         <Animation animation={false} width={width} />
-      )}
+      )} */}
 
-      <motion.div
+      {/* <motion.div
         ref={targetRef}
         style={{ scaleX: scrollYProgress }}
         className={style.topScrollIndicator}
-      ></motion.div>
-      <Navbar />
+      ></motion.div> */}
+
+      {/* <Navbar /> */}
+
       <Section1 />
       <Section2 />
       <Section3 />
-      <Section4 />
-      <Section5 />
+      {/* <Section4 />
+      <Section5 /> */}
     </div>
   );
 };
