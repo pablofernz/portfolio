@@ -1,6 +1,6 @@
 const RecomendationSchema = require("../models/Recomendation")
 
-const recomendationAdd = async ({ nameAndLastname, email, occupation, placeOfWork, linkedin, message }) => {
+const recomendationAdd = async ({ nameAndLastname, email, occupation, placeOfWork, socialMedia, image, message }) => {
     const getDay = () => {
         const today = new Date();
         const day = String(today.getDate()).padStart(2, '0');
@@ -12,13 +12,13 @@ const recomendationAdd = async ({ nameAndLastname, email, occupation, placeOfWor
         return formattedDateTime
     }
     try {
-        const newRecomendation = new RecomendationSchema({ nameAndLastname, email, occupation, placeOfWork, linkedin, message, date: getDay() });
+        const newRecomendation = new RecomendationSchema({ nameAndLastname, email, occupation, placeOfWork, socialMedia, message, image, date: getDay() });
 
         const savedRecomendation = await newRecomendation.save();
 
         console.log("Creado exitosamente");
         return savedRecomendation;
-        
+
     } catch (error) {
         console.error("Error al crear", error);
         throw error; // Lanza el error para que se maneje en la función llamante

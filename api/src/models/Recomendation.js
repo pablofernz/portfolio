@@ -1,5 +1,10 @@
 const mongoose = require("mongoose")
 
+const socialMediaSchema = mongoose.Schema({
+    name: { type: String },
+    username: { type: String }
+});
+
 const RecomendationSchema = mongoose.Schema({
     nameAndLastname: {
         type: String,
@@ -13,15 +18,17 @@ const RecomendationSchema = mongoose.Schema({
         required: true
     },
     placeOfWork: {
-        type: String
+        type: Object
     },
-    linkedin: {
-        type: String
-    },
+    socialMedia: [socialMediaSchema],
     message: {
         type: String,
         minlength: 50,
         required: true
+    },
+    image: {
+        type: String,
+        default: "https://ui.shadcn.com/avatars/02.png"
     },
     date: {
         type: String

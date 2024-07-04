@@ -1,0 +1,164 @@
+.card {
+    position: relative;
+    height: 250px;
+    width: 300px;
+    background-color: rgb(29, 29, 29);
+    border-radius: 20px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.header {
+    padding-top: 5px;
+    height: 30%;
+    width: 100%;
+    border-radius: 10px;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+}
+
+.photoContainer {
+    width: 20%;
+    height: 100%;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo {
+    height: 50px;
+    width: 50px;
+    border-radius: 9999px;
+    object-fit: cover;
+}
+
+.userData {
+    width: 65%;
+    height: 100%;
+    border-radius: 10px;
+    padding-left: 10px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    width: 100%;
+    height: 34%;
+    font-family: "Basier Square", sans-serif;
+    font-weight: 900;
+    color: rgb(249, 248, 251);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.occupation {
+    width: 100%;
+    height: 33%;
+    font-family: "Basier Square", sans-serif;
+    font-weight: 600;
+    color: rgb(147, 147, 147);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.placeOfWork {
+    width: 100%;
+    height: 25%;
+    font-family: "Basier Square", sans-serif;
+    font-weight: 600;
+    color: rgb(150, 150, 150);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.siteLink {
+    text-decoration: none;
+    color: rgb(123, 255, 180);
+}
+
+.siteLink:hover {
+    text-decoration: underline;
+
+}
+
+
+.userLink {
+    margin-top: 10px;
+    width: 25px;
+    height: 25px;
+    border-radius: 10px;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+
+.tooltip {
+    margin-top: -45px;
+    position: absolute;
+    background-color: rgb(48, 48, 48);
+    width: 140px;
+    border-radius: 5px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Basier Square", sans-serif;
+    font-weight: 600;
+    color: rgb(210, 210, 210);
+    font-size: 15px;
+    /* box-shadow: 3px 3px 0px rgb(0, 0, 0); */
+}
+
+.tooltip::after {
+
+    content: "";
+    margin-top: 25px;
+    position: absolute;
+    /* box-shadow: 3px 3px 0px rgb(0, 0, 0); */
+
+    background-color: rgb(48, 48, 48);
+    width: 12px;
+    border-radius: 2px;
+    transform: rotate(45deg);
+    height: 12px;
+}
+
+.main {
+    height: 70%;
+    width: 100%;
+    border-radius: 10px;
+
+}
+
+.msgContainer {
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+}
+
+.msg {
+    padding: 0;
+    margin: 0;
+    width: calc(100% - 10px);
+    font-family: "arial", sans-serif;
+    font-weight: 500;
+    color: rgb(183, 183, 183);
+    font-size: 18px;
+    line-height: 25px;
+    word-wrap: break-word;
+}

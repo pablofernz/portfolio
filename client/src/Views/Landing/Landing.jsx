@@ -12,18 +12,8 @@ import Section2 from "./Sections/section2/section2";
 import Section3 from "./Sections/section3/section3";
 import Section4 from "./Sections/section4/section4";
 import Section5 from "./Sections/section5/section5";
-import { getRecommendations } from "../../Redux/actions";
 
 const Landing = () => {
-  // const getRecommendation = async () => {
-  //   const recommendations = await getRecommendations();
-
-  //   console.log(recommendations);
-  // };
-  // useEffect(() => {
-  //   getRecommendation()
-  // })
-
 
   const width = useViewportWidth();
   const isLoading = useSelector((state) => state.isLoading);
@@ -68,13 +58,14 @@ const Landing = () => {
         className={style.topScrollIndicator}
       ></motion.div> */}
 
-      {/* <Navbar /> */}
+      <Navbar />
 
       {/* <Section1 />
-      <Section2 />
-      <Section3 /> */}
-      <Section4 />
-      {/* <Section5 /> */}
+        <Section2 />
+        
+        <Section3 />
+        <Section4 /> */}
+      <Section5 />
     </div>
   );
 };

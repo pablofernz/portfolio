@@ -3,8 +3,7 @@ import axios from "axios"
 
 export const LOADED = 'LOADED'
 export const SECTION = 'SECTION'
-export const END_ANIMATION = 'END_ANIMATION'
-
+export const GET_RECOMMENDATIONS = 'GET_RECOMMENDATIONS'
 export const setLoaded = () => {
     return async function (dispatch) {
         dispatch({
@@ -22,23 +21,17 @@ export const setSection = (section) => {
     }
 }
 
-export const setAnimacionEnd = (icon) => {
+export const fetchRecommendations = () => {
     return async function (dispatch) {
-        dispatch({
-            type: END_ANIMATION,
-            payload: icon
-        })
-    }
-}
+        try {
+            const res = await axios.get("http://localhost:3001/recomendation/get")
 
-
-export const getRecommendations = async () => {
-
-    try {
-        const res = await axios.get("http://localhost:3001/recomendation/get")
-
-        return res.data
-    } catch (error) {
-        return error
+            dispatch({
+                type: GET_RECOMMENDATIONS,
+                payload: res.data
+            })
+        } catch (error) {
+            return error
+        }
     }
 }

@@ -17,14 +17,7 @@ const Section4 = () => {
   return (
     <section className={style.section4} onMouseMove={handleMouseMove}>
       <div className={style.callToAction}>
-        {window.innerWidth < 600 ? (
-          <motion.div className={style.circle} />
-        ) : (
-          <motion.div
-            style={{ left: mouseCords.x, top: mouseCords.y }}
-            className={style.mouse}
-          />
-        )}
+        <motion.div className={style.mouse} />
         <div className={style.textContainer}>
           <h1 className={style.text1}>Ready to start your project?</h1>
           <h2 className={style.text2}>
@@ -63,7 +56,7 @@ const Section4 = () => {
             <p className={style.buttonText}>Send a message</p>
           </motion.button>
         </div>
-      </div>{" "}
+      </div>
     </section>
   );
 };

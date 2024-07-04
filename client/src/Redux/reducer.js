@@ -1,9 +1,10 @@
-import { LOADED, SECTION, END_ANIMATION } from "./actions";
+import { LOADED, SECTION, GET_RECOMMENDATIONS } from "./actions";
 
 let initialstate = {
     isLoading: true,
     section: "home",
-    iconOutsideViewport: ""
+    recommendations: []
+
 };
 
 let reducer = (state = initialstate, action) => {
@@ -20,10 +21,10 @@ let reducer = (state = initialstate, action) => {
                 section: action.payload
             }
 
-        case END_ANIMATION:
+        case GET_RECOMMENDATIONS:
             return {
                 ...state,
-                iconOutsideViewport: action.payload
+                recommendations: action.payload
             }
         default:
             return { ...state }
