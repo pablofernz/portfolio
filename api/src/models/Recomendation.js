@@ -30,6 +30,10 @@ const RecomendationSchema = mongoose.Schema({
         type: String,
         default: "https://ui.shadcn.com/avatars/02.png"
     },
+    pinned: {
+        type: Boolean,
+        default: false
+    },
     date: {
         type: String
     }

@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 const { Resend } = require("resend")
+const Recomendation = require("../models/Recomendation")
 
 
 const secret = process.env.SECRET
@@ -38,5 +39,45 @@ const createJWT = async (req, res) => {
     return res.status(200).send("Token send")
 }
 
+const pinRecommendation = async (req, res) => {
+    const { id } = req.params
 
-module.exports = { createJWT }
+    try {
+        if (!id) return res.status(400).send("No id")
+
+        const chosedRecommendation = await Recomendation.findById(id)
+        if (!chosedRecommendation) return res.status(404).send("Not found")
+
+        await Recomendation.findByIdAndUpdate(id, { pinned: !chosedRecommendation.pinned })
+        return res.status(200).send(!chosedRecommendation.pinned)
+    } catch (error) {
+        return res.status(400).send(error.message)
+    }
+
+}
+
+// {
+//     "_id": {
+//       "$oid": "6685f5db5024ea06cd6c6068"
+//     },
+//     "nameAndLastname": "Miguel Ángel Duran",
+//     "email": "midudev@gmail.com",
+//     "occupation": "Full Stack Developer",
+//     "placeOfWork": {
+//       "Freelancer": ""
+//     },
+//     "socialMedia": [
+//       {
+//         "name": "X",
+//         "username": "midudev",
+//         "_id": {
+//           "$oid": "6685f5db5024ea06cd6c6069"
+//         }
+//       }
+//     ],
+//     "message": "Me gustó el trabajo con la página de la compañia que me creaste ya que es intrega y facil para el cliente",
+//     "image": "https://ui.shadcn.com/avatars/02.png",
+//     "pinned": true,
+//     "date": "03-07-2024 22:07"
+//   }
+module.exports = { createJWT, pinRecommendation }

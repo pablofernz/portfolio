@@ -1,7 +1,7 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "Restaurant.server",
+  "description": "portfolio.server",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",

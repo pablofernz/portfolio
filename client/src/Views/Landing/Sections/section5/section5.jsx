@@ -62,43 +62,47 @@ const Section5 = () => {
     ),
   };
 
-  console.log("" === "");
-  const rec = recommendations[2];
+  const sortedRecommendations = [...recommendations].sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    return 0;
+  });
   return (
     <section className={style.section5}>
-      {recommendations.length ? (
-        <div className={style.cardContainer}>
-          {recommendations.map((rec) => {
-            return (
-              <Card
-                image={rec.image}
-                nameAndLastname={rec.nameAndLastname}
-                occupation={rec.occupation}
-                placeOfWork={Object.keys(rec.placeOfWork)}
-                siteLink={Object.values(rec.placeOfWork)}
-                socialMediaIcon={socialIcons[rec.socialMedia[0].name]}
-                socialMediaURL={`https://${rec.socialMedia[0].name}.com/${rec.socialMedia[0].username}`}
-                message={rec.message}
-              />
-            );
-          })}
+      <div className={style.component}>
+        <div className={style.titleContainer}>
+          <h1 className={style.title}>Recommendations</h1>
         </div>
-      ) : (
-        // <div className={style.cardContainer}>
-        //   <Card
-        //     image={rec.image}
-        //     nameAndLastname={rec.nameAndLastname}
-        //     occupation={rec.occupation}
-        //     placeOfWork={Object.keys(rec.placeOfWork)}
-        //     siteLink={Object.values(rec.placeOfWork)}
-        //     socialMediaIcon={socialIcons[rec.socialMedia[0].name]}
-        //     socialMediaURL={`https://${rec.socialMedia[0].name}.com/${rec.socialMedia[0].username}`}
-        //     message={rec.message}
-        //   />
-        //   ;
-        // </div>
-        <h1>Loading</h1>
-      )}
+        <div className={style.main}>
+          {recommendations.length ? (
+            <div className={style.cardContainer}>
+              {sortedRecommendations.map((rec) => {
+                return (
+                  <Card
+                    id={rec._id}
+                    key={rec._id}
+                    image={rec.image}
+                    nameAndLastname={rec.nameAndLastname}
+                    occupation={rec.occupation}
+                    placeOfWork={Object.keys(rec.placeOfWork)}
+                    siteLink={Object.values(rec.placeOfWork)}
+                    socialMediaIcon={socialIcons[rec.socialMedia[0].name]}
+                    socialMediaURL={
+                      rec.socialMedia[0].name == "Linkedin"
+                        ? `https://${rec.socialMedia[0].name}.com/in/${rec.socialMedia[0].username}`
+                        : `https://${rec.socialMedia[0].name}.com/${rec.socialMedia[0].username}`
+                    }
+                    message={rec.message}
+                    pinned={rec.pinned}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <h1>Loading</h1>
+          )}
+        </div>
+      </div>
     </section>
   );
 };
