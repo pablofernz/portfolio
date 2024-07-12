@@ -3,7 +3,7 @@ import style from "./navbar.module.css";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { setSection } from "../../../../Redux/actions";
+import { setSection, setVisibleNavbar } from "../../../../Redux/actions";
 const Navbar = () => {
   const width = useViewportWidth();
   const [isMobileNavbarOpen, setMobileNavbar] = useState(false);
@@ -12,14 +12,13 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const [visible, setVisible] = useState(true);
-
+  // const [visible, setVisible] = useState(true);
+  const visible = useSelector((state) => state.isNavbarVisible);
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
 
-      setVisible(prevScrollPos > currentScrollPos);
-
+      dispatch(setVisibleNavbar(prevScrollPos > currentScrollPos));
       setPrevScrollPos(currentScrollPos);
     };
 

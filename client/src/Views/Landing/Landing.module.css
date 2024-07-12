@@ -1,10 +1,11 @@
 .background {
     /* height: 190vh; */
-    height: 100vh;
+    height: 200vh;
     /* Incrementar la altura para permitir el desplazamiento */
     width: 100vw;
     background-color: rgb(0, 0, 0);
 }
+
 
 .topScrollIndicator {
     position: fixed;

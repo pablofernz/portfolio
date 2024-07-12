@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoaded, setSection } from "../../../../Redux/actions";
 import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
-
+import cv from "../../../../assets/cv.pdf";
 const Section1 = () => {
   const width = useViewportWidth();
   const dispatch = useDispatch();
@@ -13,9 +13,9 @@ const Section1 = () => {
   const targetRef = useRef(null);
   const { scrollYProgress } = useScroll();
 
-  const scale = useTransform(scrollYProgress, [0, 0.3], [1, 0.4]);
-  const rotateX = useTransform(scrollYProgress, [0, 0.3], [0, 30]);
-  const rotate = useTransform(scrollYProgress, [0, 0.3], [0, -20]);
+  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.4]);
+  const rotateX = useTransform(scrollYProgress, [0, 0.2], [0, 30]);
+  const rotate = useTransform(scrollYProgress, [0, 0.2], [0, -20]);
 
   const borderRadius = useTransform(scrollYProgress, [0, 0.1], [0, 30]);
   return (
@@ -117,10 +117,19 @@ const Section1 = () => {
                     </svg>
                   </p>
                 </button>
+
+                <a
+                  style={{ textDecoration: "none" }}
+                  href="https://drive.google.com/file/d/1yOUL-DI4ns4JNnq1fQfGoMwL0VBPMSB0/view?usp=drive_link"
+                  className={style.button2}
+                  target="blank"
+                >
+                  Read my CV
+                </a>
               </div>
             </div>
           </div>
-        </div>{" "}
+        </div>
         <div className={style.section1Background}>
           <Spline
             className={style.Spline}

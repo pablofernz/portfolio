@@ -40,10 +40,31 @@ const Section3 = () => {
   //     scrub: 2,
   //   });
   // }, []);
+
+  const skills = [
+    "React",
+    "Javascript",
+    "CSS",
+    "HTML",
+    "Redux",
+    "Firebase",
+    "Slack",
+    "Git",
+    "Node",
+    "PostgreSQL",
+    "Mongoose",
+    "Jest",
+    "Express",
+    "MongoDB",
+    "Typescript",
+    "GitHub",
+    "FramerMotion",
+    "Sequelize",
+  ];
   return (
     <motion.section id="container" className={style.section3}>
       <div id="page2" className={style.page2}>
-        {/* <div className={style.up} /> */}
+        <div className={style.up} />
         {/* <div className={style.iconsComponent}>
           <motion.div
             ref={iconsContainer}
@@ -204,123 +225,33 @@ const Section3 = () => {
         </div> */}
         <div className={style.pageContent}>
           <h1 className={style.text1}>My tech stack</h1>
+          <p className={style.text2}>
+            Looking for another idea for this section. Very, veeeeeeery
+            incomplete
+          </p>
         </div>
         <div className={style.bandContainer}>
           <div className={style.band}>
-            <motion.div>
-              <IconComponent icon="React" reference="iconsContainer" />
-            </motion.div>
-            {/* <motion.div>
-              <IconComponent icon="Javascript" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="CSS" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="HTML" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Redux" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Firebase" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Slack" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Git" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Node" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="PostgreSQL" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Mongoose" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Jest" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Express" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="MongoDB" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Typescript" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="GitHub" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="FramerMotion" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Sequelize" reference="iconsContainer" />
-            </motion.div> */}
+            {skills.map((skill) => {
+              return (
+                <div>
+                  <IconComponent icon={skill} reference="iconsContainer" />
+                </div>
+              );
+            })}
 
-            {/* -------------------------------------------------- */}
-{/* 
-            <motion.div>
-              <IconComponent icon="React" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Javascript" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="CSS" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="HTML" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Redux" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Firebase" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Slack" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Git" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Node" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="PostgreSQL" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Mongoose" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Jest" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Express" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="MongoDB" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Typescript" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="GitHub" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="FramerMotion" reference="iconsContainer" />
-            </motion.div>
-            <motion.div>
-              <IconComponent icon="Sequelize" reference="iconsContainer" />
-            </motion.div> */}
+            {/* ---------Infinite effect additional icons--------------------- */}
+
+            {skills.map((skill) => {
+              return (
+                <div>
+                  <IconComponent icon={skill} reference="iconsContainer" />
+                </div>
+              );
+            })}
           </div>
-          
         </div>
+        <div className={style.down} />
       </div>
     </motion.section>
   );

@@ -8,8 +8,47 @@
     background-color: rgb(255, 255, 255);
     display: flex;
     justify-content: center;
-    align-items: end;
-    padding-bottom: 25px;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 40px;
+}
+
+
+.testZone {
+    height: calc(200vh - 200px);
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.testCard {
+    background-color: rgb(209, 209, 209);
+    border-radius: 40px;
+    height: 90%;
+    width: calc(100vw - 50px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: 3px dashed rgb(160, 160, 160);
+
+}
+
+.testCardContent {
+    border-radius: 40px;
+    height: 300px;
+    width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.testCardTitle {
+    font-weight: 900;
+    color: rgb(160, 160, 160);
+    font-family: Basier Square;
+    font-size: 50px;
+    text-align: center;
 }
 
 /* -------- Call to action ----------------- */

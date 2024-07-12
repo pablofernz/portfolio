@@ -9,7 +9,19 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+}
 
+.cardSkeleton {
+    position: relative;
+    height: 250px;
+    width: 300px;
+    background-color: rgb(29, 29, 29);
+    border-radius: 20px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 .pin {
@@ -22,6 +34,7 @@
     right: 0;
     transition: all 0.2s ease-in-out;
     fill: rgba(150, 150, 150, 0.2);
+
 }
 
 .pinned {
@@ -157,6 +170,91 @@
 
 .siteLink:hover {
     text-decoration: underline;
+
+}
+
+.singleIconContainer {
+    width: 25px;
+    height: 25px;
+    overflow: hidden;
+}
+
+.iconsContainer {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.length2 {
+    animation: length2 10s ease-in-out infinite;
+}
+
+@keyframes length2 {
+    0%, 40% {
+        transform: translateY(0);
+    }
+
+    50%, 90% {
+        transform: translateY(-39px);
+    }
+
+    100% {
+        transform: translateY(calc(-39px * 2));
+    }
+}
+
+.length3 {
+    animation: length3 15s ease-in-out infinite;
+}
+
+@keyframes length3 {
+    0%, 27% {
+        transform: translateY(0);
+    }
+
+    33%, 61% {
+        transform: translateY(-39px);
+    }
+
+    66%, 95% {
+        transform: translateY(calc(-39px * 2));
+    }
+
+    100% {
+        transform: translateY(calc(-39px * 3));
+    }
+}
+
+
+.length4 {
+    animation: length4 20s ease-in-out infinite;
+
+}
+
+
+@keyframes length4 {
+    0%, 20% {
+        transform: translateY(0);
+    }
+
+    25%, 45% {
+        transform: translateY(-39px);
+    }
+
+    50%, 70% {
+        transform: translateY(calc(-39px * 2));
+    }
+
+    75%, 95% {
+        transform: translateY(calc(-39px * 3));
+    }
+
+    100% {
+        transform: translateY(calc(-39px * 4));
+    }
 
 }
 

@@ -16,6 +16,13 @@ const Section4 = () => {
 
   return (
     <section className={style.section4} onMouseMove={handleMouseMove}>
+      <div className={style.testZone}>
+        <div className={style.testCard}>
+          <div className={style.testCardContent}>
+            <h1 className={style.testCardTitle}>Projects Section</h1>
+          </div>
+        </div>
+      </div>
       <div className={style.callToAction}>
         <motion.div className={style.mouse} />
         <div className={style.textContainer}>

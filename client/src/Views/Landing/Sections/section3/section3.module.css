@@ -8,7 +8,6 @@
     /* Esto asegura que section2 se superponga a section1 */
 }
 
-
 .test {
     background-color: blueviolet;
 }
@@ -41,6 +40,15 @@
     z-index: 3;
 }
 
+.down {
+    height: 5%;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-image: linear-gradient(to bottom, transparent, white);
+    z-index: 3;
+}
+
 .iconsComponent {
     height: 100vh;
     width: 100vw;
@@ -58,7 +66,6 @@
     justify-content: center;
     align-items: center;
     position: relative;
-
 }
 
 .icon {
@@ -67,6 +74,14 @@
     top: 0;
 }
 
+
+.pageContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
 
 .text1 {
     font-family: "nevis";
@@ -82,11 +97,11 @@
     text-align: center;
     font-family: "basier square";
     font-size: 20px;
-    color: rgb(132, 132, 132);
-    font-weight: 900;
+    color: rgb(78, 78, 78);
+    font-weight: 400;
     margin: 0;
     padding: 0;
-    ;
+    font-style: italic;
 }
 
 .bandContainer {
@@ -105,7 +120,7 @@
     align-items: center;
     gap: 20px;
     background-color: black;
-    /* animation: anim1 5s linear infinite; */
+    animation: anim1 40s linear infinite;
 }
 
 @keyframes anim1 {

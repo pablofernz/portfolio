@@ -3,6 +3,7 @@ import axios from "axios"
 export const LOADED = 'LOADED'
 export const SECTION = 'SECTION'
 export const GET_RECOMMENDATIONS = 'GET_RECOMMENDATIONS'
+export const IS_VISIBLE = 'IS_VISIBLE'
 
 export const setLoaded = () => {
     return async function (dispatch) {
@@ -24,7 +25,7 @@ export const setSection = (section) => {
 export const fetchRecommendations = () => {
     return async function (dispatch) {
         try {
-            const res = await axios.get("http://localhost:3001/recomendation/get")
+            const res = await axios.get("https://portfolio-back-nnl5.onrender.com/recomendation/get")
 
             dispatch({
                 type: GET_RECOMMENDATIONS,
@@ -37,13 +38,21 @@ export const fetchRecommendations = () => {
 }
 
 export const changePinnedValue = async (id) => {
-    const response = await axios.put(`http://localhost:3001/admin/pinRecommendation/${id}`)
+    const response = await axios.put(`https://portfolio-back-nnl5.onrender.com/admin/pinRecommendation/${id}`)
 
     try {
         if (!id) return "No id"
 
-        // console.log(response.data)
     } catch (error) {
         console.log(error)
+    }
+}
+
+export const setVisibleNavbar = (isVisible) => {
+    return function (dispatch) {
+        dispatch({
+            type: IS_VISIBLE,
+            payload: isVisible
+        })
     }
 }

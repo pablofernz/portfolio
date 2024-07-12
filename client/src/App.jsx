@@ -5,6 +5,7 @@ import NotFound from "./Views/404 Not Found/404";
 import Landing from "./Views/Landing/Landing";
 
 function App() {
+
   return (
     <div className="App">
       <Routes>

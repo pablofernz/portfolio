@@ -14,7 +14,6 @@ import Section4 from "./Sections/section4/section4";
 import Section5 from "./Sections/section5/section5";
 
 const Landing = () => {
-
   const width = useViewportWidth();
   const isLoading = useSelector((state) => state.isLoading);
 
@@ -46,6 +45,8 @@ const Landing = () => {
   const { scrollYProgress } = useScroll();
   return (
     <div className={style.background}>
+      <div className={style.test}></div>
+
       {/* {isLoading === true ? (
         <Animation animation={true} width={width} />
       ) : (
@@ -55,16 +56,15 @@ const Landing = () => {
       {/* <motion.div
         ref={targetRef}
         style={{ scaleX: scrollYProgress }}
-        className={style.topScrollIndicator}
+        className={style.topScrollIndicator }
       ></motion.div> */}
 
       <Navbar />
 
       {/* <Section1 />
-        <Section2 />
-        
-        <Section3 />
-        <Section4 /> */}
+      <Section2 />
+      <Section3 />
+      <Section4 /> */}
       <Section5 />
     </div>
   );

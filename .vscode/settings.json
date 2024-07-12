@@ -1,2 +1,6 @@
-{
+{"debug.toolBarLocation": "docked","editor.cursorBlinking": "expand",
+"editor.cursorStyle": "line",
+"editor.fontLigatures": true, // Please don't hate me.
+"editor.formatOnSave": false,
+"editor.lineHeight": 22,
 }

@@ -1,7 +1,8 @@
-import { LOADED, SECTION, GET_RECOMMENDATIONS } from "./actions";
+import { LOADED, SECTION, GET_RECOMMENDATIONS, IS_VISIBLE } from "./actions";
 
 let initialstate = {
     isLoading: true,
+    isNavbarVisible: true,
     section: "home",
     recommendations: []
 
@@ -25,6 +26,12 @@ let reducer = (state = initialstate, action) => {
             return {
                 ...state,
                 recommendations: action.payload
+            }
+
+        case IS_VISIBLE:
+            return {
+                ...state,
+                isNavbarVisible: action.payload
             }
         default:
             return { ...state }

@@ -173,6 +173,7 @@
 .Spline {
     background-color: rgba(255, 0, 0, 0);
     position: absolute;
+    filter: hue-rotate(250deg);
 
 }
 

@@ -72,7 +72,7 @@ const Section2 = () => {
 
   useEffect(() => {
     // Divide cada línea de texto en page1 individualmente
-    // window.scrollTo(0, 0);
+    window.scrollTo(0, 0);
     const timeline = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
