@@ -5,15 +5,17 @@ import { useEffect, useState } from "react";
 
 export const FormRecommendation = ({ onClose }) => {
   const [exit, setExit] = useState(false);
-  const [steps, setSteps] = useState(1);
+  const [steps, setSteps] = useState(2);
 
   const [form, setForm] = useState({
-    name: "",
-    lastname: "",
+    name: "Mark",
+    lastname: "Fernandez",
+    comment: "",
   });
   const [errors, setErrors] = useState({
     name: "",
     lastname: "",
+    comment: "",
   });
 
   // This function detect when "escape" key is pressed and close the modal
@@ -33,22 +35,26 @@ export const FormRecommendation = ({ onClose }) => {
     };
   }, []);
 
-  const handleChange = (event) => {
-    if (/\d/.test(event.target.value) === true) {
-      setErrors({
-        ...errors,
-        [event.target.name]: "Can't contain a number",
-      });
-      setForm({
-        ...form,
-        [event.target.name]: "",
-      });
-    } else {
-      setErrors({
-        ...errors,
-        [event.target.name]: "",
-      });
-    }
+  // This function take the actual value of the inputs of section1 and save it to a local state, then will used to render, send the data, or validate.
+  const handleChangeSection1 = (event) => {
+    // if (/\d/.test(event.target.value) === true) {
+    //   setErrors({
+    //     ...errors,
+    //     [event.target.name]: "Can't contain a number",
+    //   });
+    // } else {
+    //   setErrors({
+    //     ...errors,
+    //     [event.target.name]: "",
+    //   });
+    // }
+    // setForm({
+    //   ...form,
+    //   [event.target.name]: event.target.value,
+    // });
+  };
+
+  const handleChangeSection2 = (event) => {
     setForm({
       ...form,
       [event.target.name]: event.target.value,
@@ -56,7 +62,7 @@ export const FormRecommendation = ({ onClose }) => {
   };
 
   useEffect(() => {
-    console.log(errors);
+    console.log(form.comment);
   }, [form]);
   return ReactDOM.createPortal(
     <AnimatePresence>
@@ -154,7 +160,6 @@ export const FormRecommendation = ({ onClose }) => {
           }}
           transition={{
             duration: 1.5,
-            // delay: exit ? 0 : 0,
             type: "spring",
             damping: 20,
             stiffness: 100,
@@ -166,83 +171,132 @@ export const FormRecommendation = ({ onClose }) => {
             transition={{ duration: 1, type: "spring" }}
             className={style.main}
           >
-            <AnimatePresence>
-              {steps == 1 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  exit={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 1 }}
-                  className={style.section1}
-                >
-                  <header className={style.section1Header}>
-                    <p>First of all</p>
-                    <h1>What's your name?</h1>
-                  </header>
+            {/*--------- Section1 -------- */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: steps == 2 ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
+              className={style.section1}
+            >
+              <header className={style.section1Header}>
+                <p>First of all</p>
+                <h1>What's your name?</h1>
+              </header>
 
-                  <div className={style.section1Main}>
-                    <div className={style.formContainer}>
-                      <AnimatePresence>
-                        {errors.name && (
-                          <motion.label
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{
-                              duration: 0.2,
-                            }}
-                            className={style.errorText}
-                          >
-                            {errors.name}
-                          </motion.label>
-                        )}
-                      </AnimatePresence>
-                      <input
-                        type="text"
-                        name="name"
-                        value={form.name}
-                        placeholder="John"
-                        autoComplete="new-password"
-                        spellCheck="disable"
-                        onChange={handleChange}
-                        className={errors.name ? style.error : style.input}
-                      />
-                      <label>Name</label>
-                    </div>
+              <div className={style.section1Main}>
+                <div className={style.formContainer}>
+                  <AnimatePresence>
+                    {errors.name && (
+                      <motion.label
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{
+                          duration: 0.2,
+                        }}
+                        className={style.errorText}
+                      >
+                        {errors.name}
+                      </motion.label>
+                    )}
+                  </AnimatePresence>
+                  <input
+                    type="text"
+                    name="name"
+                    value={form.name}
+                    placeholder="Arnold"
+                    autoComplete="new-password"
+                    spellCheck="disable"
+                    onChange={handleChangeSection1}
+                    className={errors.name ? style.error : style.input}
+                  />
+                  <label>Name</label>
+                </div>
 
-                    <div className={style.formContainer}>
-                      <AnimatePresence>
-                        {errors.lastname && (
-                          <motion.label
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{
-                              duration: 0.2,
-                            }}
-                            className={style.errorText}
-                          >
-                            {errors.lastname}
-                          </motion.label>
-                        )}
-                      </AnimatePresence>
-                      <input
-                        type="text"
-                        name="lastname"
-                        value={form.lastname}
-                        placeholder="Doe"
-                        autoComplete="disable"
-                        onChange={handleChange}
-                        className={errors.lastname ? style.error : style.input}
-                      />
-                      <label>Lastname</label>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <div className={style.section2}></div>
+                <div className={style.formContainer}>
+                  <AnimatePresence>
+                    {errors.lastname && (
+                      <motion.label
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{
+                          duration: 0.2,
+                        }}
+                        className={style.errorText}
+                      >
+                        {errors.lastname}
+                      </motion.label>
+                    )}
+                  </AnimatePresence>
+                  <input
+                    type="text"
+                    name="lastname"
+                    value={form.lastname}
+                    placeholder="Schwarzenegger"
+                    autoComplete="new-password"
+                    spellCheck="disable"
+                    onChange={handleChangeSection1}
+                    className={errors.lastname ? style.error : style.input}
+                  />
+                  <label>Lastname</label>
+                </div>
+              </div>
+            </motion.div>
+
+            {/*--------- Section2 -------- */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: steps == 2 ? 1 : 0 }}
+              transition={{ duration: 0.2 }}
+              className={style.section2}
+            >
+              <header className={style.section2Header}>
+                <p>Hi {form.name}!</p>
+                <h1>What would you like to share?</h1>
+              </header>
+              <div className={style.section2Main}>
+                <div className={style.textAreaContainer}>
+                  <textarea
+                    className={style.textArea}
+                    name="comment"
+                    autoComplete="off"
+                    value={form.comment}
+                    minLength="50"
+                    maxLength="150"
+                    spellCheck="false"
+                    placeholder="Write something cool..."
+                    onChange={handleChangeSection2}
+                  />
+                  {form.comment.length < 50 ? (
+                    <p className={style.charCounter}>
+                      Enter {50 - form.comment.length} more{" "}
+                      {50 - form.comment.length === 1
+                        ? "character"
+                        : "characters"}
+                    </p>
+                  ) : (
+                    <p
+                      className={
+                        form.comment.length !== 150
+                          ? style.charCounter
+                          : style.charCounterMax
+                      }
+                    >
+                      {form.comment.length} / 150
+                    </p>
+                  )}
+                </div>
+              </div>
+            </motion.div>
           </motion.main>
+          {/*--------- Step Indicator Dots and next/previous buttons -------- */}
+          <div className={style.dots}>
+            <div className={steps === 1 ? style.theDot : style.dot}></div>
+            <div className={steps === 2 ? style.theDot : style.dot}></div>
+            <div className={steps === 3 ? style.theDot : style.dot}></div>
+          </div>
+
           <AnimatePresence>
             {steps !== 1 && (
               <motion.button
@@ -307,6 +361,37 @@ export const FormRecommendation = ({ onClose }) => {
                   </svg>
                 </motion.button>
               )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {form.comment.length >= 50 && (
+              <motion.button
+                initial={{ opacity: 0 }}
+                exit={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className={style.nextButton}
+                onClick={() => {
+                  setSteps(steps >= 1 && steps + 1);
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="black"
+                  width="25"
+                  height="25"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                  />
+                </svg>
+              </motion.button>
+            )}
           </AnimatePresence>
         </motion.div>
       </motion.div>
