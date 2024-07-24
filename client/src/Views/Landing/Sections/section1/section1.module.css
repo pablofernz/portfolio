@@ -90,11 +90,13 @@
     display: flex;
     justify-content: left;
     align-items: center;
+    margin-top: -0px;
 }
 
 .img {
     height: 180px;
     width: 180px;
+    margin-top: -20px;
 }
 
 .text1Container {

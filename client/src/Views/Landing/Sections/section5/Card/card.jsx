@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import style from "./card.module.css";
-import { motion } from "framer-motion";
+import { motion, useSpring } from "framer-motion";
 import { changePinnedValue } from "../../../../../Redux/actions";
 
 export const Card = ({
@@ -14,6 +14,7 @@ export const Card = ({
   message,
   pinned,
   adminAccess,
+  classname,
 }) => {
   const socialMediaData = {
     Linkedin: {
@@ -163,7 +164,12 @@ export const Card = ({
               y: tooltip ? 0 : 10,
               opacity: tooltip ? 1 : 0,
             }}
-            transition={{ duration: 1, type: "spring" }}
+            transition={{
+              duration: 1,
+              type: "spring",
+              damping: 20,
+              stiffness: 100,
+            }}
             className={style.tooltip}
           >
             Visit their profile
@@ -220,7 +226,12 @@ export const Card = ({
                   y: tooltipPin ? 0 : 10,
                   opacity: tooltipPin ? 1 : 0,
                 }}
-                transition={{ duration: 1, type: "spring" }}
+                transition={{
+                  duration: 1,
+                  type: "spring",
+                  damping: 20,
+                  stiffness: 100,
+                }}
                 className={style.tooltipPin}
               >
                 <p>
@@ -247,10 +258,16 @@ export const Card = ({
     </div>
   );
 };
-
 export const CardSkeleton = () => {
+  const ref = useRef(null);
+
   return (
-    <div className={style.cardSkeleton}>
+    <motion.div
+      drag
+      ref={ref}
+      dragConstraints={ref}
+      className={style.cardSkeleton}
+    >
       <motion.img
         animate={{ opacity: [0.6, 0, 0.6] }}
         transition={{ duration: 2, type: "spring", repeat: Infinity }}
@@ -258,6 +275,6 @@ export const CardSkeleton = () => {
         src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718494423/logo_white_juquqf.png"
         alt=""
       />
-    </div>
+    </motion.div>
   );
 };

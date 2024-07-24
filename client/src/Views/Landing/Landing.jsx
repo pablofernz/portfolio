@@ -1,5 +1,5 @@
 import style from "./Landing.module.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Lenis from "@studio-freight/lenis";
 import useViewportWidth from "../../Components/Hooks/useViewportSize";
@@ -43,6 +43,18 @@ const Landing = () => {
   const targetRef = useRef(null);
 
   const { scrollYProgress } = useScroll();
+
+  const [test, setTest] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("offline", () => {
+      setTest(true);
+    });
+
+    window.addEventListener("online", () => {
+      setTest(false);
+    });
+  });
   return (
     <div className={style.background}>
       <div className={style.test}></div>
@@ -59,13 +71,15 @@ const Landing = () => {
         className={style.topScrollIndicator }
       ></motion.div> */}
 
-      <Navbar />
+      {/* <Navbar />
 
-      {/* <Section1 />
+      <Section1 />
       <Section2 />
       <Section3 />
       <Section4 /> */}
       <Section5 />
+
+      {test && <h1>Hola amigos</h1>}
     </div>
   );
 };

@@ -29,7 +29,7 @@ const Navbar = () => {
     };
   }, [prevScrollPos]);
   return (
-    <div>
+    <nav>
       {width > 800 ? (
         <motion.div
           initial={{ y: "0px" }}
@@ -214,7 +214,7 @@ const Navbar = () => {
           </motion.div>
         </div>
       )}
-    </div>
+    </nav>
   );
 };
 

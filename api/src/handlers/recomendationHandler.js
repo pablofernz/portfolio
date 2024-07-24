@@ -25,18 +25,14 @@ const Recomendation = require("../models/Recomendation")
 // }
 
 const createRecomendation = async (req, res) => {
-    const { nameAndLastname, email, occupation, placeOfWork, message, socialMedia, image } = req.body
+    const { nameAndLastname, occupation, placeOfWork, message, socialMedia, image } = req.body
 
-
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-        return res.status(400).send("Invalid email")
-    }
 
     if (message.length < 50) {
         return res.status(400).send("The message must be at least 50 characters long")
     }
 
-    // const newRecommendation = await recomendationAdd({ nameAndLastname, email, occupation, placeOfWork, message, socialMedia, image })
+    // const newRecommendation = await recomendationAdd({ nameAndLastname, occupation, placeOfWork, message, socialMedia, image })
 
     return res.status(200).json(Object.values(placeOfWork).length)
 
