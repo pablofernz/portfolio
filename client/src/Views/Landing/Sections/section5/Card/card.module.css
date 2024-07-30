@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    transform: scale(0.9);
+    transform: scale(0.9);box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .card ::selection {

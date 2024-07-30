@@ -115,7 +115,7 @@ export const Card = ({
           )}
         </div>
 
-        <div className={style.userLink}>
+        {/* <div className={style.userLink}>
           <div className={style.singleIconContainer}>
             <div
               className={`${style.iconsContainer} 
@@ -174,7 +174,7 @@ export const Card = ({
           >
             Visit their profile
           </motion.div>
-        </div>
+        </div> */}
       </header>
       <main className={style.main}>
         <div className={style.msgContainer}>
