@@ -829,9 +829,11 @@
 }
 
 .primaryButtonText {
-    display: flex;
+    display: -webkit-flex;
+    gap: 0px;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
+    flex-direction: column;
     font-weight: 600;
     font-family: Basier Square;
     font-size: 18px;
