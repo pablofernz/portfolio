@@ -31,6 +31,7 @@
     display: none;
 }
 
+
 .exitButton {
     position: absolute;
     top: 0;
@@ -178,6 +179,18 @@
 }
 
 .formContainer>label {
+    font-family: Basier Square;
+    font-weight: 900;
+    font-size: 15px;
+    color: rgb(99, 99, 99);
+    text-align: start;
+    align-self: flex-start;
+    margin-left: 30px;
+    transition: all 0.3s ease;
+}
+
+
+.label {
     font-family: Basier Square;
     font-weight: 900;
     font-size: 15px;
@@ -407,12 +420,13 @@
 .charCounterMax {
     font-weight: 900;
     position: absolute;
-    color: rgb(134, 16, 16);
+    color: rgb(187, 28, 28);
     font-family: Basier Square;
     bottom: 0;
     right: 4%;
     font-size: 15px;
-    text-shadow: 0px 0px 5px rgba(129, 14, 14, 0.487);
+    transition: all 0.2s ease;
+    text-shadow: 0px 0px 5px rgba(218, 50, 50, 0.487);
 }
 
 
@@ -619,9 +633,8 @@
     align-items: center;
     justify-content: space-between;
     border: 2px solid transparent;
-    padding: 15px;
-
     background-color: transparent;
+    padding: 15px;
     cursor: pointer;
 }
 
@@ -710,12 +723,11 @@
     width: 250px;
     text-align: center;
     background-color: rgb(69, 69, 69);
-    margin-top: -75px;
-    padding: 5px 5px 5px 5px;
-    border-radius: 10px;
+    margin-top: -85px;
+    padding: 10px 5px 10px 5px;
+    border-radius: 5px;
     font-size: 13px;
     color: rgb(208, 208, 208);
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(0, 0, 0, 0.35) 0px -2px 6px 0px inset;
 }
 
 .tooltipText::before {
@@ -726,7 +738,7 @@
     background-color: rgb(69, 69, 69);
     z-index: 20;
     rotate: 45deg;
-    margin-top: 29px;
+    margin-top: 34px;
     margin-left: 113px;
     border-radius: 2px;
 }
@@ -790,21 +802,6 @@
     overflow: hidden;
 }
 
-.inputPlaceholders {
-    position: absolute;
-    left: 17%;
-    margin: 0;
-    top: 1px;
-    font-family: Basier Square;
-    font-weight: 400;
-    color: rgb(85, 85, 85);
-    line-height: 2.5;
-    animation: showText 20s cubic-bezier(0.215, 0.610, 0.355, 1) 1s infinite;
-    cursor: text;
-    z-index: 4;
-}
-
-
 .primaryButton {
     position: absolute;
     bottom: 0;
@@ -819,20 +816,21 @@
     font-weight: 600;
     border: none;
     display: flex;
-    justify-content: space-around;
+    justify-content: left;
     align-items: center;
     transition: all 0.5s ease;
     font-family: Basier Square;
     font-size: 15px;
     color: black;
     font-weight: 600;
+    overflow: hidden;
 }
 
 .primaryButtonText {
     display: -webkit-flex;
     gap: 0px;
     align-items: center;
-    justify-content: center;
+    justify-content: safe;
     flex-direction: column;
     font-weight: 600;
     font-family: Basier Square;
@@ -840,76 +838,74 @@
     color: black;
 }
 
-.primaryButton:hover {
+/* .primaryButton:hover {
     background-color: rgb(123, 255, 180);
-}
-
-/* .primaryButton:active {
-    scale: 0.9;
 } */
 
 
-@keyframes showText {
-    0%, 10% {
-        transform: translateY(-0px);
-        opacity: 1;
 
+.buttonsSvg {
+    height: 100%;
+    width: 200%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-left: -6px;
+}
+
+.pasted {
+    animation: pasted 3s ease;
+}
+
+@keyframes pasted {
+    0% {
+        background-color: rgb(255, 255, 255);
     }
 
-    11% {
-        opacity: 0;
+    10%, 90% {
+        margin-left: -46px;
+        background-color: rgb(123, 255, 180);
     }
 
-
-    15%, 30% {
-        transform: translatey(-40px);
-        opacity: 1;
-
-
-    }
-
-    31% {
-        opacity: 0;
-    }
-
-    35%, 50% {
-        transform: translatey(-80px);
-        opacity: 1;
-
-        ;
-    }
-
-    51% {
-        opacity: 0;
-    }
-
-    55%, 70% {
-        transform: translateY(-120px);
-        opacity: 1;
-
-    }
-
-    71% {
-        opacity: 0;
-    }
-
-    75%, 90% {
-        transform: translatey(-160px);
-        opacity: 1;
-
-
-    }
-
-    91% {
-        opacity: 0;
-    }
-
-    95%, 100% {
-        transform: translateY(-200px);
-        opacity: 1;
-
+    100% {
+        background-color: rgb(255, 255, 255);
     }
 }
+
+.formSpace3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-bottom: 15px;
+    padding-top: 0px;
+}
+
+.dragImage {
+    height: 90px;
+    width: 200px;
+    border-radius: 10px;
+    border: 2px dashed rgb(102, 102, 102);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column-reverse;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+
+.dragImage:first-child {
+    margin: 0;
+    font-family: Basier Square;
+    font-weight: 600;
+    color: rgb(85, 85, 85);
+    font-size: 18px;
+
+}
+
+
 
 /* ---------- Non Used ------------- */
 
