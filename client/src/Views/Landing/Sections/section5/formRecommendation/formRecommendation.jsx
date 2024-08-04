@@ -15,11 +15,13 @@ export const FormRecommendation = ({ onClose }) => {
     placeOfWork: "",
     isFreelancer: false,
     siteLink: "",
+    image: "",
   });
   const [errors, setErrors] = useState({
     name: "",
     lastname: "",
     comment: "",
+    image: "",
   });
 
   // This function detect when "escape" key is pressed and close the modal
@@ -92,14 +94,7 @@ export const FormRecommendation = ({ onClose }) => {
     setForm({ ...form, isFreelancer: !form.isFreelancer, siteLink: "" });
   };
 
-  // Possibles placeholders for the occupation's input
-  const occupationExamples = [
-    "Developer",
-    "Engineer",
-    "Student",
-    "Designer",
-    "Other",
-  ];
+  // Handler for the paste text button in "Personal or Company site"
   const [pasted, setPasted] = useState(false);
   const PasteButton = async () => {
     try {
@@ -113,10 +108,9 @@ export const FormRecommendation = ({ onClose }) => {
     }
   };
 
-  const [sectionOpen, setSectionOpen] = useState(0);
+  const [sectionOpen, setSectionOpen] = useState(3);
   const handleSectionOpen = (section) => {
     if (sectionOpen == section) {
-      setSocialMediaChoser(false);
       setSectionOpen(0);
     } else {
       setSectionOpen(section);
@@ -125,10 +119,67 @@ export const FormRecommendation = ({ onClose }) => {
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const [socialMediaChoser, setSocialMediaChoser] = useState(false);
+  // Handler for browse image section
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const validImageTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/tiff",
+      ];
+      if (!validImageTypes.includes(file.type)) {
+        setErrors({
+          ...errors,
+          image: {
+            type: {
+              message:
+                "Please select a valid image file (jpeg, png, webp, tiff)",
+            },
+          },
+        });
+        setTimeout(() => {
+          setErrors({
+            ...errors,
+            image: "",
+          });
+        }, 4000);
+        return;
+      }
+
+      // Verify size file (<= 10 MB)
+      const maxSize = 10 * 1024 * 1024; // 10 MB en bytes
+      if (file.size > maxSize) {
+        setErrors({
+          ...errors,
+          image: {
+            size: {
+              message: "File size should be less than 10MB",
+              actualSize: file.size.toString().slice(0, 2),
+            },
+          },
+        });
+        setTimeout(() => {
+          setErrors({
+            ...errors,
+            image: "",
+          });
+        }, 4000);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setForm({ ...form, image: e.target.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
-    if (steps !== 4) setSectionOpen(0);
-  }, [steps]);
+    console.log(errors);
+  }, [errors]);
   return ReactDOM.createPortal(
     <AnimatePresence>
       <motion.div
@@ -326,9 +377,8 @@ export const FormRecommendation = ({ onClose }) => {
               </header>
               <div className={style.section4Main}>
                 {/*--------------------- Describe your job --------------------- */}
-
                 <AnimatePresence mode="popLayout">
-                  {socialMediaChoser === true && sectionOpen !== 0 ? null : (
+                  {sectionOpen == 3 ? null : (
                     <motion.div
                       layout
                       initial={{ height: "60px", scale: 0.8, opacity: 0 }}
@@ -521,7 +571,7 @@ export const FormRecommendation = ({ onClose }) => {
                 {/*--------------------- Personal or company site --------------------- */}
 
                 <AnimatePresence mode={"popLayout"}>
-                  {socialMediaChoser === true && sectionOpen !== 0 ? null : (
+                  {sectionOpen == 3 ? null : (
                     <motion.div
                       layout
                       initial={{ height: "60px", scale: 0.8, opacity: 0 }}
@@ -630,8 +680,8 @@ export const FormRecommendation = ({ onClose }) => {
                                   viewBox="0 0 24 24"
                                   strokeWidth="1.5"
                                   stroke="currentColor"
-                                  width="23"
-                                  height="23"
+                                  width="25"
+                                  height="25"
                                 >
                                   <path
                                     strokeLinecap="round"
@@ -642,8 +692,8 @@ export const FormRecommendation = ({ onClose }) => {
 
                                 <motion.svg
                                   style={{ cursor: "pointer" }}
-                                  width="23"
-                                  height="23"
+                                  width="25"
+                                  height="25"
                                   viewBox="0 0 24 24"
                                   fill="none"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -673,12 +723,7 @@ export const FormRecommendation = ({ onClose }) => {
                     initial={{ height: "60px" }}
                     exit={{ height: "60px" }}
                     animate={{
-                      height:
-                        socialMediaChoser && sectionOpen == 3
-                          ? "320px"
-                          : sectionOpen == 3
-                          ? "170px"
-                          : "60px",
+                      height: sectionOpen == 3 ? "320px" : "60px",
                     }}
                     transition={{
                       duration: 1,
@@ -742,20 +787,179 @@ export const FormRecommendation = ({ onClose }) => {
                         </p>
                       </button>
                       <div className={style.formSpace3}>
-                        <div className={style.formContainer}>
-                          <motion.but className={style.dragImage}>
-                            <p>Upload a photo</p>
-                          </motion.but>
-                        </div>
-                        <div className={style.formContainer}>
-                          <button
-                            onClick={() => {
-                              setSocialMediaChoser(!socialMediaChoser);
-                            }}
-                          >
-                            Social Media
-                          </button>
-                        </div>
+                        {/* <div className={style.formContainer3}>
+                          <input
+                            type="text"
+                            name="placeOfWork"
+                            value={
+                              form.isFreelancer == true ? "" : form.placeOfWork
+                            }
+                            disabled={form.isFreelancer === true}
+                            placeholder={
+                              form.isFreelancer === true ? "" : "Example: Meta"
+                            }
+                            autoComplete="new-password"
+                            spellCheck="disable"
+                            onChange={handleChangesection4}
+                            className={`${style.input} ${
+                              form.isFreelancer && style.disabled
+                            }`}
+                          />
+                          <label>Company/organization</label>
+                        </div> */}
+                        <header className={style.header}></header>
+                        <footer
+                          className={`${style.footer} ${
+                            errors.image && style.footerError
+                          }`}
+                        >
+                          <AnimatePresence mode={"popLayout"}>
+                            {errors.image && (
+                              <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{
+                                  type: "spring",
+                                  damping: 20,
+                                  stiffness: 150,
+                                }}
+                                className={style.errorContainer}
+                              >
+                                <p className={style.imageError}>
+                                  {errors.image.size ? (
+                                    <>
+                                      {errors.image.size.message}
+                                      <br />
+                                      <label
+                                        style={{
+                                          fontSize: "15px",
+                                          opacity: 0.5,
+                                        }}
+                                      >
+                                        Actual size:{" "}
+                                        {errors.image.size.actualSize} MB
+                                      </label>
+                                    </>
+                                  ) : (
+                                    errors.image.type.message
+                                  )}
+                                </p>
+
+                                <div className={style.progressBarContainer}>
+                                  <div className={style.progressBar}></div>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                          <AnimatePresence mode={"popLayout"}>
+                            {!form.image && !errors.image && (
+                              <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{
+                                  type: "spring",
+                                  damping: 20,
+                                  stiffness: 150,
+                                }}
+                                style={{
+                                  flexDirection:
+                                    !form.image && "column-reverse",
+                                }}
+                              >
+                                <input
+                                  style={{
+                                    opacity: 0,
+                                    cursor: form.image ? "default" : "pointer",
+                                  }}
+                                  type="file"
+                                  id="fileInput"
+                                  accept="image/*"
+                                  disabled={form.image}
+                                  onChange={handleFileChange}
+                                  className={style.uploadPhoto}
+                                ></input>
+                                <p style={{ fontSize: "15px", opacity: 0.5 }}>
+                                  Max. file size: 10MB
+                                </p>
+                                <p>
+                                  Click to upload or drag and drop your photo
+                                </p>
+                                <svg
+                                  focusable="false"
+                                  aria-hidden="true"
+                                  viewBox="0 0 24 24"
+                                  fill="rgb(85, 85, 85)"
+                                  width="60"
+                                  height="60"
+                                >
+                                  <path d="M21.02 5H19V2.98c0-.54-.44-.98-.98-.98h-.03c-.55 0-.99.44-.99.98V5h-2.01c-.54 0-.98.44-.99.98v.03c0 .55.44.99.99.99H17v2.01c0 .54.44.99.99.98h.03c.54 0 .98-.44.98-.98V7h2.02c.54 0 .98-.44.98-.98v-.04c0-.54-.44-.98-.98-.98M16 9.01V8h-1.01c-.53 0-1.03-.21-1.41-.58-.37-.38-.58-.88-.58-1.44 0-.36.1-.69.27-.98H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8.28c-.3.17-.64.28-1.02.28-1.09-.01-1.98-.9-1.98-1.99M15.96 19H6c-.41 0-.65-.47-.4-.8l1.98-2.63c.21-.28.62-.26.82.02L10 18l2.61-3.48c.2-.26.59-.27.79-.01l2.95 3.68c.26.33.03.81-.39.81"></path>
+                                </svg>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                          <AnimatePresence mode={"popLayout"}>
+                            {form.image && (
+                              <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{
+                                  type: "spring",
+                                  damping: 20,
+                                  stiffness: 150,
+                                }}
+                                className={style.photoContainer}
+                              >
+                                <div className={style.deletePhoto}>
+                                  <button
+                                    onClick={() => {
+                                      setForm({ ...form, image: "" });
+                                    }}
+                                  >
+                                    <svg
+                                      width="30px"
+                                      height="30px"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M16 6V5.2C16 4.0799 16 3.51984 15.782 3.09202C15.5903 2.71569 15.2843 2.40973 14.908 2.21799C14.4802 2 13.9201 2 12.8 2H11.2C10.0799 2 9.51984 2 9.09202 2.21799C8.71569 2.40973 8.40973 2.71569 8.21799 3.09202C8 3.51984 8 4.0799 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.8802 19 19.7202 18.673 20.362C18.3854 20.9265 17.9265 21.3854 17.362 21.673C16.7202 22 15.8802 22 14.2 22H9.8C8.11984 22 7.27976 22 6.63803 21.673C6.07354 21.3854 5.6146 20.9265 5.32698 20.362C5 19.7202 5 18.8802 5 17.2V6"
+                                        stroke="white"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                                <div className={style.photoPreviewContainer}>
+                                  <img
+                                    src={form.image}
+                                    alt="userPhoto"
+                                    className={style.userPhoto}
+                                  />
+                                </div>
+                                <div className={style.editPhoto}>
+                                  <button>
+                                    <svg
+                                      width="30px"
+                                      height="30px"
+                                      viewBox="0 0 24 24"
+                                      fill="white"
+                                    >
+                                      <path d="M17 15h2V7c0-1.1-.9-2-2-2H9v2h8zM7 17V1H5v4H1v2h4v10c0 1.1.9 2 2 2h10v4h2v-4h4v-2z"></path>
+                                    </svg>
+                                  </button>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </footer>
                       </div>
                     </div>
                   </motion.div>
