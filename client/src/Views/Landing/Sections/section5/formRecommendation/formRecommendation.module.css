@@ -887,14 +887,50 @@
 .header {
     height: 40%;
     width: 100%;
-    align-items: center;
+    align-items: start;
     justify-content: center;
     display: flex;
 }
 
-.formContainer3 {
+.leftSide {
+    height: 100%;
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-left: 50px;
+}
 
-    height: 60px;
+.socialButtons {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.rightSide {
+    height: 100%;
+    width: 60%;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.formContainer3 {
+    height: 80%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column-reverse;
+    position: relative;
+    gap: 10px;
+    z-index: 2;
+}
+
+
+.formContainer3>div {
+    height: 80%;
     width: 100%;
     display: flex;
     align-items: center;
@@ -904,18 +940,31 @@
     gap: 10px;
 }
 
-.formContainer3>label {
+.formContainer3>div label {
     font-family: Basier Square;
     font-weight: 900;
     font-size: 15px;
     color: rgb(99, 99, 99);
     text-align: start;
     align-self: flex-start;
-    margin-left: 30px;
+    margin-left: 40px;
     transition: all 0.3s ease;
 }
 
+.inputIcon {
+    position: absolute;
+    margin-bottom: -33px;
+    right: 0;
+    margin-right: 45px;
+    filter: grayscale(100%);
+    opacity: 0.5;
+    z-index: -1;
+}
+
 .footer {
+    z-index: 2;
+    background-color: rgb(29, 29, 29);
+
     height: 60%;
     width: 99%;
     align-items: center;
@@ -926,9 +975,10 @@
     position: relative;
     border: 2px dashed rgb(66, 66, 66);
     border-radius: 15px;
+    transition: all 0.2s ease;
+    background-color: transparent;
+
 }
-
-
 
 .footer>div {
     align-items: center;
@@ -975,10 +1025,13 @@
 @keyframes progressBarContainer {
     0%, 100% {
         opacity: 0;
+        transform: translateY(20px);
     }
 
-    20%, 85% {
+    20%, 90% {
         opacity: 0.5;
+        transform: translateY(0px);
+
     }
 }
 
