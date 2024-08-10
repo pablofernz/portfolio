@@ -12,6 +12,7 @@ import Section2 from "./Sections/section2/section2";
 import Section3 from "./Sections/section3/section3";
 import Section4 from "./Sections/section4/section4";
 import Section5 from "./Sections/section5/section5";
+import Chatbox from "./Sections/Chatbox/chatbox";
 
 const Landing = () => {
   const width = useViewportWidth();
@@ -58,7 +59,6 @@ const Landing = () => {
   return (
     <div className={style.background}>
       <div className={style.test}></div>
-
       {/* {isLoading === true ? (
         <Animation animation={true} width={width} />
       ) : (
@@ -80,6 +80,8 @@ const Landing = () => {
       <Section5 />
 
       {test && <h1>Hola amigos</h1>}
+      <Chatbox />
+
     </div>
   );
 };

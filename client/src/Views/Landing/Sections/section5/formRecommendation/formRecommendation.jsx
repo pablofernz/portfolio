@@ -8,7 +8,7 @@ import useViewportWidth from "../../../../../Components/Hooks/useViewportSize";
 export const FormRecommendation = ({ onClose }) => {
   const viewportWidth = useViewportWidth();
   const [exit, setExit] = useState(false);
-  const [steps, setSteps] = useState(4);
+  const [steps, setSteps] = useState(1);
 
   const [form, setForm] = useState({
     name: "",

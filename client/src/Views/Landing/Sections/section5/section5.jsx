@@ -27,7 +27,7 @@ const Section5 = () => {
   // ----------------------------------------------------------
 
   // Local states
-  const [formOpen, setFormOpen] = useState(true);
+  const [formOpen, setFormOpen] = useState(false);
   const [adminAccess, setAdminAccess] = useState(false);
   const [tooltipButton, setTooltipButton] = useState(false);
 
