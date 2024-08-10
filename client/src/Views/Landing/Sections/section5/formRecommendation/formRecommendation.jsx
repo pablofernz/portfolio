@@ -3,8 +3,10 @@ import ReactDOM from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import useViewportWidth from "../../../../../Components/Hooks/useViewportSize";
 
 export const FormRecommendation = ({ onClose }) => {
+  const viewportWidth = useViewportWidth();
   const [exit, setExit] = useState(false);
   const [steps, setSteps] = useState(4);
 
@@ -194,19 +196,55 @@ export const FormRecommendation = ({ onClose }) => {
       },
     }));
   };
-  
-  // const [githubUserData, setGithubUserData] = useState("");
-  // useEffect(() => {
-  //   axios
-  //     .get(`https://api.github.com/users/${form.socialMedia.github}`)
-  //     .then((response) => {
-  //       setGithubUserData(response.data);
-  //       setForm({ ...form, image: githubUserData.avatar_url });
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // }, [form.socialMedia.github]);
+  useEffect(() => {
+    if (steps !== 4) setSectionOpen(0);
+  }, [steps]);
+
+  const [githubUserData, setGithubUserData] = useState("");
+  const useGithubPhoto = () => {
+    if (form.socialMedia.github.length) {
+      axios
+        .get(`https://api.github.com/users/${form.socialMedia.github}`)
+        .then((response) => {
+          const userData = response.data;
+          setGithubUserData(userData);
+          setForm({ ...form, image: userData.avatar_url });
+        })
+        .catch((error) => {
+          setErrors({
+            ...errors,
+            image: {
+              github: {
+                message: "This is weird, user not found",
+              },
+            },
+          });
+          setTimeout(() => {
+            setErrors({
+              ...errors,
+              image: "",
+            });
+          }, 4000);
+          setForm({ ...form, socialMedia: { github: "" } });
+        });
+    } else {
+      setErrors({
+        ...errors,
+        image: {
+          github: {
+            message: "Please enter your GitHub username",
+          },
+        },
+      });
+      setTimeout(() => {
+        setErrors({
+          ...errors,
+          image: "",
+        });
+      }, 4000);
+    }
+  };
+  const [useSocialPhoto, useSocialPhotoActive] = useState(false);
   return ReactDOM.createPortal(
     <AnimatePresence>
       <motion.div
@@ -379,7 +417,7 @@ export const FormRecommendation = ({ onClose }) => {
                     setSteps(4);
                   }}
                 >
-                  Yeah, why not?
+                  {viewportWidth > 500 ? " Yeah, why not?" : "Yeah!"}
                 </button>
 
                 <button className={style.submit}>No, submit</button>
@@ -1011,7 +1049,7 @@ export const FormRecommendation = ({ onClose }) => {
                                       onChange={handleSocialMedia}
                                       className={style.input}
                                     />
-                                    <label>X (ex Twitter)</label>
+                                    <label>X (rip Twitter)</label>
                                     <p className={style.inputIcon}>
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -1089,7 +1127,7 @@ export const FormRecommendation = ({ onClose }) => {
                                 className={style.errorContainer}
                               >
                                 <p className={style.imageError}>
-                                  {errors.image.size ? (
+                                  {errors.image.size && (
                                     <>
                                       {errors.image.size.message}
                                       <br />
@@ -1103,9 +1141,9 @@ export const FormRecommendation = ({ onClose }) => {
                                         {errors.image.size.actualSize} MB
                                       </label>
                                     </>
-                                  ) : (
-                                    errors.image.type.message
                                   )}
+                                  <> {errors.image.type?.message}</>
+                                  <> {errors.image.github?.message}</>
                                 </p>
 
                                 <div className={style.progressBarContainer}>
@@ -1160,6 +1198,61 @@ export const FormRecommendation = ({ onClose }) => {
                                 >
                                   <path d="M21.02 5H19V2.98c0-.54-.44-.98-.98-.98h-.03c-.55 0-.99.44-.99.98V5h-2.01c-.54 0-.98.44-.99.98v.03c0 .55.44.99.99.99H17v2.01c0 .54.44.99.99.98h.03c.54 0 .98-.44.98-.98V7h2.02c.54 0 .98-.44.98-.98v-.04c0-.54-.44-.98-.98-.98M16 9.01V8h-1.01c-.53 0-1.03-.21-1.41-.58-.37-.38-.58-.88-.58-1.44 0-.36.1-.69.27-.98H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8.28c-.3.17-.64.28-1.02.28-1.09-.01-1.98-.9-1.98-1.99M15.96 19H6c-.41 0-.65-.47-.4-.8l1.98-2.63c.21-.28.62-.26.82.02L10 18l2.61-3.48c.2-.26.59-.27.79-.01l2.95 3.68c.26.33.03.81-.39.81"></path>
                                 </svg>
+
+                                <button
+                                  title="More options"
+                                  className={style.useSocialPhoto}
+                                  onMouseEnter={() => {
+                                    useSocialPhotoActive(true);
+                                  }}
+                                  onMouseLeave={() => {
+                                    useSocialPhotoActive(false);
+                                  }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="2"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
+                                    />
+                                  </svg>
+                                </button>
+                                <AnimatePresence>
+                                  {useSocialPhoto && (
+                                    <motion.div
+                                      initial={{ opacity: 0 }}
+                                      exit={{ opacity: 0 }}
+                                      animate={{
+                                        opacity: useSocialPhoto && 1,
+                                      }}
+                                      transition={{
+                                        type: "spring",
+                                        damping: 20,
+                                        stiffness: 150,
+                                      }}
+                                      onMouseEnter={() => {
+                                        useSocialPhotoActive(true);
+                                      }}
+                                      onMouseLeave={() => {
+                                        useSocialPhotoActive(false);
+                                      }}
+                                      className={style.peme}
+                                    >
+                                      <button
+                                        className={style.options}
+                                        onClick={useGithubPhoto}
+                                      >
+                                        Use GitHub profile photo
+                                      </button>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
                               </motion.div>
                             )}
                           </AnimatePresence>

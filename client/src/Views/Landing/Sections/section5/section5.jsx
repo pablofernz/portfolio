@@ -80,7 +80,7 @@ const Section5 = () => {
       <div className={style.upper}>
         <div className={style.headerContainer}>
           <h2 className={style.title}>
-            Don't trust me,{" "}
+            Don't trust me,
             <label
               style={{
                 fontWeight: "600",
@@ -254,7 +254,7 @@ const Section5 = () => {
             >
               <path d="M12 19v-7m0 0V5m0 7H5m7 0h7"></path>
             </svg>
-            Write your comment
+            Leave your comment
           </button>
         )}
       </div>
