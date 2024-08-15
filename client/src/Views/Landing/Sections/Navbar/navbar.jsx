@@ -34,7 +34,11 @@ const Navbar = () => {
         <motion.div
           initial={{ y: "0px" }}
           animate={{ y: !visible ? "-100px" : "0px" }}
-          transition={{ duration: 0.5, type: "spring" }}
+          transition={{
+            type: "spring",
+            damping: 20,
+            stiffness: 150,
+          }}
           className={style.navBarContainer}
         >
           <div className={style.navBar}>
@@ -93,7 +97,11 @@ const Navbar = () => {
               height: isMobileNavbarOpen === true ? 275 : 50,
               y: !visible && isMobileNavbarOpen === false ? "-100px" : "0px",
             }}
-            transition={{ duration: 0.5, type: "spring" }}
+            transition={{
+              type: "spring",
+              damping: 20,
+              stiffness: 150,
+            }}
             className={style.navBarModal}
           >
             <div className={style.navBarMobile}>

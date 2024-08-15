@@ -25,16 +25,15 @@ const Recomendation = require("../models/Recomendation")
 // }
 
 const createRecomendation = async (req, res) => {
-    const { nameAndLastname, occupation, placeOfWork, message, socialMedia, image } = req.body
+    const { name, lastname, occupation, workData, comment, socialMedia, image } = req.body
 
 
-    if (message.length < 50) {
-        return res.status(400).send("The message must be at least 50 characters long")
-    }
+    // if (comment.length < 50) {
+    //     return res.status(400).send("The message must be at least 50 characters long")
+    // }
+    const nameAndLastname = name + " " + lastname
+    const newRecommendation = await recomendationAdd({ nameAndLastname, occupation, workData, comment, socialMedia, image })
 
-    // const newRecommendation = await recomendationAdd({ nameAndLastname, occupation, placeOfWork, message, socialMedia, image })
-
-    return res.status(200).json(Object.values(placeOfWork).length)
 
     // -----------SEND EMAIL------------------------
 

@@ -58,7 +58,7 @@
     margin-right: 12px;
     right: 0;
     transition: all 0.2s ease-in-out;
-    fill: #7bffb4
+    fill: #7bffb4;
 }
 
 .pinnedTooltip {
@@ -173,6 +173,7 @@
     font-size: 15px;
     display: flex;
     align-items: center;
+    gap: 5px;
 }
 
 .siteLink {

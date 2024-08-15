@@ -1,11 +1,11 @@
-import { LOADED, SECTION, GET_RECOMMENDATIONS, IS_VISIBLE } from "./actions";
+import { LOADED, SECTION, GET_RECOMMENDATIONS, ALERT_NEW_COMMENT } from "./actions";
 
 let initialstate = {
     isLoading: true,
     isNavbarVisible: true,
     section: "home",
-    recommendations: []
-
+    recommendations: [],
+    newComment: false
 };
 
 let reducer = (state = initialstate, action) => {
@@ -28,10 +28,10 @@ let reducer = (state = initialstate, action) => {
                 recommendations: action.payload
             }
 
-        case IS_VISIBLE:
+        case ALERT_NEW_COMMENT:
             return {
                 ...state,
-                isNavbarVisible: action.payload
+                newComment: !newComment
             }
         default:
             return { ...state }

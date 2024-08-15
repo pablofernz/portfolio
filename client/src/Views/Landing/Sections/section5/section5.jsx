@@ -4,7 +4,7 @@ import style from "./section5.module.css";
 import { AnimatePresence, motion } from "framer-motion";
 import { Card, CardSkeleton } from "./Card/card";
 import { fetchRecommendations } from "../../../../Redux/actions";
-import { FormRecommendation } from "./formRecommendation/formRecommendation";
+import { FormComments } from "./formRecommendation/formComments";
 import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
 const Section5 = () => {
   const vwWidth = useViewportWidth();
@@ -65,12 +65,11 @@ const Section5 = () => {
     // }
     setCurrentStep(currentStep - 1);
   };
-
   return (
     <motion.section className={style.section5}>
       <AnimatePresence>
         {formOpen && (
-          <FormRecommendation
+          <FormComments
             onClose={() => {
               setFormOpen(false);
             }}
@@ -88,8 +87,9 @@ const Section5 = () => {
                 color: "rgb(123, 255, 180)",
               }}
             >
+              {" "}
               trust them
-            </label>{" "}
+            </label>
           </h2>
           <h3 className={style.subtitle}>
             Discover what the people have to say about their experiences working
@@ -121,12 +121,13 @@ const Section5 = () => {
                     image={rec.image}
                     nameAndLastname={rec.nameAndLastname}
                     occupation={rec.occupation}
-                    placeOfWork={Object.keys(rec.placeOfWork)}
-                    siteLink={Object.values(rec.placeOfWork)}
-                    socialMedia={rec.socialMedia}
-                    message={rec.message}
+                    workData={rec.workData}
+                    socialMedia={rec.socialMedia.filter(
+                      (social) => social.username !== ""
+                    )}
+                    comment={rec.comment}
                     pinned={rec.pinned}
-                    adminAccess={adminAccess}
+                    adminAccess={true}
                   />
                 ))}
               </motion.div>
@@ -146,18 +147,31 @@ const Section5 = () => {
                 }}
                 className={style.cardsTest}
               >
-                {/* <CardSkeleton />
                 <CardSkeleton />
-                <CardSkeleton /> */}
-                {testArray.map(() => {
-                  return <CardSkeleton />;
-                })}
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
               </motion.div>
             </motion.div>
           )}
-          {steps !== 0 ||
+          {/* {steps !== 0 ||
             (!recommendations.length && (
-              <div className={style.buttonsContainer}>
+              
+            ))} */}
+          <AnimatePresence mode={"popLayout"}>
+            {recommendations.length && (
+              <motion.div
+                initial={{ opacity: 0, x: 200 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{
+                  type: "spring",
+                  damping: 15,
+                  stiffness: 100,
+                }}
+                className={style.buttonsContainer}
+              >
                 <button
                   style={{ opacity: currentStep == 0 && 0.3 }}
                   className={style.pageButtons}
@@ -170,7 +184,7 @@ const Section5 = () => {
                     viewBox="0 0 24 24"
                     width="30"
                     height="30"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke="white"
                   >
                     <path
@@ -193,7 +207,7 @@ const Section5 = () => {
                     viewBox="0 0 24 24"
                     width="30"
                     height="30"
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                     stroke="white"
                   >
                     <path
@@ -203,8 +217,9 @@ const Section5 = () => {
                     />
                   </svg>
                 </button>
-              </div>
-            ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 

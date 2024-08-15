@@ -1,30 +1,45 @@
-import style from "./formRecommendation.module.css";
+import style from "./formComments.module.css";
 import ReactDOM from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import useViewportWidth from "../../../../../Components/Hooks/useViewportSize";
+import { useDispatch } from "react-redux";
+import { alertNewComment } from "../../../../../Redux/actions";
 
-export const FormRecommendation = ({ onClose }) => {
+export const FormComments = ({ onClose }) => {
   const viewportWidth = useViewportWidth();
   const [exit, setExit] = useState(false);
-  const [steps, setSteps] = useState(1);
+  const [steps, setSteps] = useState(5);
 
   const [form, setForm] = useState({
     name: "",
     lastname: "",
     comment: "",
     occupation: "",
-    placeOfWork: "",
-    isFreelancer: false,
-    siteLink: "",
-    image: "",
-    socialMedia: {
-      linkedin: "",
-      github: "",
-      X: "",
-      instagram: "",
+    workData: {
+      placeOfWork: "",
+      siteLink: "",
     },
+    image: "",
+    socialMedia: [
+      {
+        name: "Linkedin",
+        username: "",
+      },
+      {
+        name: "Instagram",
+        username: "",
+      },
+      {
+        name: "X",
+        username: "",
+      },
+      {
+        name: "GitHub",
+        username: "",
+      },
+    ],
   });
   const [errors, setErrors] = useState({
     name: "",
@@ -73,15 +88,27 @@ export const FormRecommendation = ({ onClose }) => {
   const handleChangeSection2 = (event) => {
     setForm({
       ...form,
-      [event.target.name]: event.target.value,
+      comment: event.target.value,
     });
   };
   // Still in progress :p
   const handleChangesection4 = (event) => {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value,
-    });
+    const { name, value } = event.target;
+
+    if (name === "siteLink" || name === "placeOfWork") {
+      setForm((prevForm) => ({
+        ...prevForm,
+        workData: {
+          ...prevForm.workData,
+          [name]: value,
+        },
+      }));
+    } else {
+      setForm((prevForm) => ({
+        ...prevForm,
+        [name]: value,
+      }));
+    }
   };
 
   // Sizes of the card for each step
@@ -90,24 +117,35 @@ export const FormRecommendation = ({ onClose }) => {
     2: { width: "520px", height: "350px", position: "-100%" },
     3: { width: "550px", height: "270px", position: "-200%" },
     4: { width: "550px", height: "520px", position: "-300%" },
+    5: { width: "450px", height: "250px", position: "-400%" },
   };
 
   const handleButton = () => {
     if (steps == 2 || steps == 1) {
       setSteps(steps >= 1 && steps + 1);
     } else {
-      console.log("enviado");
+      submitHandler();
     }
   };
   const handleCheckbox = () => {
-    setForm({ ...form, isFreelancer: !form.isFreelancer, siteLink: "" });
+    setForm({
+      ...form,
+      workData: {
+        placeOfWork:
+          form.workData.placeOfWork !== "Freelancer" ? "Freelancer" : "",
+        siteLink: "",
+      },
+    });
   };
 
   // Handler for the paste text button in "Personal or Company site"
   const [pasted, setPasted] = useState(false);
   const PasteButton = async () => {
     try {
-      setForm({ ...form, siteLink: await navigator.clipboard.readText() });
+      setForm({
+        ...form,
+        workData: { siteLink: await navigator.clipboard.readText() },
+      });
       setPasted(true);
       setTimeout(() => {
         setPasted(false);
@@ -117,7 +155,7 @@ export const FormRecommendation = ({ onClose }) => {
     }
   };
 
-  const [sectionOpen, setSectionOpen] = useState(3);
+  const [sectionOpen, setSectionOpen] = useState(0);
   const handleSectionOpen = (section) => {
     if (sectionOpen == section) {
       setSectionOpen(0);
@@ -188,27 +226,27 @@ export const FormRecommendation = ({ onClose }) => {
 
   const [socialMediaActive, setSocialMediaActive] = useState("linkedin");
   const handleSocialMedia = (event) => {
-    setForm((prevForm) => ({
-      ...prevForm,
-      socialMedia: {
-        ...prevForm.socialMedia,
-        [event.target.name]: event.target.value,
-      },
-    }));
-  };
-  useEffect(() => {
-    if (steps !== 4) setSectionOpen(0);
-  }, [steps]);
+    const { name, value } = event.target;
 
-  const [githubUserData, setGithubUserData] = useState("");
+    setForm({
+      ...form,
+      socialMedia: form.socialMedia.map((social) =>
+        social.name === name ? { ...social, username: value } : social
+      ),
+    });
+  };
+
+  // This function allows the user to use their GitHub profile photo.
   const useGithubPhoto = () => {
-    if (form.socialMedia.github.length) {
+    const githubAccount = form.socialMedia.find(
+      (social) => social.name.toLowerCase() === "github"
+    );
+
+    if (githubAccount && githubAccount.username) {
       axios
-        .get(`https://api.github.com/users/${form.socialMedia.github}`)
+        .get(`https://api.github.com/users/${githubAccount.username}`)
         .then((response) => {
-          const userData = response.data;
-          setGithubUserData(userData);
-          setForm({ ...form, image: userData.avatar_url });
+          setForm({ ...form, image: response.data.avatar_url });
         })
         .catch((error) => {
           setErrors({
@@ -220,12 +258,21 @@ export const FormRecommendation = ({ onClose }) => {
             },
           });
           setTimeout(() => {
-            setErrors({
-              ...errors,
+            setErrors((prevErrors) => ({
+              ...prevErrors,
               image: "",
-            });
+            }));
           }, 4000);
-          setForm({ ...form, socialMedia: { github: "" } });
+
+          // If its not found the github user, the value of username (and the input) is ""
+          setForm((prevForm) => ({
+            ...prevForm,
+            socialMedia: prevForm.socialMedia.map((social) =>
+              social.name.toLowerCase() === "github"
+                ? { ...social, username: "" }
+                : social
+            ),
+          }));
         });
     } else {
       setErrors({
@@ -237,20 +284,48 @@ export const FormRecommendation = ({ onClose }) => {
         },
       });
       setTimeout(() => {
-        setErrors({
-          ...errors,
+        setErrors((prevErrors) => ({
+          ...prevErrors,
           image: "",
-        });
+        }));
       }, 4000);
     }
   };
   const [useSocialPhoto, useSocialPhotoActive] = useState(false);
+
+  const dispatch = useDispatch();
+  const submitHandler = async () => {
+    // try {
+    //   const response = await axios.post(
+    //     "https://portfolio-back-nnl5.onrender.com/recomendation/get",
+    //     form
+    //   );
+    //   if (response.data === true) {
+    //     setExit(true);
+    //     dispatch(alertNewComment());
+    //     setTimeout(() => {
+    //       onClose();
+    //     }, 500);
+    //   }
+    // } catch (error) {
+    //   console.log(form.image);
+    // }
+    setSteps(5);
+  };
+
+  useEffect(() => {
+    if (steps !== 4) setSectionOpen(0);
+  }, [steps]);
+
   return ReactDOM.createPortal(
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: exit ? 0 : 1 }}
-        transition={{ duration: 0.5, delay: exit ? 0 : 0 }}
+        transition={{
+          duration: 0.5,
+          delay: exit ? 0 : 0,
+        }}
         className={style.component}
       >
         <motion.div
@@ -261,9 +336,8 @@ export const FormRecommendation = ({ onClose }) => {
             height: sectionsSizes[steps].height,
           }}
           transition={{
-            duration: 1.5,
             type: "spring",
-            damping: 20,
+            damping: 15,
             stiffness: 100,
           }}
           className={style.card}
@@ -420,7 +494,9 @@ export const FormRecommendation = ({ onClose }) => {
                   {viewportWidth > 500 ? " Yeah, why not?" : "Yeah!"}
                 </button>
 
-                <button className={style.submit}>No, submit</button>
+                <button className={style.submit} onClick={submitHandler}>
+                  No, submit
+                </button>
               </div>
             </motion.div>
 
@@ -526,7 +602,7 @@ export const FormRecommendation = ({ onClose }) => {
                               </label>
                               <p
                                 className={
-                                  form.isFreelancer == true
+                                  form.workData.placeOfWork == "Freelancer"
                                     ? style.textChecked
                                     : style.checkboxText
                                 }
@@ -608,13 +684,15 @@ export const FormRecommendation = ({ onClose }) => {
                               type="text"
                               name="placeOfWork"
                               value={
-                                form.isFreelancer == true
+                                form.workData.placeOfWork == "Freelancer"
                                   ? ""
-                                  : form.placeOfWork
+                                  : form.workData.placeOfWork
                               }
-                              disabled={form.isFreelancer === true}
+                              disabled={
+                                form.workData.placeOfWork == "Freelancer"
+                              }
                               placeholder={
-                                form.isFreelancer === true
+                                form.workData.placeOfWork == "Freelancer"
                                   ? ""
                                   : "Example: Meta"
                               }
@@ -622,7 +700,8 @@ export const FormRecommendation = ({ onClose }) => {
                               spellCheck="disable"
                               onChange={handleChangesection4}
                               className={`${style.input} ${
-                                form.isFreelancer && style.disabled
+                                form.workData.placeOfWork == "Freelancer" &&
+                                style.disabled
                               }`}
                             />
                             <label>Company/organization</label>
@@ -712,7 +791,7 @@ export const FormRecommendation = ({ onClose }) => {
                             <input
                               type="text"
                               name="siteLink"
-                              value={form.siteLink}
+                              value={form.workData.siteLink}
                               placeholder="www.example.com"
                               autoComplete="new-password"
                               spellCheck="disable"
@@ -721,7 +800,8 @@ export const FormRecommendation = ({ onClose }) => {
                             />
 
                             <label>
-                              {form.isFreelancer === true
+                              {(form.workData.placeOfWork == "Freelancer") ===
+                              true
                                 ? " Website/Portfolio"
                                 : "Company site"}
                             </label>
@@ -911,7 +991,7 @@ export const FormRecommendation = ({ onClose }) => {
                                 setSocialMediaActive("x");
                               }}
                               style={{
-                                opacity: socialMediaActive == "x" ? 1 : 0.5,
+                                opacity: socialMediaActive == "x" ? 1 : 0.25,
                               }}
                             >
                               <svg
@@ -929,7 +1009,7 @@ export const FormRecommendation = ({ onClose }) => {
                               className={style.socialButtons}
                               style={{
                                 opacity:
-                                  socialMediaActive == "github" ? 1 : 0.5,
+                                  socialMediaActive == "github" ? 1 : 0.25,
                               }}
                               onClick={() => {
                                 setSocialMediaActive("github");
@@ -951,9 +1031,21 @@ export const FormRecommendation = ({ onClose }) => {
                               <AnimatePresence mode={"popLayout"}>
                                 {socialMediaActive == "linkedin" && (
                                   <motion.div
-                                    initial={{ opacity: 0, y: 50 }}
-                                    exit={{ opacity: 0, y: 50 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                    initial={{
+                                      opacity: 0,
+                                      y: 50,
+                                      filter: "brightness(0%)",
+                                    }}
+                                    exit={{
+                                      opacity: 0,
+                                      y: 50,
+                                      filter: "brightness(0%)",
+                                    }}
+                                    animate={{
+                                      opacity: 1,
+                                      y: 0,
+                                      filter: "brightness(100%)",
+                                    }}
                                     transition={{
                                       type: "spring",
                                       damping: 20,
@@ -962,9 +1054,12 @@ export const FormRecommendation = ({ onClose }) => {
                                   >
                                     <input
                                       type="text"
-                                      name="linkedin"
-                                      value={form.socialMedia.linkedin}
-                                      disabled={form.isFreelancer === true}
+                                      name="Linkedin"
+                                      value={
+                                        form.socialMedia.find(
+                                          (social) => social.name === "Linkedin"
+                                        ).username
+                                      }
                                       placeholder="Username"
                                       autoComplete="new-password"
                                       spellCheck="disable"
@@ -990,9 +1085,21 @@ export const FormRecommendation = ({ onClose }) => {
                               <AnimatePresence mode={"popLayout"}>
                                 {socialMediaActive == "instagram" && (
                                   <motion.div
-                                    initial={{ opacity: 0, y: 50 }}
-                                    exit={{ opacity: 0, y: 50 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                    initial={{
+                                      opacity: 0,
+                                      y: 50,
+                                      filter: "brightness(0%)",
+                                    }}
+                                    exit={{
+                                      opacity: 0,
+                                      y: 50,
+                                      filter: "brightness(0%)",
+                                    }}
+                                    animate={{
+                                      opacity: 1,
+                                      y: 0,
+                                      filter: "brightness(100%)",
+                                    }}
                                     transition={{
                                       type: "spring",
                                       damping: 20,
@@ -1001,9 +1108,13 @@ export const FormRecommendation = ({ onClose }) => {
                                   >
                                     <input
                                       type="text"
-                                      name="instagram"
-                                      value={form.socialMedia.instagram}
-                                      disabled={form.isFreelancer === true}
+                                      name="Instagram"
+                                      value={
+                                        form.socialMedia.find(
+                                          (social) =>
+                                            social.name === "Instagram"
+                                        ).username
+                                      }
                                       placeholder="Username"
                                       autoComplete="new-password"
                                       spellCheck="disable"
@@ -1029,9 +1140,21 @@ export const FormRecommendation = ({ onClose }) => {
                               <AnimatePresence mode={"popLayout"}>
                                 {socialMediaActive == "x" && (
                                   <motion.div
-                                    initial={{ opacity: 0, y: 50 }}
-                                    exit={{ opacity: 0, y: 50 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                    initial={{
+                                      opacity: 0,
+                                      y: 50,
+                                      filter: "brightness(0%)",
+                                    }}
+                                    exit={{
+                                      opacity: 0,
+                                      y: 50,
+                                      filter: "brightness(0%)",
+                                    }}
+                                    animate={{
+                                      opacity: 1,
+                                      y: 0,
+                                      filter: "brightness(100%)",
+                                    }}
                                     transition={{
                                       type: "spring",
                                       damping: 20,
@@ -1041,8 +1164,11 @@ export const FormRecommendation = ({ onClose }) => {
                                     <input
                                       type="text"
                                       name="X"
-                                      value={form.socialMedia.X}
-                                      disabled={form.isFreelancer === true}
+                                      value={
+                                        form.socialMedia.find(
+                                          (social) => social.name === "X"
+                                        ).username
+                                      }
                                       placeholder="Username"
                                       autoComplete="new-password"
                                       spellCheck="disable"
@@ -1050,7 +1176,12 @@ export const FormRecommendation = ({ onClose }) => {
                                       className={style.input}
                                     />
                                     <label>X (rip Twitter)</label>
-                                    <p className={style.inputIcon}>
+                                    <p
+                                      className={style.inputIcon}
+                                      style={{
+                                        opacity: 0.25,
+                                      }}
+                                    >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
@@ -1068,20 +1199,35 @@ export const FormRecommendation = ({ onClose }) => {
                               <AnimatePresence mode={"popLayout"}>
                                 {socialMediaActive == "github" && (
                                   <motion.div
-                                    initial={{ opacity: 0, y: 50 }}
-                                    exit={{ opacity: 0, y: 50 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                    initial={{
+                                      opacity: 0,
+                                      y: 50,
+                                      filter: "brightness(0%)",
+                                    }}
+                                    exit={{
+                                      opacity: 0,
+                                      y: 50,
+                                      filter: "brightness(0%)",
+                                    }}
+                                    animate={{
+                                      opacity: 1,
+                                      y: 0,
+                                      filter: "brightness(100%)",
+                                    }}
                                     transition={{
                                       type: "spring",
                                       damping: 20,
-                                      stiffness: 250,
+                                      stiffness: 150,
                                     }}
                                   >
                                     <input
                                       type="text"
-                                      name="github"
-                                      value={form.socialMedia.github}
-                                      disabled={form.isFreelancer === true}
+                                      name="GitHub"
+                                      value={
+                                        form.socialMedia.find(
+                                          (social) => social.name === "GitHub"
+                                        ).username
+                                      }
                                       placeholder="Username"
                                       autoComplete="new-password"
                                       spellCheck="disable"
@@ -1089,7 +1235,12 @@ export const FormRecommendation = ({ onClose }) => {
                                       className={style.input}
                                     />
                                     <label>GitHub</label>
-                                    <p className={style.inputIcon}>
+                                    <p
+                                      className={style.inputIcon}
+                                      style={{
+                                        opacity: 0.25,
+                                      }}
+                                    >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="18"
@@ -1209,7 +1360,13 @@ export const FormRecommendation = ({ onClose }) => {
                                     useSocialPhotoActive(false);
                                   }}
                                 >
-                                  <svg
+                                  <motion.svg
+                                    animate={{ y: useSocialPhoto ? 4 : 0 }}
+                                    transition={{
+                                      type: "spring",
+                                      damping: 12,
+                                      stiffness: 300,
+                                    }}
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
                                     viewBox="0 0 24 24"
@@ -1221,7 +1378,7 @@ export const FormRecommendation = ({ onClose }) => {
                                       strokeLinejoin="round"
                                       d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
                                     />
-                                  </svg>
+                                  </motion.svg>
                                 </button>
                                 <AnimatePresence>
                                   {useSocialPhoto && (
@@ -1242,7 +1399,7 @@ export const FormRecommendation = ({ onClose }) => {
                                       onMouseLeave={() => {
                                         useSocialPhotoActive(false);
                                       }}
-                                      className={style.peme}
+                                      className={style.otherSocialOptions}
                                     >
                                       <button
                                         className={style.options}
@@ -1326,63 +1483,81 @@ export const FormRecommendation = ({ onClose }) => {
                 </AnimatePresence>
               </div>
             </motion.div>
+            {/*--------- Section5 -------- */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: steps !== 5 ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
+              className={style.section1}
+            >
+              <header className={style.section1Header}>
+                <p>First of all</p>
+                <h1>Thank you for the words!</h1>
+              </header>
+
+              <div className={style.section1Main}></div>
+            </motion.div>
           </motion.main>
 
           {/*--------- Step Indicator Dots and next/previous buttons -------- */}
 
-          <motion.button
-            initial={{ opacity: 0 }}
-            exit={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className={style.exitButton}
-            onClick={() => {
-              setExit(true);
-              setTimeout(() => {
-                onClose();
-              }, 500);
-            }}
-          >
-            <svg
-              width="25"
-              height="25"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+          {steps !== 5 && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              exit={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className={style.exitButton}
+              onClick={() => {
+                setExit(true);
+                setTimeout(() => {
+                  onClose();
+                }, 500);
+              }}
             >
-              <path
-                d="M18 6L6 18M6 6L18 18"
-                strokeWidth="2"
-                stroke="rgb(108, 108, 108)"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </motion.button>
+              <svg
+                width="25"
+                height="25"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6L6 18M6 6L18 18"
+                  strokeWidth="2"
+                  stroke="rgb(108, 108, 108)"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </motion.button>
+          )}
 
           <AnimatePresence>
-            <motion.div
-              animate={{
-                x: steps == 4 ? -18 : 0,
-              }}
-              transition={{ duration: 0.5 }}
-              className={style.dots}
-            >
-              <div className={steps === 1 ? style.theDot : style.dot}></div>
-              <div className={steps === 2 ? style.theDot : style.dot}></div>
-              <div className={steps === 3 ? style.theDot : style.dot}></div>
-              <AnimatePresence>
-                {steps == 4 && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className={steps === 4 && style.theDotAdditional}
-                  ></motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
+            {steps !== 5 && (
+              <motion.div
+                animate={{
+                  x: steps == 4 ? -18 : 0,
+                }}
+                transition={{ duration: 0.5 }}
+                className={style.dots}
+              >
+                <div className={steps === 1 ? style.theDot : style.dot}></div>
+                <div className={steps === 2 ? style.theDot : style.dot}></div>
+                <div className={steps === 3 ? style.theDot : style.dot}></div>
+                <AnimatePresence>
+                  {steps == 4 && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className={steps === 4 && style.theDotAdditional}
+                    ></motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
           </AnimatePresence>
 
           <AnimatePresence>
@@ -1452,61 +1627,64 @@ export const FormRecommendation = ({ onClose }) => {
           </AnimatePresence>
 
           <AnimatePresence>
-            {steps !== 1 && form.comment.length < 50 && steps !== 3 && (
-              <motion.button
-                initial={{ opacity: 0 }}
-                exit={{ opacity: 0 }}
-                animate={{
-                  opacity: 1,
-                  width: steps == 4 ? "110px" : "45px",
-                  height: steps == 4 ? "40px" : "45px",
-                  borderRadius: steps == 4 ? "10px" : "20px",
-                }}
-                transition={{ duration: 0.3 }}
-                className={style.nextButton}
-                onClick={handleButton}
-              >
-                {steps == 2 && (
-                  <motion.svg
-                    initial={{ opacity: 0, y: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    animate={{
-                      opacity: 1,
-                    }}
-                    transition={{ duration: 0.3 }}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="black"
-                    width="25"
-                    height="25"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                    />
-                  </motion.svg>
-                )}
-                {steps == 4 && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    exit={{ opacity: 0 }}
-                    animate={{
-                      opacity: 1,
-                    }}
-                    transition={{
-                      duration: 0.2,
-                      delay: steps == 3 ? 0.3 : 0.5,
-                    }}
-                    className={style.primaryButtonText}
-                  >
-                    Submit
-                  </motion.p>
-                )}
-              </motion.button>
-            )}
+            {steps !== 1 &&
+              form.comment.length < 50 &&
+              steps !== 3 &&
+              steps !== 5 && (
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  exit={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    width: steps == 4 ? "110px" : "45px",
+                    height: steps == 4 ? "40px" : "45px",
+                    borderRadius: steps == 4 ? "10px" : "20px",
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className={style.nextButton}
+                  onClick={handleButton}
+                >
+                  {steps == 2 && (
+                    <motion.svg
+                      initial={{ opacity: 0, y: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      animate={{
+                        opacity: 1,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="black"
+                      width="25"
+                      height="25"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                      />
+                    </motion.svg>
+                  )}
+                  {steps == 4 && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      exit={{ opacity: 0 }}
+                      animate={{
+                        opacity: 1,
+                      }}
+                      transition={{
+                        duration: 0.2,
+                        delay: steps == 3 ? 0.3 : 0.5,
+                      }}
+                      className={style.primaryButtonText}
+                    >
+                      Submit
+                    </motion.p>
+                  )}
+                </motion.button>
+              )}
           </AnimatePresence>
         </motion.div>
       </motion.div>

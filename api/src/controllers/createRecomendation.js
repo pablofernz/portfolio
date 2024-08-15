@@ -1,6 +1,13 @@
 const RecomendationSchema = require("../models/Recomendation")
+const cloudinary = require('cloudinary').v2;
+require("dotenv").config()
 
-const recomendationAdd = async ({ nameAndLastname, email, occupation, placeOfWork, socialMedia, image, message }) => {
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+const recomendationAdd = async ({ nameAndLastname, occupation, workData, socialMedia, image, comment }) => {
     const getDay = () => {
         const today = new Date();
         const day = String(today.getDate()).padStart(2, '0');
@@ -11,17 +18,38 @@ const recomendationAdd = async ({ nameAndLastname, email, occupation, placeOfWor
         const formattedDateTime = `${day}-${month}-${year} ${hours}:${minutes}`;
         return formattedDateTime
     }
+
     try {
-        const newRecomendation = new RecomendationSchema({ nameAndLastname, email, occupation, placeOfWork, socialMedia, message, image, date: getDay() });
+        let imageUrl = undefined;
+
+        if (image !== "") {
+            const result = await cloudinary.uploader.upload(image, {
+                folder: 'Portfolio user photos',
+                resource_type: 'image'
+            });
+            imageUrl = result.secure_url;
+        }
+
+        const newRecomendation = new RecomendationSchema({
+            nameAndLastname,
+            occupation,
+            workData,
+            socialMedia,
+            comment,
+            image: imageUrl,
+            date: getDay()
+        });
 
         const savedRecomendation = await newRecomendation.save();
 
-        console.log("Creado exitosamente");
-        return savedRecomendation;
+
+
+
+        return true;
 
     } catch (error) {
-        console.error("Error al crear", error);
-        throw error; // Lanza el error para que se maneje en la función llamante
+
+        return error.message;
     }
 };
 

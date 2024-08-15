@@ -72,6 +72,7 @@ const Landing = () => {
       ></motion.div> */}
 
       {/* <Navbar />
+      <Chatbox />
 
       <Section1 />
       <Section2 />
@@ -80,8 +81,6 @@ const Landing = () => {
       <Section5 />
 
       {test && <h1>Hola amigos</h1>}
-      <Chatbox />
-
     </div>
   );
 };

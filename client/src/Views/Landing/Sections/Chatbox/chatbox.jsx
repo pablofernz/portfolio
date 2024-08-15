@@ -9,7 +9,7 @@ const Chatbox = () => {
       <motion.div
         animate={{
           height: chatboxOpen ? "450px" : "50px",
-          width: chatboxOpen ? "350px" : "170px",
+          width: chatboxOpen ? "350px" : "140px",
         }}
         transition={{
           type: "spring",
@@ -61,7 +61,7 @@ const Chatbox = () => {
                   stiffness: 150,
                 }}
               >
-                {chatboxOpen ? "Chat" : "Hey, Let's Chat!"}
+                {chatboxOpen ? "Chat" : "Let's Chat!"}
               </motion.p>
             </AnimatePresence>
           </button>

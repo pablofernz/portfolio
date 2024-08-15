@@ -7,11 +7,10 @@ export const Card = ({
   id,
   nameAndLastname,
   occupation,
-  placeOfWork,
-  siteLink,
+  workData,
   socialMedia,
   image,
-  message,
+  comment,
   pinned,
   adminAccess,
   classname,
@@ -93,29 +92,43 @@ export const Card = ({
         </div>
         <div className={style.userData}>
           <div className={style.name}>{nameAndLastname}</div>
-          <div className={style.occupation}>{occupation}</div>
+          {occupation && <div className={style.occupation}>{occupation}</div>}
 
-          {placeOfWork == "Freelancer" ? (
+          {workData.placeOfWork == "Freelancer" && workData.placeOfWork && (
             <div className={style.placeOfWork}>
-              {siteLink == "" ? (
-                placeOfWork
+              {workData.siteLink == "" ? (
+                workData.placeOfWork
               ) : (
-                <a className={style.siteLink} href={siteLink} target="_blank">
-                  {placeOfWork}
+                <a
+                  className={style.siteLink}
+                  href={workData.siteLink}
+                  target="_blank"
+                >
+                  {workData.placeOfWork}
                 </a>
               )}
             </div>
-          ) : (
+          )}
+
+          {workData.placeOfWork !== "Freelancer" && workData.placeOfWork && (
             <div className={style.placeOfWork}>
-              In&nbsp;
-              <a className={style.siteLink} href={siteLink} target="_blank">
-                {placeOfWork}
-              </a>
+              At
+              {workData.siteLink !== "" ? (
+                <a
+                  className={style.siteLink}
+                  href={workData.siteLink}
+                  target="_blank"
+                >
+                  {workData.placeOfWork}
+                </a>
+              ) : (
+                <a>{workData.placeOfWork}</a>
+              )}
             </div>
           )}
         </div>
 
-        {/* <div className={style.userLink}>
+        <div className={style.userLink}>
           <div className={style.singleIconContainer}>
             <div
               className={`${style.iconsContainer} 
@@ -123,13 +136,14 @@ export const Card = ({
               ${socialMedia.length == 3 && style.length3}
               ${socialMedia.length == 4 && style.length4}`}
             >
-              {socialMedia.map((item) => {
+              {socialMedia.map((socialNetwork) => {
                 return (
                   <a
+                    key={socialNetwork._id}
                     href={
-                      item.name == "Linkedin"
-                        ? `https://linkedin.com/in/${item.username}`
-                        : `https://${item.name}.com/${item.username}`
+                      socialNetwork.name == "Linkedin"
+                        ? `https://linkedin.com/in/${socialNetwork.username}`
+                        : `https://${socialNetwork.name}.com/${socialNetwork.username}`
                     }
                     target="blank"
                     onMouseEnter={() => {
@@ -139,22 +153,28 @@ export const Card = ({
                       setTooltip(false);
                     }}
                   >
-                    {socialMediaData[item.name].icon}
+                    {socialMediaData[socialNetwork.name].icon}
                   </a>
                 );
               })}
-              <a
-                href={"https://github.com/pablofernz"}
-                target="blank"
-                onMouseEnter={() => {
-                  setTooltip(true);
-                }}
-                onMouseLeave={() => {
-                  setTooltip(false);
-                }}
-              >
-                {socialMediaData[socialMedia[0].name].icon}
-              </a>
+              {socialMedia[0] && (
+                <a
+                  href={
+                    socialMedia[0].name == "Linkedin"
+                      ? `https://linkedin.com/in/${socialMedia[0].username}`
+                      : `https://${socialMedia[0].name}.com/${socialMedia[0].username}`
+                  }
+                  target="blank"
+                  onMouseEnter={() => {
+                    setTooltip(true);
+                  }}
+                  onMouseLeave={() => {
+                    setTooltip(false);
+                  }}
+                >
+                  {socialMediaData[socialMedia[0].name].icon}
+                </a>
+              )}
             </div>
           </div>
 
@@ -174,11 +194,11 @@ export const Card = ({
           >
             Visit their profile
           </motion.div>
-        </div> */}
+        </div>
       </header>
       <main className={style.main}>
         <div className={style.msgContainer}>
-          <p className={style.msg}>"{message}"</p>
+          <p className={style.msg}>"{comment}"</p>
         </div>
       </main>
       {adminAccess ? (

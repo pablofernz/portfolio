@@ -4,27 +4,32 @@ const socialMediaSchema = mongoose.Schema({
     name: { type: String },
     username: { type: String }
 });
+const workDataSchema = mongoose.Schema({
+    placeOfWork: {
+        type: String, default: "", trim: true
+    },
+    siteLink: {
+        type: String, default: "", trim: true
+    }
+});
 
 const RecomendationSchema = mongoose.Schema({
     nameAndLastname: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
-    // email: {
-    //     type: String, required: true
-    // },
     occupation: {
         type: String,
-        required: true
+        default: ""
     },
-    placeOfWork: {
-        type: Object
-    },
+    workData: workDataSchema,
     socialMedia: [socialMediaSchema],
-    message: {
+    comment: {
         type: String,
         minlength: 50,
-        required: true
+        required: true,
+        trim: true
     },
     image: {
         type: String,
