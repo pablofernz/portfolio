@@ -1,11 +1,16 @@
-import { LOADED, SECTION, GET_RECOMMENDATIONS, ALERT_NEW_COMMENT } from "./actions";
+import { LOADED, SECTION, GET_RECOMMENDATIONS, ALERT_NEW_COMMENT, FORCE_UPDATE_COMMENTS, OPEN_THE_CHATBOX } from "./actions";
 
 let initialstate = {
+    admin: true,
     isLoading: true,
     isNavbarVisible: true,
     section: "home",
     recommendations: [],
-    newComment: false
+    updateComments: true,
+    newComment: false,
+    chatbox: {
+        isOpen: false
+    },
 };
 
 let reducer = (state = initialstate, action) => {
@@ -33,6 +38,24 @@ let reducer = (state = initialstate, action) => {
                 ...state,
                 newComment: !newComment
             }
+
+        case FORCE_UPDATE_COMMENTS:
+
+            return {
+                ...state,
+                updateComments: !state.updateComments
+            }
+
+        case OPEN_THE_CHATBOX:
+            console.log(action.payload)
+            return {
+                ...state,
+                chatbox: {
+                    isOpen: action.payload !== undefined ? action.payload : !state.chatbox.isOpen
+                }
+            }
+
+
         default:
             return { ...state }
 

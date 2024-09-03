@@ -68,7 +68,7 @@
 
 .theDot {
     height: 8px;
-    width: 8px;
+    width: 18px;
     border-radius: 2px;
 
     background-color: rgb(133, 133, 133);
@@ -78,9 +78,9 @@
 .theDotAdditional {
     position: absolute;
     height: 8px;
-    width: 8px;
+    width: 18px;
     border-radius: 2px;
-    transform: translateX(36px);
+    transform: translateX(42px);
     background-color: rgb(123, 255, 180);
     transition: all 0.5s ease;
 }
@@ -636,11 +636,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-direction: column;
     width: 100%;
-    padding-bottom: 15px;
-    background-color: blanchedalmond;
-
+    padding-bottom: 20px;
+    flex-direction: row;
 }
 
 
@@ -648,20 +646,17 @@
     height: 100%;
     width: 100%;
     display: flex;
-    align-items: start;
+    align-items: center;
     justify-content: center;
     flex-direction: column-reverse;
     gap: 10px;
     position: relative;
-    padding-bottom: 15px;
-    padding-top: 5px;
-    padding-left: 50px;
-    position: relative;
+    padding-bottom: 5px;
 
 }
 
 .formContainer2>.input {
-    width: 75%;
+    width: 80%;
     position: relative;
 }
 
@@ -673,6 +668,66 @@
     text-align: start;
     align-self: flex-start;
     transition: all 0.3s ease;
+    margin-left: 30px;
+
+}
+
+.pasteButtonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    width: 90px;
+    height: 50px;
+    margin-top: 23px;
+}
+
+.buttonsSvg {
+    height: 50px;
+    width: 600%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-left: 3px;
+    padding-right: 20px;
+    gap: 20px;
+}
+
+.pasteButton {
+    cursor: pointer;
+    width: 45px;
+    background: white;
+    height: 45px;
+    border-radius: 15px;
+    font-weight: 600;
+    border: none;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    transition: all 0.5s ease;
+    font-family: Basier Square;
+    font-size: 15px;
+    color: black;
+    font-weight: 600;
+    overflow: hidden;
+}
+
+.pasted {
+    animation: pasted 3s ease;
+}
+
+@keyframes pasted {
+    0% {
+        background-color: rgb(255, 255, 255);
+    }
+
+    10%, 90% {
+        margin-left: -42.3px;
+        background-color: rgb(123, 255, 180);
+    }
+
+    100% {
+        background-color: rgb(255, 255, 255);
+    }
 }
 
 
@@ -687,9 +742,8 @@
         width: 80%;
     }
 
-    .formContainer2 {
-        width: 60%;
-        background-color: blanchedalmond;
+    .formContainer2>label {
+        margin-left: 20px;
     }
 
 }
@@ -877,39 +931,6 @@
     font-family: Basier Square;
     font-size: 18px;
     color: black;
-}
-
-/* .primaryButton:hover {
-    background-color: rgb(123, 255, 180);
-} */
-
-.buttonsSvg {
-    height: 100%;
-    width: 200%;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    margin-left: -6px;
-}
-
-.pasted {
-    animation: pasted 3s ease;
-}
-
-@keyframes pasted {
-    0% {
-        background-color: rgb(255, 255, 255);
-    }
-
-    10%, 90% {
-        margin-left: -46px;
-        background-color: rgb(123, 255, 180);
-    }
-
-    100% {
-        background-color: rgb(255, 255, 255);
-    }
 }
 
 .formSpace3 {
@@ -1232,6 +1253,44 @@
 }
 
 /* --------- Section 4 Media Query --------------- */
+
+
+/* ---------- Section 5 ------------------------ */
+
+.section5 {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.section5Main {
+    height: 45%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.section5Footer {
+    width: 100%;
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.section5Footer>h1 {
+    margin: 0;
+    font-family: Basier Square;
+    font-weight: 900;
+    color: whitesmoke;
+    font-size: 25px;
+}
 
 
 /* ---------- Non Used ------------- */

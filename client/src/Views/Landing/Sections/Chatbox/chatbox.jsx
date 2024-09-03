@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import style from "./chatbox.module.css";
 import ReactDOM from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { useOutsideClick } from "../../../../Components/Hooks/clickOutside";
+import { useDispatch, useSelector } from "react-redux";
+import { openTheChatbox } from "../../../../Redux/actions";
 const Chatbox = () => {
-  const [chatboxOpen, setChatboxOpen] = useState(false);
+  const isChatboxOpen = useSelector((state) => state.chatbox.isOpen);
+  const chatbox = useRef(null);
+
+  const dispatch = useDispatch();
+
+  // useOutsideClick(chatbox, () => isChatboxOpen && dispatch(openTheChatbox(false)));
   return ReactDOM.createPortal(
     <div className={style.component}>
       <motion.div
         animate={{
-          height: chatboxOpen ? "450px" : "50px",
-          width: chatboxOpen ? "350px" : "140px",
+          height: isChatboxOpen ? "400px" : "35px",
+          width: isChatboxOpen ? "280px" : "125px",
         }}
         transition={{
           type: "spring",
@@ -17,14 +25,15 @@ const Chatbox = () => {
           stiffness: 150,
         }}
         className={style.chatboxComponent}
+        ref={chatbox}
       >
         <header className={style.header}>
           <button
             onClick={() => {
-              setChatboxOpen(!chatboxOpen);
+              dispatch(openTheChatbox());
             }}
           >
-            {!chatboxOpen && (
+            {!isChatboxOpen && (
               <motion.svg
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -37,8 +46,8 @@ const Chatbox = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                width="20px"
-                height="20px"
+                width="18px"
+                height="18px"
               >
                 <path
                   fillRule="evenodd"
@@ -50,8 +59,7 @@ const Chatbox = () => {
 
             <AnimatePresence mode="popLayout">
               <motion.p
-                
-                key={chatboxOpen ? "open" : "closed"}
+                key={isChatboxOpen ? "open" : "closed"}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -61,7 +69,7 @@ const Chatbox = () => {
                   stiffness: 150,
                 }}
               >
-                {chatboxOpen ? "Chat" : "Let's Chat!"}
+                {isChatboxOpen ? "Chat" : "Let's Chat!"}
               </motion.p>
             </AnimatePresence>
           </button>

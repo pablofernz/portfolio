@@ -3,10 +3,13 @@ import style from "./section4.module.css";
 import gsap from "gsap";
 import { motion } from "framer-motion";
 import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
+import { useDispatch } from "react-redux";
+import { openTheChatbox } from "../../../../Redux/actions";
 
 const Section4 = () => {
   const [mouseCords, setMouseCords] = useState({ x: 0, y: 0 });
   const width = useViewportWidth();
+  const dispatch = useDispatch();
 
   const handleMouseMove = (event) => {
     const x = event.clientX;
@@ -42,6 +45,9 @@ const Section4 = () => {
           <motion.button
             whileTap={{ scale: 0.95 }}
             className={style.sendMessageButton}
+            onClick={() => {
+              dispatch(openTheChatbox(true));
+            }}
           >
             <p className={style.buttonIcon}>
               <svg

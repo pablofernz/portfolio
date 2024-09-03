@@ -1,20 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import style from "./section5.module.css";
 import { AnimatePresence, motion } from "framer-motion";
 import { Card, CardSkeleton } from "./Card/card";
-import { fetchRecommendations } from "../../../../Redux/actions";
+import {
+  fetchRecommendations,
+  forceUpdateComments,
+} from "../../../../Redux/actions";
 import { FormComments } from "./formRecommendation/formComments";
 import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
+import { AdminModal } from "./adminModal/adminModal";
 const Section5 = () => {
   const vwWidth = useViewportWidth();
-  // Fetch recommendations/comments data and save them in a global state with redux
   const dispatch = useDispatch();
-
+  const updateSignal = useSelector((state) => state.updateComments);
   useEffect(() => {
     dispatch(fetchRecommendations());
-  }, [dispatch]);
+    if (updateSignal) {
+      setTimeout(() => {
+        dispatch(forceUpdateComments());
+      }, 500);
+    }
+  }, [dispatch, updateSignal]);
 
+  // Fetch recommendations/comments data and save them in a global state with redux
+  // Update the recommendations/comments when one has been deleted or created
   const recommendations = useSelector((state) => state.recommendations);
   // ----------------------------------------------------------
 
@@ -26,21 +36,22 @@ const Section5 = () => {
   });
   // ----------------------------------------------------------
 
-  // Local states
+  // Local and global states
+  const admin = useSelector((state) => state.admin);
   const [formOpen, setFormOpen] = useState(false);
-  const [adminAccess, setAdminAccess] = useState(false);
+  const [adminModalOpen, setAdminModalOpen] = useState(false);
   const [tooltipButton, setTooltipButton] = useState(false);
 
   // ----------------------------------------------------------
 
   // Logic to lock the scroll when the form is open
-  useEffect(() => {
-    if (formOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  }, [formOpen]);
+  // useEffect(() => {
+  //   if (formOpen || adminModalOpen) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "auto";
+  //   }
+  // }, [formOpen]);
   // ----------------------------------------------------------------
 
   // const [indexComments, setIndexComments] = useState(0);
@@ -65,6 +76,7 @@ const Section5 = () => {
     // }
     setCurrentStep(currentStep - 1);
   };
+
   return (
     <motion.section className={style.section5}>
       <AnimatePresence>
@@ -76,6 +88,19 @@ const Section5 = () => {
           />
         )}
       </AnimatePresence>
+
+      {admin && (
+        <AnimatePresence>
+          {adminModalOpen && (
+            <AdminModal
+              onClose={() => {
+                setAdminModalOpen(false);
+              }}
+              sortedRecommendations={sortedRecommendations}
+            />
+          )}
+        </AnimatePresence>
+      )}
       <div className={style.upper}>
         <div className={style.headerContainer}>
           <h2 className={style.title}>
@@ -99,69 +124,67 @@ const Section5 = () => {
       </div>
       <div className={style.medium}>
         <div className={style.main}>
-          {recommendations.length ? (
-            <motion.div className={style.cardContainer2}>
-              <motion.div
-                layout
-                animate={{
-                  y: -320 * currentStep,
-                }}
-                transition={{
-                  duration: 1,
-                  type: "spring",
-                  damping: 20,
-                  stiffness: 100,
-                }}
-                className={style.cardsTest}
-              >
-                {sortedRecommendations.map((rec) => (
-                  <Card
-                    id={rec._id}
-                    key={rec._id}
-                    image={rec.image}
-                    nameAndLastname={rec.nameAndLastname}
-                    occupation={rec.occupation}
-                    workData={rec.workData}
-                    socialMedia={rec.socialMedia.filter(
-                      (social) => social.username !== ""
-                    )}
-                    comment={rec.comment}
-                    pinned={rec.pinned}
-                    adminAccess={true}
-                  />
-                ))}
-              </motion.div>
-            </motion.div>
-          ) : (
-            <motion.div className={style.cardContainer2}>
-              <motion.div
-                layout
-                animate={{
-                  y: -320 * currentStep,
-                }}
-                transition={{
-                  duration: 1,
-                  type: "spring",
-                  damping: 20,
-                  stiffness: 100,
-                }}
-                className={style.cardsTest}
-              >
-                <CardSkeleton />
-                <CardSkeleton />
-                <CardSkeleton />
-                <CardSkeleton />
-                <CardSkeleton />
-                <CardSkeleton />
-              </motion.div>
-            </motion.div>
-          )}
-          {/* {steps !== 0 ||
-            (!recommendations.length && (
-              
-            ))} */}
           <AnimatePresence mode={"popLayout"}>
-            {recommendations.length && (
+            {recommendations.length ? (
+              <motion.div key="cards" className={style.cardContainer2}>
+                <motion.div
+                  animate={{
+                    y: -320 * currentStep,
+                  }}
+                  transition={{
+                    duration: 1,
+                    type: "spring",
+                    damping: 20,
+                    stiffness: 100,
+                  }}
+                  className={style.cardsTest}
+                >
+                  <AnimatePresence mode="popLayout">
+                    {sortedRecommendations.map((rec) => (
+                      <Card
+                        id={rec._id}
+                        key={rec._id}
+                        image={rec.image}
+                        nameAndLastname={rec.nameAndLastname}
+                        occupation={rec.occupation}
+                        workData={rec.workData}
+                        socialMedia={rec.socialMedia.filter(
+                          (social) => social.username !== ""
+                        )}
+                        comment={rec.comment}
+                        pinned={rec.pinned}
+                        admin={admin}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
+              </motion.div>
+            ) : (
+              <motion.div className={style.cardContainer2}>
+                <motion.div
+                  key="skeleton"
+                  layout
+                  animate={{
+                    y: -320 * currentStep,
+                  }}
+                  transition={{
+                    duration: 1,
+                    type: "spring",
+                    damping: 20,
+                    stiffness: 100,
+                  }}
+                  className={style.cardsTest}
+                >
+                  <CardSkeleton />
+                  <CardSkeleton />
+                  <CardSkeleton />
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence mode={"popLayout"}>
+            {recommendations.length > 3 && (
               <motion.div
                 initial={{ opacity: 0, x: 200 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -241,8 +264,15 @@ const Section5 = () => {
         >
           If we've worked together, your feedback would be greatly appreciated
         </motion.h3> */}
-        {adminAccess ? (
-          <button className={style.openModalButton}>Admin button</button>
+        {admin ? (
+          <button
+            className={style.openModalButton}
+            onClick={() => {
+              setAdminModalOpen(true);
+            }}
+          >
+            See all comments
+          </button>
         ) : (
           <button
             className={style.openModalButton}

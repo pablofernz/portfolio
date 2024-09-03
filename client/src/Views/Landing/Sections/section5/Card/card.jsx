@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import style from "./card.module.css";
-import { motion, useSpring } from "framer-motion";
-import { changePinnedValue } from "../../../../../Redux/actions";
+import { AnimatePresence, motion, useSpring } from "framer-motion";
+import {
+  changePinnedValue,
+  forceUpdateComments,
+} from "../../../../../Redux/actions";
+import axios from "axios";
+import { square } from "ldrs";
+import { useDispatch } from "react-redux";
+
+square.register();
 
 export const Card = ({
   id,
@@ -77,205 +85,330 @@ export const Card = ({
 
   const [tooltip, setTooltip] = useState(false);
   const [tooltipPin, setTooltipPin] = useState(false);
-
+  const dispatch = useDispatch();
   const [isPinned, setIsPinned] = useState(pinned);
   const pinHandler = () => {
     changePinnedValue(id);
     setIsPinned(!isPinned);
   };
+  useEffect(() => {
+    dispatch(forceUpdateComments());
+  }, [isPinned]);
+  const [deleteStatus, setDeleteStatus] = useState("Not deleted");
+  const deleteCardHandler = async () => {
+    setDeleteStatus("Deleting");
 
+    const response = await axios.delete(
+      `https://portfolio-back-production-9a9d.up.railway.app/recomendation/delete/${id}`
+      // `http://localhost:3001/recomendation/delete/${id}`
+    );
+    setDeleteStatus(response.data);
+    setTimeout(() => {
+      dispatch(forceUpdateComments());
+    }, 2000);
+  };
   return (
-    <div className={style.card}>
-      <header className={style.header}>
-        <div className={style.photoContainer}>
-          <img className={style.photo} src={image} alt="userPhoto" />
-        </div>
-        <div className={style.userData}>
-          <div className={style.name}>{nameAndLastname}</div>
-          {occupation && <div className={style.occupation}>{occupation}</div>}
-
-          {workData.placeOfWork == "Freelancer" && workData.placeOfWork && (
-            <div className={style.placeOfWork}>
-              {workData.siteLink == "" ? (
-                workData.placeOfWork
-              ) : (
-                <a
-                  className={style.siteLink}
-                  href={workData.siteLink}
-                  target="_blank"
+    <motion.div
+      layout
+      initial={{ opacity: 0, filter: "brightness(0%)" }}
+      animate={{ opacity: 1, filter: "brightness(100%)" }}
+      exit={{ opacity: 0, filter: "brightness(0%)" }}
+      transition={{
+        type: "spring",
+        damping: 20,
+        stiffness: 150,
+      }}
+      className={style.card}
+    >
+      <AnimatePresence mode="popLayout">
+        {deleteStatus == "Not deleted" && (
+          <motion.div
+            key="card"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              type: "spring",
+              damping: 20,
+              stiffness: 150,
+            }}
+            className={style.cardAux}
+          >
+            <header className={style.header}>
+              <div className={style.photoContainer}>
+                <img className={style.photo} src={image} alt="userPhoto" />
+              </div>
+              <div className={style.userData}>
+                {nameAndLastname.length >= 17 && (
+                  <>
+                    <div className={style.shadowLeft}></div>
+                    <div className={style.shadowRight}></div>
+                    <div className={style.shadowRight}></div>
+                    <div className={style.shadowRight}></div>
+                  </>
+                )}
+                <div className={style.name}>
+                  {nameAndLastname.length >= 17 ? (
+                    <div className={style.nameAux}>
+                      <div> {nameAndLastname}</div>
+                      <div> {nameAndLastname}</div>
+                    </div>
+                  ) : (
+                    nameAndLastname
+                  )}
+                </div>
+                <div
+                  style={{ opacity: occupation == "" && 0.6 }}
+                  className={style.occupation}
                 >
-                  {workData.placeOfWork}
-                </a>
-              )}
-            </div>
-          )}
+                  {occupation == "" ? "Job not shared" : occupation}
+                </div>
+                {workData.placeOfWork !== "Freelancer" &&
+                workData.placeOfWork ? (
+                  <div className={style.placeOfWork}>
+                    At
+                    {workData.siteLink !== "" ? (
+                      <a
+                        className={style.siteLink}
+                        href={workData.siteLink}
+                        target="_blank"
+                      >
+                        {workData.placeOfWork}
+                      </a>
+                    ) : (
+                      <a>{workData.placeOfWork}</a>
+                    )}
+                  </div>
+                ) : (
+                  <div className={style.placeOfWork}>
+                    {workData.placeOfWork == "" && workData.siteLink == "" ? (
+                      <a style={{ opacity: 0.6 }}>Unknown company</a>
+                    ) : (
+                      <a
+                        className={style.siteLink}
+                        href={workData.siteLink}
+                        target="_blank"
+                      >
+                        {workData.placeOfWork}
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
 
-          {workData.placeOfWork !== "Freelancer" && workData.placeOfWork && (
-            <div className={style.placeOfWork}>
-              At
-              {workData.siteLink !== "" ? (
-                <a
-                  className={style.siteLink}
-                  href={workData.siteLink}
-                  target="_blank"
-                >
-                  {workData.placeOfWork}
-                </a>
-              ) : (
-                <a>{workData.placeOfWork}</a>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div className={style.userLink}>
-          <div className={style.singleIconContainer}>
-            <div
-              className={`${style.iconsContainer} 
+              <div className={style.userLink}>
+                <div className={style.singleIconContainer}>
+                  <div
+                    className={`${style.iconsContainer} 
               ${socialMedia.length == 2 && style.length2}
               ${socialMedia.length == 3 && style.length3}
               ${socialMedia.length == 4 && style.length4}`}
-            >
-              {socialMedia.map((socialNetwork) => {
-                return (
-                  <a
-                    key={socialNetwork._id}
-                    href={
-                      socialNetwork.name == "Linkedin"
-                        ? `https://linkedin.com/in/${socialNetwork.username}`
-                        : `https://${socialNetwork.name}.com/${socialNetwork.username}`
-                    }
-                    target="blank"
-                    onMouseEnter={() => {
-                      setTooltip(true);
-                    }}
-                    onMouseLeave={() => {
-                      setTooltip(false);
-                    }}
                   >
-                    {socialMediaData[socialNetwork.name].icon}
-                  </a>
-                );
-              })}
-              {socialMedia[0] && (
-                <a
-                  href={
-                    socialMedia[0].name == "Linkedin"
-                      ? `https://linkedin.com/in/${socialMedia[0].username}`
-                      : `https://${socialMedia[0].name}.com/${socialMedia[0].username}`
-                  }
-                  target="blank"
-                  onMouseEnter={() => {
-                    setTooltip(true);
-                  }}
-                  onMouseLeave={() => {
-                    setTooltip(false);
-                  }}
-                >
-                  {socialMediaData[socialMedia[0].name].icon}
-                </a>
-              )}
-            </div>
-          </div>
+                    {socialMedia.map((socialNetwork) => {
+                      return (
+                        <a
+                          key={socialNetwork._id}
+                          href={
+                            socialNetwork.name == "Linkedin"
+                              ? `https://linkedin.com/in/${socialNetwork.username}`
+                              : `https://${socialNetwork.name}.com/${socialNetwork.username}`
+                          }
+                          target="blank"
+                          onMouseEnter={() => {
+                            setTooltip(true);
+                          }}
+                          onMouseLeave={() => {
+                            setTooltip(false);
+                          }}
+                        >
+                          {socialMediaData[socialNetwork.name].icon}
+                        </a>
+                      );
+                    })}
+                    {socialMedia[0] && (
+                      <a
+                        href={
+                          socialMedia[0].name == "Linkedin"
+                            ? `https://linkedin.com/in/${socialMedia[0].username}`
+                            : `https://${socialMedia[0].name}.com/${socialMedia[0].username}`
+                        }
+                        target="blank"
+                        onMouseEnter={() => {
+                          setTooltip(true);
+                        }}
+                        onMouseLeave={() => {
+                          setTooltip(false);
+                        }}
+                      >
+                        {socialMediaData[socialMedia[0].name].icon}
+                      </a>
+                    )}
+                  </div>
+                </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{
-              y: tooltip ? 0 : 10,
-              opacity: tooltip ? 1 : 0,
-            }}
-            transition={{
-              duration: 1,
-              type: "spring",
-              damping: 20,
-              stiffness: 100,
-            }}
-            className={style.tooltip}
-          >
-            Visit their profile
-          </motion.div>
-        </div>
-      </header>
-      <main className={style.main}>
-        <div className={style.msgContainer}>
-          <p className={style.msg}>"{comment}"</p>
-        </div>
-      </main>
-      {adminAccess ? (
-        <button
-          onClick={() => {
-            pinHandler();
-          }}
-          className={`${style.pin} ${isPinned && style.pinned}`}
-          style={{ cursor: "pointer" }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 16 16"
-          >
-            <path d="M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5c0 .68-.342 1.174-.646 1.479-.126.125-.25.224-.354.298v4.431l.078.048c.203.127.476.314.751.555C12.36 7.775 13 8.527 13 9.5a.5.5 0 0 1-.5.5h-4v4.5c0 .276-.224 1.5-.5 1.5s-.5-1.224-.5-1.5V10h-4a.5.5 0 0 1-.5-.5c0-.973.64-1.725 1.17-2.189A6 6 0 0 1 5 6.708V2.277a3 3 0 0 1-.354-.298C4.342 1.674 4 1.179 4 .5a.5.5 0 0 1 .146-.354" />
-          </svg>
-        </button>
-      ) : (
-        <div className={style.pinned}>
-          {pinned && (
-            <div className={style.pinnedTooltip}>
-              <p
-                onMouseEnter={() => {
-                  setTooltipPin(true);
-                }}
-                onMouseLeave={() => {
-                  setTooltipPin(false);
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill=" rgb(123, 255, 180)"
-                  viewBox="0 0 16 16"
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    y: tooltip ? 0 : 10,
+                    opacity: tooltip ? 1 : 0,
+                  }}
+                  transition={{
+                    duration: 1,
+                    type: "spring",
+                    damping: 20,
+                    stiffness: 100,
+                  }}
+                  className={style.tooltip}
                 >
-                  <path d="M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5c0 .68-.342 1.174-.646 1.479-.126.125-.25.224-.354.298v4.431l.078.048c.203.127.476.314.751.555C12.36 7.775 13 8.527 13 9.5a.5.5 0 0 1-.5.5h-4v4.5c0 .276-.224 1.5-.5 1.5s-.5-1.224-.5-1.5V10h-4a.5.5 0 0 1-.5-.5c0-.973.64-1.725 1.17-2.189A6 6 0 0 1 5 6.708V2.277a3 3 0 0 1-.354-.298C4.342 1.674 4 1.179 4 .5a.5.5 0 0 1 .146-.354" />
-                </svg>
-              </p>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{
-                  y: tooltipPin ? 0 : 10,
-                  opacity: tooltipPin ? 1 : 0,
-                }}
-                transition={{
-                  duration: 1,
-                  type: "spring",
-                  damping: 20,
-                  stiffness: 100,
-                }}
-                className={style.tooltipPin}
-              >
-                <p>
+                  Visit their profile
+                </motion.div>
+              </div>
+            </header>
+            <main className={style.main}>
+              <div className={style.msgContainer}>
+                <p className={style.msg}>"{comment}"</p>
+              </div>
+            </main>
+            {adminAccess ? (
+              <div>
+                <button
+                  onClick={() => {
+                    pinHandler();
+                  }}
+                  className={`${style.pin} ${isPinned && style.pinned}`}
+                  style={{ cursor: "pointer" }}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="18px"
-                    height="18px"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5c0 .68-.342 1.174-.646 1.479-.126.125-.25.224-.354.298v4.431l.078.048c.203.127.476.314.751.555C12.36 7.775 13 8.527 13 9.5a.5.5 0 0 1-.5.5h-4v4.5c0 .276-.224 1.5-.5 1.5s-.5-1.224-.5-1.5V10h-4a.5.5 0 0 1-.5-.5c0-.973.64-1.725 1.17-2.189A6 6 0 0 1 5 6.708V2.277a3 3 0 0 1-.354-.298C4.342 1.674 4 1.179 4 .5a.5.5 0 0 1 .146-.354" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => {
+                    deleteCardHandler();
+                  }}
+                  className={`${style.deleteButton}`}
+                  style={{ cursor: "pointer" }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
-                    style={{ marginTop: "4px" }}
+                    fill="rgba(150, 150, 150, 0.2)"
+                    width="23"
+                    height="23"
                   >
                     <path
-                      fill="black"
                       fillRule="evenodd"
-                      d="M4.536 5.778a5 5 0 0 1 7.07 0q.275.274.708.682q.432-.408.707-.682a5 5 0 0 1 7.125 7.016L13.02 19.92a1 1 0 0 1-1.414 0L4.48 12.795a5 5 0 0 1 .055-7.017z"
+                      d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z"
+                      clipRule="evenodd"
                     />
                   </svg>
-                </p>
-                <p>Pinned by Pablo</p>
-              </motion.div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+                </button>
+              </div>
+            ) : (
+              <div className={style.pinned}>
+                {pinned && (
+                  <div className={style.pinnedTooltip}>
+                    <p
+                      onMouseEnter={() => {
+                        setTooltipPin(true);
+                      }}
+                      onMouseLeave={() => {
+                        setTooltipPin(false);
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        fill=" rgb(123, 255, 180)"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5c0 .68-.342 1.174-.646 1.479-.126.125-.25.224-.354.298v4.431l.078.048c.203.127.476.314.751.555C12.36 7.775 13 8.527 13 9.5a.5.5 0 0 1-.5.5h-4v4.5c0 .276-.224 1.5-.5 1.5s-.5-1.224-.5-1.5V10h-4a.5.5 0 0 1-.5-.5c0-.973.64-1.725 1.17-2.189A6 6 0 0 1 5 6.708V2.277a3 3 0 0 1-.354-.298C4.342 1.674 4 1.179 4 .5a.5.5 0 0 1 .146-.354" />
+                      </svg>
+                    </p>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        y: tooltipPin ? 0 : 10,
+                        opacity: tooltipPin ? 1 : 0,
+                      }}
+                      transition={{
+                        duration: 1,
+                        type: "spring",
+                        damping: 20,
+                        stiffness: 100,
+                      }}
+                      className={style.tooltipPin}
+                    >
+                      <p>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="18px"
+                          height="18px"
+                          viewBox="0 0 24 24"
+                          style={{ marginTop: "4px" }}
+                        >
+                          <path
+                            fill="black"
+                            fillRule="evenodd"
+                            d="M4.536 5.778a5 5 0 0 1 7.07 0q.275.274.708.682q.432-.408.707-.682a5 5 0 0 1 7.125 7.016L13.02 19.92a1 1 0 0 1-1.414 0L4.48 12.795a5 5 0 0 1 .055-7.017z"
+                          />
+                        </svg>
+                      </p>
+                      <p>Pinned by Pablo</p>
+                    </motion.div>
+                  </div>
+                )}
+              </div>
+            )}
+          </motion.div>
+        )}
+        {deleteStatus == "Deleting" && (
+          <motion.div
+            key="deleting"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              type: "spring",
+              damping: 20,
+              stiffness: 150,
+            }}
+            className={style.cardAuxDeleted}
+          >
+            <l-square
+              size="70"
+              stroke="5"
+              stroke-length="0.25"
+              bg-opacity="0.04"
+              speed="1.2"
+              color="rgb(197, 197, 197)"
+            ></l-square>
+          </motion.div>
+        )}
+        {deleteStatus == "Deleted" && (
+          <motion.div
+            key="deleted"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              type: "spring",
+              damping: 20,
+              stiffness: 150,
+            }}
+            className={style.cardAuxDeleted}
+          >
+            <h1>Comment deleted</h1>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 export const CardSkeleton = () => {

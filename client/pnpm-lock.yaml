@@ -7,7 +7,10 @@ settings:
 dependencies:
   '@splinetool/react-spline':
     specifier: ^3.1.0
-    version: 3.1.0(@splinetool/runtime@1.5.7)(react-dom@18.2.0)(react@18.2.0)
+    version: 3.1.0(@splinetool/runtime@1.9.23)(react-dom@18.2.0)(react@18.2.0)
+  '@splinetool/runtime':
+    specifier: ^1.9.23
+    version: 1.9.23
   '@studio-freight/lenis':
     specifier: ^1.0.42
     version: 1.0.42
@@ -35,6 +38,9 @@ dependencies:
   jsonwebtoken:
     specifier: ^9.0.2
     version: 9.0.2
+  ldrs:
+    specifier: ^1.0.2
+    version: 1.0.2
   pnpm:
     specifier: ^8.8.0
     version: 8.8.0
@@ -2418,7 +2424,7 @@ packages:
       '@sinonjs/commons': 1.8.6
     dev: false
 
-  /@splinetool/react-spline@3.1.0(@splinetool/runtime@1.5.7)(react-dom@18.2.0)(react@18.2.0):
+  /@splinetool/react-spline@3.1.0(@splinetool/runtime@1.9.23)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-UGX0o5RUK+U8IkR795cb7+AuiG3EqmBfF3/SQlUqQtpb9EfSKUcNOF48xCKv+1Vb7j8KNVZ8H1lBQSL+I8ybmQ==}
     peerDependencies:
       '@splinetool/runtime': '*'
@@ -2429,7 +2435,7 @@ packages:
       next:
         optional: true
     dependencies:
-      '@splinetool/runtime': 1.5.7
+      '@splinetool/runtime': 1.9.23
       blurhash: 2.0.5
       lodash.debounce: 4.0.8
       react: 18.2.0
@@ -2438,8 +2444,8 @@ packages:
       thumbhash: 0.1.1
     dev: false
 
-  /@splinetool/runtime@1.5.7:
-    resolution: {integrity: sha512-CmtidjjOcA8DMiXXVcfRi+cNh5WmfO7CEz2RRJERmRgKm9cRfiBd4d/NtCMTmt8X4ODHpGt9RqzsrRJ4agsDAw==}
+  /@splinetool/runtime@1.9.23:
+    resolution: {integrity: sha512-1x2ZlK3k1iteVZKaWL6spqEnAVF4GYqf+dzsPP8YLjmivUlVYxoRxCmsxV2w1vGL53kLkkv0GVyVNJdIDAfxug==}
     dependencies:
       on-change: 4.0.2
       semver-compare: 1.0.0
@@ -7163,6 +7169,10 @@ packages:
     dependencies:
       picocolors: 1.0.0
       shell-quote: 1.8.1
+    dev: false
+
+  /ldrs@1.0.2:
+    resolution: {integrity: sha512-sYJmivdkIiHrUEqTrEWccBoLdaENpzbzkABI5rk8rRxTXrg9i2xVuDvUUuhOhJY3RmQyaoxs046pM1DCRdcIpg==}
     dev: false
 
   /leven@3.1.0:

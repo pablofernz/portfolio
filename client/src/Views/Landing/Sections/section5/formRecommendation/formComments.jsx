@@ -1,16 +1,21 @@
 import style from "./formComments.module.css";
 import ReactDOM from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import useViewportWidth from "../../../../../Components/Hooks/useViewportSize";
+import { square } from "ldrs";
 import { useDispatch } from "react-redux";
-import { alertNewComment } from "../../../../../Redux/actions";
+import { forceUpdateComments } from "../../../../../Redux/actions";
+
+square.register();
 
 export const FormComments = ({ onClose }) => {
+  const dispatch = useDispatch();
   const viewportWidth = useViewportWidth();
+
   const [exit, setExit] = useState(false);
-  const [steps, setSteps] = useState(5);
+  const [steps, setSteps] = useState(4);
 
   const [form, setForm] = useState({
     name: "",
@@ -51,7 +56,7 @@ export const FormComments = ({ onClose }) => {
   // This function detect when "escape" key is pressed and close the modal
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
+      if (steps !== 5 && event.key === "Escape") {
         setExit(true);
         setTimeout(() => {
           onClose();
@@ -63,7 +68,7 @@ export const FormComments = ({ onClose }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [steps]);
 
   // This function take the actual value of the inputs of section1 and save it at the form's local state, then will used to validate, render and send the data.
   const handleChangeSection1 = (event) => {
@@ -78,9 +83,12 @@ export const FormComments = ({ onClose }) => {
         [event.target.name]: "",
       });
     }
+
     setForm({
       ...form,
-      [event.target.name]: event.target.value,
+      [event.target.name]:
+        event.target.value.charAt(0).toUpperCase() +
+        event.target.value.slice(1).replace(/^\s+/, "").replace(/\s\s+/g, " "),
     });
   };
 
@@ -88,9 +96,12 @@ export const FormComments = ({ onClose }) => {
   const handleChangeSection2 = (event) => {
     setForm({
       ...form,
-      comment: event.target.value,
+      comment:
+        event.target.value.charAt(0).toUpperCase() +
+        event.target.value.slice(1).replace(/^\s+/, "").replace(/\s\s+/g, " "),
     });
   };
+
   // Still in progress :p
   const handleChangesection4 = (event) => {
     const { name, value } = event.target;
@@ -100,33 +111,36 @@ export const FormComments = ({ onClose }) => {
         ...prevForm,
         workData: {
           ...prevForm.workData,
-          [name]: value,
+          [event.target.name]:
+            event.target.name === "siteLink"
+              ? event.target.value.replace(/^\s+/, "").replace(/\s\s+/g, " ")
+              : event.target.value.charAt(0).toUpperCase() +
+                event.target.value
+                  .slice(1)
+                  .replace(/^\s+/, "")
+                  .replace(/\s\s+/g, " "),
         },
       }));
     } else {
       setForm((prevForm) => ({
         ...prevForm,
-        [name]: value,
+        [event.target.name]:
+          event.target.value.charAt(0).toUpperCase() +
+          event.target.value
+            .slice(1)
+            .replace(/^\s+/, "")
+            .replace(/\s\s+/g, " "),
       }));
     }
   };
 
-  // Sizes of the card for each step
-  const sectionsSizes = {
-    1: { width: "550px", height: "270px", position: "0%" },
-    2: { width: "520px", height: "350px", position: "-100%" },
-    3: { width: "550px", height: "270px", position: "-200%" },
-    4: { width: "550px", height: "520px", position: "-300%" },
-    5: { width: "450px", height: "250px", position: "-400%" },
-  };
-
-  const handleButton = () => {
-    if (steps == 2 || steps == 1) {
-      setSteps(steps >= 1 && steps + 1);
-    } else {
-      submitHandler();
-    }
-  };
+  // const handleButton = () => {
+  //   if (steps == 2 || steps == 1) {
+  //     setSteps(steps >= 1 && steps + 1);
+  //   } else {
+  //     submitHandler();
+  //   }
+  // };
   const handleCheckbox = () => {
     setForm({
       ...form,
@@ -155,7 +169,7 @@ export const FormComments = ({ onClose }) => {
     }
   };
 
-  const [sectionOpen, setSectionOpen] = useState(0);
+  const [sectionOpen, setSectionOpen] = useState(3);
   const handleSectionOpen = (section) => {
     if (sectionOpen == section) {
       setSectionOpen(0);
@@ -226,12 +240,17 @@ export const FormComments = ({ onClose }) => {
 
   const [socialMediaActive, setSocialMediaActive] = useState("linkedin");
   const handleSocialMedia = (event) => {
-    const { name, value } = event.target;
-
     setForm({
       ...form,
       socialMedia: form.socialMedia.map((social) =>
-        social.name === name ? { ...social, username: value } : social
+        social.name === event.target.name
+          ? {
+              ...social,
+              username: event.target.value
+                .replace(/^\s+/, "")
+                .replace(/\s\s+/g, " "),
+            }
+          : social
       ),
     });
   };
@@ -291,28 +310,108 @@ export const FormComments = ({ onClose }) => {
       }, 4000);
     }
   };
+
+  // const useInstagramPhoto = () => {
+  //   const instagramAccount = form.socialMedia.find(
+  //     (social) => social.name.toLowerCase() === "instagram"
+  //   );
+
+  //   if (instagramAccount && instagramAccount.username) {
+  //     axios
+  //       .get(
+  //         `http://localhost:3001/recomendation/profilephoto/instagram/${instagramAccount.username}`
+  //       )
+  //       .then((response) => {
+  //         setForm({ ...form, image: response.data });
+  //         // console.log(response.data)
+  //       })
+  //       .catch((error) => console.log(error));
+  //     // .catch((error) => {
+  //     //   setErrors({
+  //     //     ...errors,
+  //     //     image: {
+  //     //       instagram: {
+  //     //         message: "This is weird, user not found",
+  //     //       },
+  //     //     },
+  //     //   });
+  //     //   setTimeout(() => {
+  //     //     setErrors((prevErrors) => ({
+  //     //       ...prevErrors,
+  //     //       image: "",
+  //     //     }));
+  //     //   }, 4000);
+
+  //     //   // If its not found the github user, the value of username (and the input) is ""
+  //     //   setForm((prevForm) => ({
+  //     //     ...prevForm,
+  //     //     socialMedia: prevForm.socialMedia.map((social) =>
+  //     //       social.name.toLowerCase() === "instagram"
+  //     //         ? { ...social, username: "" }
+  //     //         : social
+  //     //     ),
+  //     //   }));
+  //     // });
+  //   } else {
+  //     setErrors({
+  //       ...errors,
+  //       image: {
+  //         instagram: {
+  //           message: "Please enter your Instagram username",
+  //         },
+  //       },
+  //     });
+  //     setTimeout(() => {
+  //       setErrors((prevErrors) => ({
+  //         ...prevErrors,
+  //         image: "",
+  //       }));
+  //     }, 4000);
+  //   }
+  // };
   const [useSocialPhoto, useSocialPhotoActive] = useState(false);
 
-  const dispatch = useDispatch();
+  const [response, setResponse] = useState(false);
   const submitHandler = async () => {
-    // try {
-    //   const response = await axios.post(
-    //     "https://portfolio-back-nnl5.onrender.com/recomendation/get",
-    //     form
-    //   );
-    //   if (response.data === true) {
-    //     setExit(true);
-    //     dispatch(alertNewComment());
-    //     setTimeout(() => {
-    //       onClose();
-    //     }, 500);
-    //   }
-    // } catch (error) {
-    //   console.log(form.image);
-    // }
     setSteps(5);
-  };
+    try {
+      const response = await axios.post(
+        "https://portfolio-back-production-9a9d.up.railway.app/recomendation/add",
+        form
+      );
+      if (response.data === true) {
+        setTimeout(() => {
+          setResponse(true);
 
+          setTimeout(() => {
+            setExit(true);
+
+            setTimeout(() => {
+              onClose();
+
+              setTimeout(() => {
+                dispatch(forceUpdateComments());
+              }, 1000);
+            }, 500);
+          }, 3000);
+        }, 2000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // Sizes of the card for each step
+  const sectionsSizes = {
+    1: { width: "550px", height: "270px", position: "0%" },
+    2: { width: "520px", height: "350px", position: "-100%" },
+    3: { width: "550px", height: "270px", position: "-200%" },
+    4: { width: "550px", height: "520px", position: "-300%" },
+    5: {
+      width: response === true ? "450px" : "200px",
+      height: response === true ? "250px" : "200px",
+      position: "-400%",
+    },
+  };
   useEffect(() => {
     if (steps !== 4) setSectionOpen(0);
   }, [steps]);
@@ -380,13 +479,13 @@ export const FormComments = ({ onClose }) => {
                     type="text"
                     name="name"
                     value={form.name}
-                    placeholder="Arnold"
+                    placeholder="John"
                     autoComplete="new-password"
                     spellCheck="disable"
                     onChange={handleChangeSection1}
                     className={errors.name ? style.error : style.input}
                   />
-                  <label>Name</label>
+                  <label>First name</label>
                 </div>
 
                 <div className={style.formContainer}>
@@ -409,7 +508,7 @@ export const FormComments = ({ onClose }) => {
                     type="text"
                     name="lastname"
                     value={form.lastname}
-                    placeholder="Schwarzenegger"
+                    placeholder="Doe"
                     autoComplete="new-password"
                     spellCheck="disable"
                     onChange={handleChangeSection1}
@@ -428,7 +527,7 @@ export const FormComments = ({ onClose }) => {
               className={style.section2}
             >
               <header className={style.section2Header}>
-                <p>Hi {form.name}!👋🏻</p>
+                <p>Hi {form.name.trim()}!👋🏻</p>
                 <h1>What would you like to share?</h1>
               </header>
               <div className={style.section2Main}>
@@ -607,7 +706,9 @@ export const FormComments = ({ onClose }) => {
                                     : style.checkboxText
                                 }
                               >
-                                I'm Freelancer
+                                {viewportWidth < 360
+                                  ? "Freelancer"
+                                  : " I'm Freelancer"}
                               </p>
                             </div>
 
@@ -615,10 +716,15 @@ export const FormComments = ({ onClose }) => {
                               type="text"
                               name="occupation"
                               value={form.occupation}
-                              placeholder="Job role/position"
+                              placeholder={
+                                viewportWidth < 390
+                                  ? "Job role"
+                                  : "Job role/position"
+                              }
                               autoComplete="new-password"
                               spellCheck="disable"
                               onChange={handleChangesection4}
+                              maxLength="20"
                               className={style.inputOccupation}
                             />
                             <label className={style.occupation}>
@@ -669,20 +775,33 @@ export const FormComments = ({ onClose }) => {
                               </div>
                             </label>
                           </div>
-                          <div className={style.formContainer}>
-                            <label
+                          <div
+                            className={style.formContainer}
+                            style={{ cursor: "default" }}
+                          >
+                            <div
                               style={{ opacity: 0 }}
                               className={style.checkboxContainer}
                             >
-                              <input
-                                type="checkbox"
-                                className={style.checkbox}
-                              />
-                              I am Freelancer
-                            </label>
+                              <label>
+                                <span></span>
+                              </label>
+                              <p
+                                className={
+                                  form.workData.placeOfWork == "Freelancer"
+                                    ? style.textChecked
+                                    : style.checkboxText
+                                }
+                              >
+                                {viewportWidth < 360
+                                  ? "Freelancer"
+                                  : " I'm Freelancer"}
+                              </p>
+                            </div>
                             <input
                               type="text"
                               name="placeOfWork"
+                              maxLength="20"
                               value={
                                 form.workData.placeOfWork == "Freelancer"
                                   ? ""
@@ -704,7 +823,11 @@ export const FormComments = ({ onClose }) => {
                                 style.disabled
                               }`}
                             />
-                            <label>Company/organization</label>
+                            <label>
+                              {viewportWidth > 430
+                                ? "Company/organization"
+                                : "Company/org."}
+                            </label>
                           </div>
                         </div>
                       </div>
@@ -805,11 +928,12 @@ export const FormComments = ({ onClose }) => {
                                 ? " Website/Portfolio"
                                 : "Company site"}
                             </label>
-
-                            {/* ----------Paste button-------- */}
+                          </div>
+                          {/* ----------Paste button-------- */}
+                          <div className={style.pasteButtonContainer}>
                             <button
                               title="Paste from your clipboard"
-                              className={style.primaryButton}
+                              className={style.pasteButton}
                               onClick={PasteButton}
                               disabled={pasted}
                             >
@@ -825,8 +949,8 @@ export const FormComments = ({ onClose }) => {
                                   viewBox="0 0 24 24"
                                   strokeWidth="1.5"
                                   stroke="currentColor"
-                                  width="25"
-                                  height="25"
+                                  width="26"
+                                  height="26"
                                 >
                                   <path
                                     strokeLinecap="round"
@@ -837,8 +961,8 @@ export const FormComments = ({ onClose }) => {
 
                                 <motion.svg
                                   style={{ cursor: "pointer" }}
-                                  width="25"
-                                  height="25"
+                                  width="26"
+                                  height="26"
                                   viewBox="0 0 24 24"
                                   fill="none"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -853,7 +977,6 @@ export const FormComments = ({ onClose }) => {
                                 </motion.svg>
                               </motion.p>
                             </button>
-                            {/* -------------------------------- */}
                           </div>
                         </div>
                       </div>
@@ -1336,7 +1459,13 @@ export const FormComments = ({ onClose }) => {
                                 <p style={{ fontSize: "15px", opacity: 0.5 }}>
                                   Max. file size: 10MB
                                 </p>
-                                <p>
+                                <p
+                                  style={{
+                                    textAlign: "center",
+                                    fontSize: viewportWidth < 400 && "15px",
+                                    width: "80%",
+                                  }}
+                                >
                                   Click to upload or drag and drop your photo
                                 </p>
                                 <svg
@@ -1488,50 +1617,108 @@ export const FormComments = ({ onClose }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: steps !== 5 ? 0 : 1 }}
               transition={{ duration: 0.2 }}
-              className={style.section1}
+              className={style.section5}
             >
-              <header className={style.section1Header}>
-                <p>First of all</p>
-                <h1>Thank you for the words!</h1>
-              </header>
-
-              <div className={style.section1Main}></div>
+              <div className={style.section5Main}>
+                <AnimatePresence mode={"popLayout"}>
+                  {response === false ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0 }}
+                      exit={{ opacity: 0, scale: 0, y: 20 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        type: "spring",
+                        duration: 2,
+                      }}
+                    >
+                      <l-square
+                        size="70"
+                        stroke="5"
+                        stroke-length="0.25"
+                        bg-opacity="0.04"
+                        speed="1.2"
+                        color="rgb(197, 197, 197)"
+                      ></l-square>
+                    </motion.div>
+                  ) : (
+                    <motion.svg
+                      initial={{ opacity: 0, scale: 0 }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        type: "spring",
+                        damping: 15,
+                        stiffness: 200,
+                      }}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="rgb(123, 255, 180)"
+                      width="120"
+                      height="120"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                        clipRule="evenodd"
+                      />
+                    </motion.svg>
+                  )}
+                </AnimatePresence>
+              </div>
+              <AnimatePresence mode={"popLayout"}>
+                {response === true && (
+                  <motion.footer
+                    initial={{ opacity: 0, scale: 0 }}
+                    exit={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                      type: "spring",
+                      damping: 15,
+                      stiffness: 200,
+                    }}
+                    className={style.section5Footer}
+                  >
+                    <h1>Thank you for the words!</h1>
+                  </motion.footer>
+                )}
+              </AnimatePresence>
             </motion.div>
           </motion.main>
 
           {/*--------- Step Indicator Dots and next/previous buttons -------- */}
-
-          {steps !== 5 && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              exit={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className={style.exitButton}
-              onClick={() => {
-                setExit(true);
-                setTimeout(() => {
-                  onClose();
-                }, 500);
-              }}
-            >
-              <svg
-                width="25"
-                height="25"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+          <AnimatePresence>
+            {steps !== 5 && (
+              <motion.button
+                initial={{ opacity: 0 }}
+                exit={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className={style.exitButton}
+                onClick={() => {
+                  setExit(true);
+                  setTimeout(() => {
+                    onClose();
+                  }, 500);
+                }}
               >
-                <path
-                  d="M18 6L6 18M6 6L18 18"
-                  strokeWidth="2"
-                  stroke="rgb(108, 108, 108)"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </motion.button>
-          )}
+                <svg
+                  width="25"
+                  height="25"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18 6L6 18M6 6L18 18"
+                    strokeWidth="2"
+                    stroke="rgb(108, 108, 108)"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </motion.button>
+            )}
+          </AnimatePresence>
 
           <AnimatePresence>
             {steps !== 5 && (
@@ -1561,7 +1748,7 @@ export const FormComments = ({ onClose }) => {
           </AnimatePresence>
 
           <AnimatePresence>
-            {steps !== 1 && (
+            {steps !== 1 && steps !== 5 && (
               <motion.button
                 initial={{ opacity: 0 }}
                 exit={{ opacity: 0 }}
@@ -1594,8 +1781,8 @@ export const FormComments = ({ onClose }) => {
           <AnimatePresence>
             {!errors.name &&
               !errors.lastname &&
-              form.name &&
-              form.lastname &&
+              form.name.trim() !== "" &&
+              form.lastname.trim() !== "" &&
               steps == 1 && (
                 <motion.button
                   initial={{ opacity: 0 }}
@@ -1628,7 +1815,7 @@ export const FormComments = ({ onClose }) => {
 
           <AnimatePresence>
             {steps !== 1 &&
-              form.comment.length < 50 &&
+              form.comment.length >= 50 &&
               steps !== 3 &&
               steps !== 5 && (
                 <motion.button
@@ -1642,7 +1829,11 @@ export const FormComments = ({ onClose }) => {
                   }}
                   transition={{ duration: 0.3 }}
                   className={style.nextButton}
-                  onClick={handleButton}
+                  onClick={() => {
+                    steps == 2 || steps == 1
+                      ? setSteps(steps >= 1 && steps + 1)
+                      : submitHandler();
+                  }}
                 >
                   {steps == 2 && (
                     <motion.svg

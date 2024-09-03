@@ -13,6 +13,7 @@ import Section3 from "./Sections/section3/section3";
 import Section4 from "./Sections/section4/section4";
 import Section5 from "./Sections/section5/section5";
 import Chatbox from "./Sections/Chatbox/chatbox";
+import Footer from "./Sections/Footer/footer";
 
 const Landing = () => {
   const width = useViewportWidth();
@@ -71,16 +72,18 @@ const Landing = () => {
         className={style.topScrollIndicator }
       ></motion.div> */}
 
-      {/* <Navbar />
-      <Chatbox />
-
+      {/* <Chatbox />
+      <Navbar />
       <Section1 />
+
       <Section2 />
       <Section3 />
-      <Section4 /> */}
-      <Section5 />
+     
+      <Section4 />
+      <Section5 /> */}
 
       {test && <h1>Hola amigos</h1>}
+      <Footer />
     </div>
   );
 };

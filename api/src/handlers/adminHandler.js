@@ -2,8 +2,6 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config()
 const { Resend } = require("resend")
 const Recomendation = require("../models/Recomendation")
-
-
 const secret = process.env.SECRET
 const resendApiKey = process.env.RESEND_APIKEY
 

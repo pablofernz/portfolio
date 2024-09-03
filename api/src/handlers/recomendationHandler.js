@@ -1,10 +1,18 @@
 const { Resend } = require("resend")
-require("dotenv").config()
+// // require("dotenv").config()
 const RecomendationSchema = require("../models/Recomendation")
 const recomendationAdd = require("../controllers/createRecomendation")
 const resendApiKey = process.env.RESEND_APIKEY
 const Recomendation = require("../models/Recomendation")
 
+const cloudinary = require('cloudinary').v2;
+require("dotenv").config()
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // const resendCode = {
 //     const resend = new Resend(resendApiKey)
@@ -27,12 +35,20 @@ const Recomendation = require("../models/Recomendation")
 const createRecomendation = async (req, res) => {
     const { name, lastname, occupation, workData, comment, socialMedia, image } = req.body
 
+    let imageUrl = image.length < 1368 ? image : undefined
 
-    // if (comment.length < 50) {
-    //     return res.status(400).send("The message must be at least 50 characters long")
-    // }
+    if (image !== "" && image.length > 1368) {
+        const result = await cloudinary.uploader.upload(image, {
+            folder: 'Portfolio user photos',
+            resource_type: 'image'
+        });
+        imageUrl = result.secure_url;
+    }
+    if (comment.length < 50) {
+        return res.status(400).send("The message must be at least 50 characters long")
+    }
     const nameAndLastname = name + " " + lastname
-    const newRecommendation = await recomendationAdd({ nameAndLastname, occupation, workData, comment, socialMedia, image })
+    const newRecommendation = await recomendationAdd({ nameAndLastname, occupation, workData, comment, socialMedia, image: imageUrl })
 
 
     // -----------SEND EMAIL------------------------
@@ -51,7 +67,7 @@ const createRecomendation = async (req, res) => {
     //         return res.status(400).json({ error });
     //     }
 
-    return res.status(200).json(newRecommendation)
+    return res.status(201).json(newRecommendation)
 }
 
 
@@ -68,12 +84,33 @@ const deleteRecomendation = async (req, res) => {
 
     const { id } = req.params
     try {
-        await Recomendation.deleteOne({ _id: id })
-        return res.status(200).send("Recomendation deleted")
 
+        const existingUser = await Recomendation.findOne({ _id: id })
+
+        if (!existingUser) return res.status(404).send("User not found")
+
+        const getPublicIdFromUrl = (url) => {
+            const parts = url.split("/");
+            const fileName = parts[parts.length - 1]; // obtener el nombre del archivo con extensión
+            const publicId = fileName.split(".")[0]; // remover la extensión para obtener el public_id
+            return publicId;
+        };
+        const publicAux = getPublicIdFromUrl(existingUser.image)
+        const publicID = "Portfolio user photos/" + publicAux
+
+        cloudinary.uploader.destroy(publicID, (error, result) => {
+            if (error) {
+                console.error('Error al borrar la imagen:', error);
+            }
+        });
+
+        await Recomendation.deleteOne({ _id: id })
+        return res.status(200).send("Deleted")
     } catch (error) {
         return res.status(400).json(error.message)
     }
 }
+
+
 
 module.exports = { createRecomendation, getRecomendations, deleteRecomendation }

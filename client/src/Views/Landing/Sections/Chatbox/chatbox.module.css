@@ -4,31 +4,29 @@
     height: 60px;
     width: 100vw;
     background-color: red;
-    z-index: 300;
+    z-index: 3;
     margin-bottom: -100%;
 }
 
 .chatboxComponent {
-    /*     
-    height: 450px;
-    width: 350px; */
-    height: 50px;
-    width: 170px;
+    
     position: fixed;
     bottom: 0;
     right: 0;
     background-color: rgba(34, 34, 34, 0.904);
     backdrop-filter: blur(20px);
     margin: 10px;
-    border-radius: 15px;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;}
+    border-radius: 10px;
+    outline: 1px solid rgb(52, 52, 52);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
 
 .header {
     width: 100%;
-    height: 50px;
+    height: 35px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 0px;
     justify-content: center;
 }
 
@@ -43,7 +41,7 @@
     justify-content: center;
     font-family: Basier Square;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 12px;
     color: whitesmoke;
     cursor: pointer;
 }

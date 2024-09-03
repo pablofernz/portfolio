@@ -9,11 +9,103 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    transform: scale(0.9);box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    user-select: none;
+    transform: scale(0.9);
 }
 
 .card ::selection {
     background-color: rgb(217, 217, 217);
+}
+
+.cardAux {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.cardAuxDeleted {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cardAuxDeleted>h1 {
+    font-family: "Basier Square", sans-serif;
+    font-weight: 900;
+    color: rgb(249, 248, 251);
+    font-size: 20px;
+}
+
+.cardAuxDeleted>button {
+    cursor: pointer;
+    width: 90px;
+    background: white;
+    height: 35px;
+    border-radius: 10px;
+    font-weight: 900;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s ease;
+    font-family: Basier Square;
+    font-size: 18px;
+    color: black;
+    font-weight: 600;
+    overflow: hidden;
+}
+
+.progressBarContainer {
+    opacity: 0.5;
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 15px;
+    height: 5px;
+    width: 100px;
+    background-color: rgb(39, 39, 39);
+    border-radius: 20px;
+    overflow: hidden;
+    animation: progressBarContainer 10s ease-in-out;
+    opacity: 0;
+}
+
+@keyframes progressBarContainer {
+    0%, 100% {
+        opacity: 0;
+    }
+
+    10%, 90% {
+        opacity: 0.5;
+
+    }
+}
+
+.progressBarContainer::after {
+    content: " ";
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    background-color: rgb(207, 207, 207);
+    animation: progressBar 10s linear;
+}
+
+@keyframes progressBar {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0%);
+
+    }
 }
 
 @media (max-width: 500px) {
@@ -46,7 +138,18 @@
     right: 0;
     transition: all 0.2s ease-in-out;
     fill: rgba(150, 150, 150, 0.2);
+}
 
+.deleteButton {
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 10px;
+    margin-right: 40px;
+    right: 0;
+    transition: all 0.2s ease-in-out;
+    fill: rgba(150, 150, 150, 0.2);
 }
 
 .pinned {
@@ -129,6 +232,8 @@
     width: 50px;
     border-radius: 9999px;
     object-fit: cover;
+    user-select: none;
+    pointer-events: none;
 }
 
 .userData {
@@ -137,24 +242,73 @@
     border-radius: 10px;
     padding-left: 10px;
     justify-content: center;
-    align-items: center;
+    align-items: start;
     display: flex;
     flex-direction: column;
+    position: relative;
+    user-select: none;
+
+}
+
+.shadowLeft {
+    position: absolute;
+    top: 0;
+    height: 30px;
+    width: 10px;
+    margin-left: 8px !important;
+    left: 0%;
+    z-index: 5;
+    background-image: linear-gradient(to right, rgb(25, 25, 25), transparent);
+}
+
+.shadowRight {
+    position: absolute;
+    top: 0;
+    height: 30px;
+    height: 100%;
+    width: 10px;
+    margin-right: 15px;
+    right: 0%;
+    z-index: 5;
+    background-image: linear-gradient(to left, rgb(25, 25, 25), transparent);
 }
 
 .name {
-    width: 100%;
-    height: 34%;
+    width: 90%;
+    height: auto;
     font-family: "Basier Square", sans-serif;
     font-weight: 900;
     color: rgb(249, 248, 251);
     font-size: 20px;
-    display: flex;
+    -webkit-box-orient: horizontal;
+    word-break: break-word;
+    white-space: nowrap;
+    display: -webkit-box;
     align-items: center;
+    overflow: hidden;
+}
+
+.nameAux {
+    height: 100%;
+    width: auto;
+    display: flex;
+    gap: 50px;
+    animation: slideText 9s ease-in-out 2s infinite;
+}
+
+@keyframes slideText {
+    0%, 15% {
+        transform: translateX(0%);
+    }
+
+    85%, 100% {
+        transform: translateX(calc(-50% - 25px));
+
+    }
 }
 
 .occupation {
-    width: 100%;
+    width: 90%;
     height: 33%;
     font-family: "Basier Square", sans-serif;
     font-weight: 600;
@@ -162,10 +316,15 @@
     font-size: 15px;
     display: flex;
     align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    word-break: word;
+    text-overflow: ellipsis;
+
 }
 
 .placeOfWork {
-    width: 100%;
+    width: 90%;
     height: 25%;
     font-family: "Basier Square", sans-serif;
     font-weight: 600;
@@ -174,6 +333,10 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    word-break: word;
+    text-overflow: ellipsis;
 }
 
 .siteLink {
@@ -331,8 +494,9 @@
     height: calc(100% - 10px);
     width: calc(100% - 10px);
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: center;
+    padding-top: 20px;
 }
 
 .msg {
@@ -340,9 +504,10 @@
     margin: 0;
     width: calc(100% - 10px);
     font-family: "arial", sans-serif;
-    font-weight: 500;
-    color: rgb(183, 183, 183);
+    font-weight: 400;
+    color: rgba(183, 183, 183, 0.811);
     font-size: 18px;
     line-height: 25px;
     word-wrap: break-word;
+
 }
