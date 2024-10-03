@@ -1,24 +1,28 @@
 import style from "./Landing.module.css";
-import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useRef, useState, Suspense, lazy } from "react";
+import { useSelector } from "react-redux";
 import Lenis from "@studio-freight/lenis";
 import useViewportWidth from "../../Components/Hooks/useViewportSize";
 import { Animation } from "../../Components/LoadingPage/loadingPage";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useScroll } from "framer-motion";
 import Navbar from "./Sections/Navbar/navbar";
+import { Metrics } from "../../Components/Hooks/metrics";
 
-import Section1 from "./Sections/section1/section1";
-import Section2 from "./Sections/section2/section2";
-import Section3 from "./Sections/section3/section3";
-import Section4 from "./Sections/section4/section4";
-import Section5 from "./Sections/section5/section5";
-import Chatbox from "./Sections/Chatbox/chatbox";
-import Footer from "./Sections/Footer/footer";
+const Section1 = lazy(() => import("./Sections/section1/section1"));
+const Section2 = lazy(() => import("./Sections/section2/section2"));
+const Section3 = lazy(() => import("./Sections/section3/section3"));
+const Section4 = lazy(() => import("./Sections/section4/section4"));
+const Section5 = lazy(() => import("./Sections/section5/section5"));
+const Footer = lazy(() => import("./Sections/Footer/footer"));
+
+// import Chatbox from "./Sections/Chatbox/chatbox";
 
 const Landing = () => {
   const width = useViewportWidth();
   const isLoading = useSelector((state) => state.isLoading);
+  const sectionLoader = useSelector((state) => state.sectionLoaded);
 
+  const modalsOpen = useSelector((state) => state.modalOpen);
   useEffect(() => {
     const lenis = new Lenis({
       duration: 2,
@@ -37,10 +41,13 @@ const Landing = () => {
 
     requestAnimationFrame(raf);
 
+    if (modalsOpen) {
+      lenis.stop();
+    }
     return () => {
       lenis.destroy();
     };
-  }, []);
+  }, [modalsOpen]);
 
   const targetRef = useRef(null);
 
@@ -57,6 +64,9 @@ const Landing = () => {
       setTest(false);
     });
   });
+
+  Metrics();
+
   return (
     <div className={style.background}>
       <div className={style.test}></div>
@@ -72,18 +82,35 @@ const Landing = () => {
         className={style.topScrollIndicator }
       ></motion.div> */}
 
-      {/* <Chatbox />
+      {/* <Section1 />
       <Navbar />
-      <Section1 />
+      <Section2 /> */}
 
-      <Section2 />
-      <Section3 />
-     
-      <Section4 />
-      <Section5 /> */}
+      {sectionLoader.section3 && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <Section3 />
+        </Suspense>
+      )}
+      {sectionLoader.section4 && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <Section4 />
+        </Suspense>
+      )}
+      {sectionLoader.section5 && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <Section5 />
+        </Suspense>
+      )}
+      {sectionLoader.footer && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <Footer />
+        </Suspense>
+      )}
+
+      {/* <Chatbox />
+       */}
 
       {test && <h1>Hola amigos</h1>}
-      <Footer />
     </div>
   );
 };

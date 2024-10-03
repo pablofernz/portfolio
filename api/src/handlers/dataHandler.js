@@ -27,4 +27,5 @@ const getEmail = async (req, res) => {
     }
 }
 
+
 module.exports = getEmail

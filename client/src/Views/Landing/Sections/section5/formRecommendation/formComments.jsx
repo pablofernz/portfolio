@@ -1880,6 +1880,6 @@ export const FormComments = ({ onClose }) => {
         </motion.div>
       </motion.div>
     </AnimatePresence>,
-    document.getElementById("formRecommendationModal")
+    document.getElementById("modal")
   );
 };

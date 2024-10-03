@@ -44,14 +44,6 @@ const Section5 = () => {
 
   // ----------------------------------------------------------
 
-  // Logic to lock the scroll when the form is open
-  // useEffect(() => {
-  //   if (formOpen || adminModalOpen) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "auto";
-  //   }
-  // }, [formOpen]);
   // ----------------------------------------------------------------
 
   // const [indexComments, setIndexComments] = useState(0);

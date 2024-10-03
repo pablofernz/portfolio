@@ -1,12 +1,11 @@
 import Spline from "@splinetool/react-spline";
 import style from "./section1.module.css";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useDispatch } from "react-redux";
-import { setLoaded, setSection } from "../../../../Redux/actions";
+import { setLoaded } from "../../../../Redux/actions";
 import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
-import cv from "../../../../assets/cv.pdf";
-const Section1 = () => {
+const Section1 = ({ setLoading }) => {
   const width = useViewportWidth();
   const dispatch = useDispatch();
 
@@ -66,18 +65,18 @@ const Section1 = () => {
               <div className={style.text3Container}>
                 {width > 1100 && (
                   <h3 className={style.headerText3}>
-                    Specializing in creating visually appealing and intuitive
-                    designs, I ensure every project is eye-catching on the
-                    front-end and rock-solid on the back-end. Let's join forces
-                    to develop designs that stand out and deliver results.
+                    I create projects that are visually appealing and work
+                    seamlessly behind the scenes. Let’s work together to create
+                    something that stands out.
                   </h3>
                 )}
                 {width < 1100 && width > 800 && (
                   <h3 className={style.headerText3}>
                     Specializing in visually captivating and user-friendly
                     designs, I ensure every project shines on the front-end and
-                    operates seamlessly on the back-end. Let's collaborate to
-                    create something that achieves impactful results together.
+                    operates seamlessly on the back&#8209;end. Let's collaborate
+                    to create something that achieves impactful results
+                    together.
                   </h3>
                 )}
                 {width < 800 && (
@@ -91,7 +90,12 @@ const Section1 = () => {
               </div>
 
               <div className={style.buttonContainer}>
-                <button className={style.button}>
+                <button
+                  onClick={() => {
+                    setLoading(true);
+                  }}
+                  className={style.button}
+                >
                   See my works
                   <p
                     style={{

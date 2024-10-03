@@ -16,8 +16,8 @@ const Chatbox = () => {
     <div className={style.component}>
       <motion.div
         animate={{
-          height: isChatboxOpen ? "400px" : "35px",
-          width: isChatboxOpen ? "280px" : "125px",
+          height: isChatboxOpen ? "500px" : "50px",
+          width: isChatboxOpen ? "300px" : "150px",
         }}
         transition={{
           type: "spring",

@@ -5,6 +5,7 @@ const Recomendation = require("../models/Recomendation")
 const secret = process.env.SECRET
 const resendApiKey = process.env.RESEND_APIKEY
 
+
 const createJWT = async (req, res) => {
 
     const token = jwt.sign(
@@ -78,4 +79,7 @@ const pinRecommendation = async (req, res) => {
 //     "pinned": true,
 //     "date": "03-07-2024 22:07"
 //   }
-module.exports = { createJWT, pinRecommendation }
+
+module.exports = {
+    createJWT, pinRecommendation
+}

@@ -11,19 +11,11 @@ const Section1Footer = () => {
     offset: ["start end", "center start"],
   });
   const opacity = useTransform(scrollYProgress, [0, 0.9], [1, 0]);
-  const auxCarouselWidth = 600 * 2;
 
   return (
     <motion.footer style={{ opacity }} ref={targetRef} className={style.footer}>
       <motion.div
-        animate={{
-          x: ["0px", `-${auxCarouselWidth}px`],
-        }}
-        transition={{
-          duration: 30,
-          ease: "linear",
-          repeat: Infinity,
-        }}
+        //
         className={style.carousel}
       >
         <div className={style.auxCarousel}>

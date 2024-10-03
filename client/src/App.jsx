@@ -1,11 +1,10 @@
-import React from "react";
+import React, { lazy } from "react";
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
-import NotFound from "./Views/404 Not Found/404";
-import Landing from "./Views/Landing/Landing";
-
+// import Landing from "./Views/Landing/Landing";
+const NotFound = lazy(() => import("./Views/404 Not Found/404"));
+const Landing = lazy(() => import("./Views/Landing/Landing"));
 function App() {
-
   return (
     <div className="App">
       <Routes>

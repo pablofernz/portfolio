@@ -12,13 +12,13 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const [prevScrollPos, setPrevScrollPos] = useState(0);
-  // const [visible, setVisible] = useState(true);
-  const visible = useSelector((state) => state.isNavbarVisible);
+  const [visible, setVisible] = useState(true);
+  // const visible = useSelector((state) => state.isNavbarVisible);
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
-
-      dispatch(setVisibleNavbar(prevScrollPos > currentScrollPos));
+      setVisible(prevScrollPos > currentScrollPos)
+      // dispatch(setVisibleNavbar(prevScrollPos > currentScrollPos));
       setPrevScrollPos(currentScrollPos);
     };
 
@@ -36,7 +36,7 @@ const Navbar = () => {
           animate={{ y: !visible ? "-100px" : "0px" }}
           transition={{
             type: "spring",
-            damping: 20,
+            damping: 15,
             stiffness: 150,
           }}
           className={style.navBarContainer}

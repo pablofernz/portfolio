@@ -1,6 +1,7 @@
-import { LOADED, SECTION, GET_RECOMMENDATIONS, ALERT_NEW_COMMENT, FORCE_UPDATE_COMMENTS, OPEN_THE_CHATBOX } from "./actions";
+import { LOADED, SECTION, GET_RECOMMENDATIONS, ALERT_NEW_COMMENT, FORCE_UPDATE_COMMENTS, OPEN_THE_CHATBOX, MODALS_STATES } from "./actions";
 
 let initialstate = {
+    sectionLoaded: { section1: true, section2: true, section3: false, section4: true, section5: false, footer: false },
     admin: true,
     isLoading: true,
     isNavbarVisible: true,
@@ -11,6 +12,9 @@ let initialstate = {
     chatbox: {
         isOpen: false
     },
+    modalOpen: false,
+
+    projectsData: []
 };
 
 let reducer = (state = initialstate, action) => {
@@ -47,12 +51,18 @@ let reducer = (state = initialstate, action) => {
             }
 
         case OPEN_THE_CHATBOX:
-            console.log(action.payload)
             return {
                 ...state,
                 chatbox: {
                     isOpen: action.payload !== undefined ? action.payload : !state.chatbox.isOpen
                 }
+            }
+
+
+        case MODALS_STATES:
+            return {
+                ...state,
+                modalOpen: action.payload
             }
 
 

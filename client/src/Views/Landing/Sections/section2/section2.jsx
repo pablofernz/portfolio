@@ -83,6 +83,22 @@ const Section2 = () => {
       },
     });
 
+    timeline.fromTo(
+      containerRef.current,
+      {
+        backgroundPositionX: "0px",
+      },
+      {
+        backgroundPositionX: "-50vw",
+        ease: "ease",
+        duration: 30,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "+=4000", // Ajusta según la duración deseada
+        },
+      }
+    );
     // Animación de desplazamiento horizontal de childRef
     timeline.fromTo(
       childRef.current,
@@ -118,8 +134,19 @@ const Section2 = () => {
     };
   }, []);
 
+  const { scrollYProgress } = useScroll();
+  const backgroundPosition = useTransform(
+    scrollYProgress,
+    [0.3, 0.5],
+    ["center center", "100vw center"]
+  );
+
   return (
-    <motion.section ref={containerRef} className={style.section2}>
+    <motion.section
+      ref={containerRef}
+      className={style.section2}
+      style={{ backgroundPosition: backgroundPosition }}
+    >
       <Section1Footer />
 
       <motion.main ref={childRef} className={style.main}>
@@ -246,10 +273,10 @@ const Section2 = () => {
           }}
           className={style.section1Background}
         >
-          <Spline
+          {/* <Spline
             className={style.Spline}
             scene="https://prod.spline.design/zudlawEHfLxJkfvR/scene.splinecode"
-          />
+          /> */}
         </motion.div>
       </motion.main>
     </motion.section>

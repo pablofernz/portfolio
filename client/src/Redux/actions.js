@@ -7,6 +7,7 @@ export const IS_VISIBLE = 'IS_VISIBLE'
 export const ALERT_NEW_COMMENT = 'ALERT_NEW_COMMENT'
 export const FORCE_UPDATE_COMMENTS = 'FORCE_UPDATE_COMMENTS'
 export const OPEN_THE_CHATBOX = 'OPEN_THE_CHATBOX'
+export const MODALS_STATES = 'MODALS_STATES'
 
 export const setLoaded = () => {
     return async function (dispatch) {
@@ -55,7 +56,6 @@ export const setVisibleNavbar = (isVisible) => {
     return function (dispatch) {
         dispatch({
             type: IS_VISIBLE,
-
         })
     }
 }
@@ -79,9 +79,16 @@ export const forceUpdateComments = () => {
 
 export const openTheChatbox = (state) => {
     return function (dispatch) {
-        console.log(state)
         dispatch({
             type: OPEN_THE_CHATBOX,
+            payload: state
+        })
+    }
+}
+export const openCloseModals = (state) => {
+    return function (dispatch) {
+        dispatch({
+            type: MODALS_STATES,
             payload: state
         })
     }

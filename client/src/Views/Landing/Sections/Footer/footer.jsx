@@ -57,7 +57,7 @@ const Footer = () => {
         <div className={style.leftSide}>
           <div className={style.socialMediaContainer}>
             <header>
-              <h1>My social media</h1>
+              <h1>Social</h1>
             </header>
             <main>
               <a
@@ -253,6 +253,7 @@ const Footer = () => {
         <div className={style.rightSide}>
           {viewportWidth > 800 ? (
             <Spline
+              style={{ cursor: "grab" }}
               scene="https://prod.spline.design/fhj7cJ9IWLoGvFYy/scene.splinecode"
               onLoad={(spline) => {
                 spline.scene.controls.enableZoom = false; // Desactivar zoom

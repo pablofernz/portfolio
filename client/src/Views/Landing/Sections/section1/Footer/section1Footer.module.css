@@ -45,6 +45,17 @@
     -webkit-box-orient: horizontal;
     word-break: break-word;
     display: -webkit-box;
+    animation: infinity 30s linear infinite;
+}
+
+@keyframes infinity {
+    from {
+        transform: translateX(0px);
+    }
+
+    to {
+        transform: translateX(-1200px);
+    }
 }
 
 .textCarousel {

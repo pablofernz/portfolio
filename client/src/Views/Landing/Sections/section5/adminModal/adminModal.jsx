@@ -146,6 +146,6 @@ export const AdminModal = ({ onClose, sortedRecommendations }) => {
         </motion.div>
       </motion.div>
     </AnimatePresence>,
-    document.getElementById("section5AdminModal")
+    document.getElementById("modal")
   );
 };
