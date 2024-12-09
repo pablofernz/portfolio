@@ -21,7 +21,7 @@ export const Card = ({
   comment,
   pinned,
   adminAccess,
-  classname,
+  index,
 }) => {
   const socialMediaData = {
     Linkedin: {
@@ -87,6 +87,7 @@ export const Card = ({
   const [tooltipPin, setTooltipPin] = useState(false);
   const dispatch = useDispatch();
   const [isPinned, setIsPinned] = useState(pinned);
+
   const pinHandler = () => {
     changePinnedValue(id);
     setIsPinned(!isPinned);
@@ -99,7 +100,7 @@ export const Card = ({
     setDeleteStatus("Deleting");
 
     const response = await axios.delete(
-      `https://portfolio-back-production-9a9d.up.railway.app/recomendation/delete/${id}`
+      `https://portfolio-backend-8kqa.onrender.com/recomendation/delete/${id}`
       // `http://localhost:3001/recomendation/delete/${id}`
     );
     setDeleteStatus(response.data);
@@ -119,6 +120,9 @@ export const Card = ({
         stiffness: 150,
       }}
       className={style.card}
+      onClick={() => {
+        console.log(nameAndLastname.split(""));
+      }}
     >
       <AnimatePresence mode="popLayout">
         {deleteStatus == "Not deleted" && (
@@ -136,10 +140,18 @@ export const Card = ({
           >
             <header className={style.header}>
               <div className={style.photoContainer}>
-                <img className={style.photo} src={image} alt="userPhoto" />
+                <img
+                  className={style.photo}
+                  src={
+                    image?.trim()
+                      ? image
+                      : "https://res.cloudinary.com/dnrprmypf/image/upload/v1728605983/Projects%20Images/Indico/Clients%20Photos/User%20default%20photo.png"
+                  }
+                  alt="userPhoto"
+                />
               </div>
               <div className={style.userData}>
-                {nameAndLastname.length >= 17 && (
+                {nameAndLastname.length >= 18 && (
                   <>
                     <div className={style.shadowLeft}></div>
                     <div className={style.shadowRight}></div>
@@ -424,7 +436,7 @@ export const CardSkeleton = () => {
       <motion.img
         animate={{ opacity: [0.6, 0, 0.6] }}
         transition={{ duration: 2, type: "spring", repeat: Infinity }}
-        style={{ height: "80px", width: "80px" }}
+        style={{ height: "60px", width: "60px" }}
         src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718494423/logo_white_juquqf.png"
         alt=""
       />

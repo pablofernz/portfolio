@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import style from "./chatbox.module.css";
 import ReactDOM from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useOutsideClick } from "../../../../Components/Hooks/clickOutside";
+import useOutsideClick from "../../../../Components/Hooks/clickOutside";
 import { useDispatch, useSelector } from "react-redux";
 import { openTheChatbox } from "../../../../Redux/actions";
 const Chatbox = () => {
@@ -11,7 +11,10 @@ const Chatbox = () => {
 
   const dispatch = useDispatch();
 
-  // useOutsideClick(chatbox, () => isChatboxOpen && dispatch(openTheChatbox(false)));
+  useOutsideClick(
+    chatbox,
+    () => isChatboxOpen && dispatch(openTheChatbox(false))
+  );
   return ReactDOM.createPortal(
     <div className={style.component}>
       <motion.div

@@ -6,7 +6,6 @@ import useViewportWidth from "../../../../../Components/Hooks/useViewportSize";
 import { square } from "ldrs";
 import { useSelector } from "react-redux";
 import { Card } from "../Card/card";
-import { useOutsideClick } from "../../../../../Components/Hooks/clickOutside";
 
 square.register();
 

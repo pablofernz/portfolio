@@ -8,91 +8,96 @@ const iconsData = [
 
     {
         name: "React",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718817889/react_dahdvf.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718817889/react_dahdvf.webp",
         size: "large",
     },
 
     {
         name: "HTML",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718818385/html_qbnzse.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718818385/html_qbnzse.webp",
         size: "large",
     },
 
     {
         name: "CSS",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718821611/css_very39.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718821611/css_very39.webp",
         size: "large",
     },
 
     {
         name: "Redux",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718821939/redux_bpimiw.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718821939/redux_bpimiw.webp",
         size: "large",
     },
 
     {
         name: "PostgreSQL",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718822821/postgre_a7rs0l.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718822821/postgre_a7rs0l.webp",
         size: "large",
     },
 
     {
         name: "MongoDB",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718822923/mongo_ik5wzk.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718822923/mongo_ik5wzk.webp",
         size: "large",
     },
 
     {
         name: "Mongoose",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718823267/mongoose_jgco70.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718823267/mongoose_jgco70.webp",
         size: "large",
     },
 
     {
         name: "Git",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718821753/git_hxxeie.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718821753/git_hxxeie.webp",
+        size: "large",
+    },
+    {
+        name: "GSAP",
+        url: "https://cdn.worldvectorlogo.com/logos/gsap-greensock.svg",
         size: "large",
     },
 
     {
         name: "GitHub",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718823410/github_izsaz4.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718823410/github_izsaz4.webp",
         size: "large",
     },
 
     {
         name: "Node",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718822103/node_ci6kys.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718822103/node_ci6kys.webp",
         size: "large",
     },
 
     {
         name: "Express",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718818794/express_co7wsk.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718818794/express_co7wsk.webp",
         size: "large",
     },
 
     {
         name: "Sequelize",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718822642/sequelize_qc4zus.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718822642/sequelize_qc4zus.webp",
         size: "large",
     },
 
     {
         name: "Firebase",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718823664/firebase_ymcpvf.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718823664/firebase_ymcpvf.webp",
         size: "large",
     },
 
     {
         name: "FramerMotion",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718823575/framer_soxxoo.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718823575/framer_soxxoo.webp",
         size: "large",
     },
 
     {
         name: "Jest",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718823913/jest_rtmxll.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718823913/jest_rtmxll.webp",
         size: "large",
     },
 
@@ -104,9 +109,11 @@ const iconsData = [
 
     {
         name: "Slack",
-        url: "https://res.cloudinary.com/dnrprmypf/image/upload/v1718900377/slack_cf6lg2.png",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718900377/slack_cf6lg2.webp",
         size: "large",
     },
 ];
+
+// const iconsSorted = iconsData.sort(() => Math.random() - 0.5);
 
 export default iconsData

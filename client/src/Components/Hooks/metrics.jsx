@@ -13,7 +13,9 @@ export function Metrics() {
   // Función para actualizar el contador de vistas
   const updateViewsCount = async () => {
     try {
-      const { data } = await axios.post("http://localhost:3001/metrics/views");
+      const { data } = await axios.post(
+        "https://portfolio-backend-8kqa.onrender.com/metrics/views"
+      );
       setUserData((prevData) => ({
         ...prevData,
         id: data.pageViews,

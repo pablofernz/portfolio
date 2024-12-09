@@ -5,50 +5,33 @@ import { motion } from "framer-motion";
 import iconsData from "./iconsData";
 
 const IconComponent = ({ icon, reference }) => {
-  const width = useViewportWidth();
+  const viewportWidth = useViewportWidth();
 
   const chosedData = iconsData.filter(
-    (iconChosed) => iconChosed.name == icon
+    (iconChosed) => iconChosed.name.toLowerCase() == icon.toLowerCase()
   )[0];
-
-  const ref = useRef(reference);
+  const hasLowBrightness = Math.random() < 0.5;
   return (
-    <div>
+    <a
+      href={
+        icon.toLowerCase() === "github" ? "https://github.com/pablofernz" : null
+      }
+      target="blank"
+    >
       <motion.div
-        dragConstraints={ref}
-        ref={ref}
-        drag
         style={{
           backgroundImage: `url(${chosedData.url})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height:
-            chosedData.size == "large"
-              ? "70px"
-              : chosedData.size == "medium"
-              ? "50px"
-              : chosedData.size == "small" && "40px",
-          width:
-            chosedData.size == "large"
-              ? "70px"
-              : chosedData.size == "medium"
-              ? "50px"
-              : chosedData.size == "small" && "40px",
-
-          borderRadius:
-            chosedData.size == "large"
-              ? "20px"
-              : chosedData.size == "medium"
-              ? "15px"
-              : chosedData.size == "small" && "15px",
-
-          cursor: "grab",
+          height: viewportWidth > 600 ? "130px" : "80px",
+          width: viewportWidth > 600 ? "130px" : "80px",
+          borderRadius: viewportWidth > 600 ? "30px" : "20px",
+          filter: hasLowBrightness ? "brightness(40%)" : "brightness(100%)",
         }}
-      >
-        {" "}
-      </motion.div>
-    </div>
+        className={style.card}
+      ></motion.div>
+    </a>
   );
 };
 
-export default { IconComponent };
+export default IconComponent;

@@ -1,10 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-export const useOutsideClick = (ref, fn) => {
+const useOutsideClick = (ref, callback) => {
+  const isMounted = useRef(false);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
-        fn();
+      if (isMounted.current) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          callback();
+        }
+      } else {
+        isMounted.current = true;
       }
     };
 
@@ -12,5 +18,10 @@ export const useOutsideClick = (ref, fn) => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [ref, fn]);
+  }, [ref, callback]);
 };
+
+// Example of use
+// useOutsideClick(modal, () => setProjectOpen("none"));
+
+export default useOutsideClick;

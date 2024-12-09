@@ -149,6 +149,7 @@ const websiteType = {
       backgroundColor: "rgb(11, 59, 23)",
       color: "rgb(142, 255, 178)",
     },
+
     icon: () => {
       return (
         <div>
@@ -176,10 +177,10 @@ const websiteType = {
     es: "Chat Global",
     en: "Global Chat",
     style: {
-      backgroundColor: "rgb(25, 11, 59)",
-      color: "rgb(175, 163, 255)",
+      backgroundColor: "white",
+      color: "black",
+      border: "2px solid black",
     },
-
     icon: () => {
       return (
         <div>
@@ -201,6 +202,34 @@ const websiteType = {
       );
     },
   },
+  weatherApp: {
+    es: "App del clima",
+    en: "Weather App",
+    style: {
+      backgroundColor: "rgb(8, 33, 79)",
+      color: "rgb(142, 204, 255)",
+    },
+    icon: () => {
+      return (
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            height="15"
+            width="15"
+            style={{ marginTop: "2px" }}
+          >
+            <path
+              fillRule="evenodd"
+              d="M4.5 9.75a6 6 0 0 1 11.573-2.226 3.75 3.75 0 0 1 4.133 4.303A4.5 4.5 0 0 1 18 20.25H6.75a5.25 5.25 0 0 1-2.23-10.004 6.072 6.072 0 0 1-.02-.496Z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
+      );
+    },
+  },
 };
 
 export const Projects = [
@@ -213,34 +242,36 @@ export const Projects = [
       {
         name: "Landing Page",
         mockup:
-          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727365038/Projects%20Images/Indico/Landing_Page_Mockup.png",
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727365038/Projects%20Images/Indico/Project%20View/Landing_Page_Mockup.webp",
         imageFullSize:
-          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718655325/Projects%20Images/Indico/Landing_Page.png",
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718655325/Projects%20Images/Indico/Project%20View/Landing_Page.webp",
       },
 
       {
         name: "Login Page",
         mockup:
-          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727383218/Projects%20Images/Indico/login_mockup.png",
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727383218/Projects%20Images/Indico/Project%20View/login_mockup.webp",
         imageFullSize:
-          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727383281/Projects%20Images/Indico/login.png",
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727383281/Projects%20Images/Indico/Project%20View/login.webp",
       },
 
       {
         name: "Register Page",
         mockup:
-          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727382413/Projects%20Images/Indico/register_mockup.png",
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727382413/Projects%20Images/Indico/Project%20View/register_mockup.webp",
         imageFullSize:
-          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727368918/Projects%20Images/Indico/register.png",
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727368918/Projects%20Images/Indico/Project%20View/register.webp",
       },
       {
         name: "Account Page",
         mockup:
-          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727382865/Projects%20Images/Indico/account_mockup.png",
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727382865/Projects%20Images/Indico/Project%20View/account_mockup.webp",
         imageFullSize:
-          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:good/v1727382908/Projects%20Images/Indico/account.png",
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:good/v1727382908/Projects%20Images/Indico/Project%20View/account.webp",
       },
     ],
+    iconURL:
+      "https://res.cloudinary.com/dnrprmypf/image/upload/c_crop,w_430,h_430,ar_1:1,g_auto/v1718654550/logo_Indico_white_vmxbxp.png",
     techStack_names: [
       "javascript",
       "html",
@@ -262,25 +293,93 @@ export const Projects = [
     style: {
       primaryColor: "rgb(178, 255, 187)",
       primaryColorDark: "rgb(4, 60, 0)",
+      primaryColorLight: "rgb(236, 254, 235)",
       backgroundImageUrl:
         "https://res.cloudinary.com/dnrprmypf/image/upload/e_blur:1221,q_49/v1717532382/lucy-joy-Otc-BYz-A22z-M-unsplash_xydbrc.jpg",
       fontFamily: "Real Line",
+      gridReverse: false,
+      gridBackground:
+        "https://images.unsplash.com/photo-1729636364314-877a914f223a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
-    github_link: "https://github.com/pablofernz/indico-restaurant",
+    links: {
+      github: "https://github.com/pablofernz/indico-restaurant",
+      website: "https://indico-restaurante.vercel.app",
+    },
+    funFacts: ["This project has more than 20.000 lines of code"],
     dontOpen: false,
   },
+  {
+    name: "Forecaster",
+    id: "forecaster",
+    description: "",
+    type: websiteType.weatherApp,
+    images: [
+      {
+        name: "Account Page",
+        mockup:
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727382865/Projects%20Images/Indico/Project%20View/account_mockup.webp",
+        imageFullSize:
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:good/v1727382908/Projects%20Images/Indico/Project%20View/account.webp",
+      },
+    ],
+    iconURL:
+      "https://res.cloudinary.com/dnrprmypf/image/upload/c_crop,w_430,h_430,ar_1:1,g_auto/v1718654550/logo_Indico_white_vmxbxp.png",
+    techStack_names: [
+      "javascript",
+      "html",
+      "css",
+      "react",
+      "framer_motion",
+      "node",
+      "express",
+    ],
+    techStack_data: [],
+    initTechStack() {
+      this.techStack_data = this.techStack_names.map(
+        (str) => technologies[str]
+      );
+    },
+    style: {
+      primaryColor: "rgb(142, 204, 255)",
+      primaryColorDark: "rgb(8, 33, 79)",
+      primaryColorLight: "rgb(203, 228, 255)",
+      backgroundImageUrl:
+        "https://res.cloudinary.com/dnrprmypf/image/upload/e_blur:1221,q_49/v1717532382/lucy-joy-Otc-BYz-A22z-M-unsplash_xydbrc.jpg",
+      fontFamily: "",
+      gridReverse: true,
+      gridBackground:
+        "https://images.unsplash.com/photo-1556203337-17d0b169c3d1?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    links: {
+      github: "https://github.com/pablofernz/indico-restaurant",
+      website: "https://indico-restaurante.vercel.app",
+    },
+    funFacts: ["this project barely survive"],
+    dontOpen: false,
+  },
+
   {
     name: "Globber",
     id: "globber",
     description: "",
     type: websiteType.globalChat,
-    images: [],
+    images: [
+      {
+        name: "Account Page",
+        mockup:
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1727382865/Projects%20Images/Indico/Project%20View/account_mockup.webp",
+        imageFullSize:
+          "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:good/v1727382908/Projects%20Images/Indico/Project%20View/account.webp",
+      },
+    ],
+    iconURL:
+      "https://res.cloudinary.com/dnrprmypf/image/upload/c_crop,w_430,h_430,ar_1:1,g_auto/v1718654550/logo_Indico_white_vmxbxp.png",
     techStack_names: [
       "javascript",
-      "react",
-      "redux",
       "html",
       "css",
+      "react",
+      "redux",
       "framer_motion",
       "node",
       "express",
@@ -294,15 +393,24 @@ export const Projects = [
       );
     },
     style: {
-      primaryColor: "rgb(175, 163, 255)",
-      fontFamily: "Basier Square",
+      primaryColor: "white",
+      primaryColorDark: "black",
+      primaryColorLight: "rgb(230,230,230)",
+      backgroundImageUrl:
+        "https://res.cloudinary.com/dnrprmypf/image/upload/e_blur:1221,q_49/v1717532382/lucy-joy-Otc-BYz-A22z-M-unsplash_xydbrc.jpg",
+      fontFamily: "",
+      gridReverse: false,
     },
-    github_link: "",
-    dontOpen: true,
+    links: {
+      github: "https://github.com/pablofernz/indico-restaurant",
+      website: "https://indico-restaurante.vercel.app",
+    },
+    funFacts: ["You are not dreaming."],
+    dontOpen: false,
   },
   {
-    name: "Unknown1",
-    id: "unknown1",
+    name: "???",
+    id: "unknown",
     description: "",
     type: "",
     images: [],
@@ -314,21 +422,7 @@ export const Projects = [
       );
     },
     dontOpen: true,
-  },
-  {
-    name: "Unknown2",
-    id: "unknown2",
-    description: "",
-    type: "",
-    images: [],
-    techStack_names: [],
-    techStack_data: [],
-    initTechStack() {
-      this.techStack_data = this.techStack_names.map(
-        (str) => technologies[str]
-      );
-    },
-    dontOpen: true,
+    comingSoon: true,
   },
 ];
 Projects.forEach((project) => project.initTechStack());

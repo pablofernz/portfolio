@@ -1,9 +1,10 @@
 import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
 import style from "./navbar.module.css";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { setSection, setVisibleNavbar } from "../../../../Redux/actions";
+
 const Navbar = () => {
   const width = useViewportWidth();
   const [isMobileNavbarOpen, setMobileNavbar] = useState(false);
@@ -17,7 +18,7 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
-      setVisible(prevScrollPos > currentScrollPos)
+      setVisible(prevScrollPos > currentScrollPos);
       // dispatch(setVisibleNavbar(prevScrollPos > currentScrollPos));
       setPrevScrollPos(currentScrollPos);
     };
@@ -44,48 +45,101 @@ const Navbar = () => {
           <div className={style.navBar}>
             <div className={style.logoSpace}>
               <picture className={style.logoContainer}>
+                {sectionState == "Home" && (
+                  <motion.div
+                    layoutId="textBackground"
+                    className={style.navTextBackground}
+                    style={{ opacity: 0 }}
+                  />
+                )}
                 <img
                   className={style.logo}
                   src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718250070/Logo-portfolio_jxapuu.png"
                   alt=""
-                  onClick={() => dispatch(setSection("home"))}
+                  onClick={() => {
+                    dispatch(setSection("Home"));
+                  }}
                 />
               </picture>
             </div>
 
             <div className={style.textSpace}>
-              <a
-                className={`${style.navText} ${
-                  sectionState == "about" && style.navTextActive
-                }`}
-                onClick={() => dispatch(setSection("about"))}
-              >
-                About
-              </a>
-              <a
-                className={`${style.navText} ${
-                  sectionState == "Services" && style.navTextActive
-                }`}
-                onClick={() => dispatch(setSection("Services"))}
-              >
-                Services
-              </a>
-              <a
-                className={`${style.navText} ${
-                  sectionState == "works" && style.navTextActive
-                }`}
-                onClick={() => dispatch(setSection("works"))}
-              >
-                Works
-              </a>
-              <a
-                className={`${style.navText} ${
-                  sectionState == "contact" && style.navTextActive
-                }`}
-                onClick={() => dispatch(setSection("contact"))}
-              >
-                Contact
-              </a>
+              <div className={style.button}>
+                {sectionState == "About" && (
+                  <motion.div
+                    layoutId="textBackground"
+                    className={style.navTextBackground}
+                  />
+                )}
+
+                <motion.a
+                  animate={{
+                    color: sectionState == "About" ? "white" : "black",
+                  }}
+                  transition={{ delay: 0.1 }}
+                  className={style.navText}
+                  onClick={() => dispatch(setSection("About"))}
+                >
+                  About
+                </motion.a>
+              </div>
+
+              <div className={style.button}>
+                {sectionState == "Stack" && (
+                  <motion.div
+                    layoutId="textBackground"
+                    className={style.navTextBackground}
+                  />
+                )}
+                <motion.a
+                  animate={{
+                    color: sectionState == "Stack" ? "white" : "black",
+                  }}
+                  transition={{ delay: 0.1 }}
+                  className={style.navText}
+                  onClick={() => dispatch(setSection("Stack"))}
+                >
+                  Stack
+                </motion.a>
+              </div>
+
+              <div className={style.button}>
+                {sectionState == "Projects" && (
+                  <motion.div
+                    layoutId="textBackground"
+                    className={style.navTextBackground}
+                  />
+                )}
+                <motion.a
+                  animate={{
+                    color: sectionState == "Projects" ? "white" : "black",
+                  }}
+                  transition={{ delay: 0.1 }}
+                  className={style.navText}
+                  onClick={() => dispatch(setSection("Projects"))}
+                >
+                  Projects
+                </motion.a>
+              </div>
+
+              <div className={style.button}>
+                {sectionState == "Contact" && (
+                  <motion.div
+                    layoutId="textBackground"
+                    className={style.navTextBackground}
+                  />
+                )}
+                <motion.a
+                  animate={{
+                    color: sectionState == "Contact" ? "white" : "black",
+                  }}
+                  transition={{ delay: 0.1 }}
+                  className={style.navText}
+                  onClick={() => dispatch(setSection("Contact"))}
+                >
+                  Contact
+                </motion.a>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -176,31 +230,32 @@ const Navbar = () => {
               <div className={style.textModalContainer}>
                 <a
                   onClick={() => {
-                    dispatch(setSection("works"));
+                    dispatch(setSection("Projects"));
                     setTimeout(() => {
                       setMobileNavbar(false);
                     }, 500);
                   }}
                   className={`${style.navTextModal} ${
-                    sectionState == "works" && style.navTextModalActive
+                    sectionState == "Projects" && style.navTextModalActive
                   }`}
                 >
-                  Works
+                  Projects
                 </a>
               </div>
               <div className={style.textModalContainer}>
                 <a
+                  href="stackSection"
                   onClick={() => {
-                    dispatch(setSection("Services"));
+                    dispatch(setSection("Stack"));
                     setTimeout(() => {
                       setMobileNavbar(false);
                     }, 500);
                   }}
                   className={`${style.navTextModal} ${
-                    sectionState == "Services" && style.navTextModalActive
+                    sectionState == "Stack" && style.navTextModalActive
                   }`}
                 >
-                  Services
+                  Stack
                 </a>
               </div>
               <div className={style.textModalContainer}>

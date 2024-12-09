@@ -15,4 +15,5 @@ function App() {
   );
 }
 
+// 3.1mb en imagenes solo en store
 export default App;

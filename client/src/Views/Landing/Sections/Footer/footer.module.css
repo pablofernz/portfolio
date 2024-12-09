@@ -1,22 +1,77 @@
 .footerComponent {
     display: flex;
-    align-items: start;
-    justify-content: start;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: auto;
-    background-color: rgb(23, 23, 23);
     flex-direction: column;
-    /* position: absolute;
-    bottom: 0; */
+    /* position: relative; */
+    z-index: 0;
+    position: sticky;
+    bottom: 0;
 }
 
-.test {
+
+
+.corner {
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    background-color: black;
+    display: flex;
+    bottom: 100%;
+    right: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.corner>div {
+    height: 100%;
+    width: 100%;
+    border-radius: 0px 0px 999px 0px;
+    background-color: white;
+}
+
+.corner2 {
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    background-color: black;
+    display: flex;
+    bottom: 100%;
+    left: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.corner2>div {
+    height: 100%;
+    width: 100%;
+    border-radius: 0px 0px 0px 999px;
+    background-color: white;
+}
+
+.mainArea {
     display: flex;
     align-items: start;
     justify-content: center;
     width: 100%;
     height: auto;
-    background-color: rgb(23, 23, 23);
+    position: relative;
+}
+
+
+.uvCanvasContainer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: transparent;
 }
 
 .leftSide {
@@ -49,7 +104,7 @@
     padding: 0;
     font-family: Basier Square;
     font-weight: 600;
-    color: whitesmoke;
+    color: white;
     font-size: 30px;
 }
 
@@ -68,6 +123,10 @@
     font-weight: 600;
     transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
     filter: saturate(0%);
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 5px;
 }
 
 .socialMediaContainer>main>a:hover {
@@ -75,9 +134,16 @@
     font-size: 18px;
     margin-left: 5px;
     filter: saturate(100%);
-
 }
 
+.socialMediaContainer>main>a>label {
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.socialMediaContainer>main>a:hover>label {
+    opacity: 1;
+}
 
 .centerSide {
     width: 50%;
@@ -97,8 +163,8 @@
     gap: 30px;
     position: relative;
     margin-top: 35px;
-
 }
+
 
 .statusCard {
 
@@ -110,7 +176,7 @@
     user-select: none;
     position: absolute;
     scale: 1;
-    margin-bottom: 190px;
+    margin-bottom: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,11 +185,11 @@
     font-weight: 900;
     text-rendering: optimizeLegibility;
     color: rgb(112, 236, 184);
+    margin-top: 25px;
 }
 
 
 .emailErrors {
-
     padding: 5px 10px;
     background-color: rgb(46, 0, 0);
     border-radius: 8px;
@@ -132,14 +198,16 @@
     user-select: none;
     position: absolute;
     scale: 1;
-    margin-bottom: 175px;
+    margin-bottom: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: Basier Square;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 900;
     color: rgb(255, 130, 130);
+    margin-top: 25px;
+
 }
 
 .textContainer2 {
@@ -155,7 +223,7 @@
     margin: 0;
     text-align: center;
     font-family: Basier Square;
-    color: whitesmoke;
+    color: white;
     font-weight: 600;
     font-size: 35px;
 }
@@ -175,7 +243,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* background-color: red; */
     gap: 20px;
 }
 
@@ -185,6 +252,7 @@
     border-radius: 10px;
     font-weight: 900px;
     background-color: transparent;
+    backdrop-filter: blur(8px) brightness(1.5);
     color: rgb(99, 99, 99);
     border: 2px solid rgb(85, 85, 85);
     font-size: 15px;
@@ -219,7 +287,7 @@
 
 .error {
     width: 70%;
-    height: 30px;
+    height: 35px;
     border-radius: 10px;
     font-weight: 900px;
     background-color: transparent;
@@ -237,7 +305,7 @@
 
 .inputContainer>button {
     border: none;
-    background-color: whitesmoke;
+    background-color: white;
     height: 37px;
     width: 50px;
     font-size: 15px;
@@ -269,12 +337,11 @@
 
 .pictureContainer {
     width: 100%;
-    height: 80%;
+    height: 60%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    /* background-color: blue; */
 }
 
 .sent {
@@ -289,7 +356,7 @@
     font-family: Basier Square;
     color: rgb(245, 245, 245);
     font-weight: 600;
-    font-size: 15px;
+    font-size: 20px;
 }
 
 
@@ -305,13 +372,13 @@
 
 
 .logo {
-    height: 100px;
-    width: 100px;
+    height: 120px;
+    width: 120px;
     opacity: 0.8;
 }
 
 @media (max-width: 800px) {
-    .test {
+    .mainArea {
         flex-direction: column;
     }
 
@@ -323,12 +390,7 @@
 
     .centerSide {
         width: 100%;
-        height: 187px;
-    }
-
-    .centerContainer {
-        margin-top: 0px;
-
+        height: 200px;
     }
 
     .sentCenterContainer {
@@ -347,7 +409,7 @@
 
     .rightSide {
         width: 100%;
-        height: 80px;
+        height: 100px;
     }
 
     .logo {
@@ -355,6 +417,7 @@
         width: 50px;
         opacity: 0.8;
     }
+
 }
 
 @media (max-width: 500px) {
@@ -387,7 +450,7 @@
 .bottom {
     width: 100%;
     height: 30px;
-    background-color: rgb(20, 20, 20);
+    background-color: rgb(25, 25, 25);
     display: flex;
     align-items: center;
     justify-content: center;

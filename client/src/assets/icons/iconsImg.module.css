@@ -24,6 +24,17 @@
     border-radius: 15px;
 }
 
+.card {
+    filter: brightness(80%) saturate(100%);
+    transition: all 0.3s ease;
+    /* box-shadow: rgba(0, 0, 0, 0.327) 0px 0px 10px 0px inset; */
+}
+
+.card:hover {
+    filter: brightness(100%);
+
+}
+
 @media (max-width: 500px) {
     .large {
         height: 60px;

@@ -8,6 +8,9 @@ export const ALERT_NEW_COMMENT = 'ALERT_NEW_COMMENT'
 export const FORCE_UPDATE_COMMENTS = 'FORCE_UPDATE_COMMENTS'
 export const OPEN_THE_CHATBOX = 'OPEN_THE_CHATBOX'
 export const MODALS_STATES = 'MODALS_STATES'
+export const HIDE_OR_SHOW_CIRCLE_CURSOR = 'HIDE_OR_SHOW_CIRCLE_CURSOR'
+export const TEST = 'TEST'
+export const BACKGROUND_MODAL_NEEDED = 'BACKGROUND_MODAL_NEEDED'
 
 export const setLoaded = () => {
     return async function (dispatch) {
@@ -29,7 +32,7 @@ export const setSection = (section) => {
 export const fetchRecommendations = () => {
     return async function (dispatch) {
         try {
-            const res = await axios.get("https://portfolio-back-production-9a9d.up.railway.app/recomendation/get")
+            const res = await axios.get("https://portfolio-backend-8kqa.onrender.com/recomendation/get")
 
             dispatch({
                 type: GET_RECOMMENDATIONS,
@@ -42,7 +45,7 @@ export const fetchRecommendations = () => {
 }
 
 export const changePinnedValue = async (id) => {
-    const response = await axios.put(`https://portfolio-back-production-9a9d.up.railway.app/admin/pinRecommendation/${id}`)
+    const response = await axios.put(`https://portfolio-backend-8kqa.onrender.com/admin/pinRecommendation/${id}`)
 
     try {
         if (!id) return "No id"
@@ -90,6 +93,23 @@ export const openCloseModals = (state) => {
         dispatch({
             type: MODALS_STATES,
             payload: state
+        })
+    }
+}
+
+export const updateCursorOptions = (options) => {
+    return function (dispatch) {
+        dispatch({
+            type: TEST,
+            payload: options
+        })
+    }
+}
+export const backgroundModalNeeded = (boolean) => {
+    return function (dispatch) {
+        dispatch({
+            type: BACKGROUND_MODAL_NEEDED,
+            payload: boolean
         })
     }
 }

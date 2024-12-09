@@ -6,7 +6,10 @@ import axios from "axios";
 import useViewportWidth from "../../../../../Components/Hooks/useViewportSize";
 import { square } from "ldrs";
 import { useDispatch } from "react-redux";
-import { forceUpdateComments } from "../../../../../Redux/actions";
+import {
+  forceUpdateComments,
+  openCloseModals,
+} from "../../../../../Redux/actions";
 
 square.register();
 
@@ -15,7 +18,7 @@ export const FormComments = ({ onClose }) => {
   const viewportWidth = useViewportWidth();
 
   const [exit, setExit] = useState(false);
-  const [steps, setSteps] = useState(4);
+  const [steps, setSteps] = useState(1);
 
   const [form, setForm] = useState({
     name: "",
@@ -60,6 +63,7 @@ export const FormComments = ({ onClose }) => {
         setExit(true);
         setTimeout(() => {
           onClose();
+          dispatch(openCloseModals(false));
         }, 500);
       }
     };
@@ -169,7 +173,7 @@ export const FormComments = ({ onClose }) => {
     }
   };
 
-  const [sectionOpen, setSectionOpen] = useState(3);
+  const [sectionOpen, setSectionOpen] = useState(1);
   const handleSectionOpen = (section) => {
     if (sectionOpen == section) {
       setSectionOpen(0);
@@ -311,64 +315,6 @@ export const FormComments = ({ onClose }) => {
     }
   };
 
-  // const useInstagramPhoto = () => {
-  //   const instagramAccount = form.socialMedia.find(
-  //     (social) => social.name.toLowerCase() === "instagram"
-  //   );
-
-  //   if (instagramAccount && instagramAccount.username) {
-  //     axios
-  //       .get(
-  //         `http://localhost:3001/recomendation/profilephoto/instagram/${instagramAccount.username}`
-  //       )
-  //       .then((response) => {
-  //         setForm({ ...form, image: response.data });
-  //         // console.log(response.data)
-  //       })
-  //       .catch((error) => console.log(error));
-  //     // .catch((error) => {
-  //     //   setErrors({
-  //     //     ...errors,
-  //     //     image: {
-  //     //       instagram: {
-  //     //         message: "This is weird, user not found",
-  //     //       },
-  //     //     },
-  //     //   });
-  //     //   setTimeout(() => {
-  //     //     setErrors((prevErrors) => ({
-  //     //       ...prevErrors,
-  //     //       image: "",
-  //     //     }));
-  //     //   }, 4000);
-
-  //     //   // If its not found the github user, the value of username (and the input) is ""
-  //     //   setForm((prevForm) => ({
-  //     //     ...prevForm,
-  //     //     socialMedia: prevForm.socialMedia.map((social) =>
-  //     //       social.name.toLowerCase() === "instagram"
-  //     //         ? { ...social, username: "" }
-  //     //         : social
-  //     //     ),
-  //     //   }));
-  //     // });
-  //   } else {
-  //     setErrors({
-  //       ...errors,
-  //       image: {
-  //         instagram: {
-  //           message: "Please enter your Instagram username",
-  //         },
-  //       },
-  //     });
-  //     setTimeout(() => {
-  //       setErrors((prevErrors) => ({
-  //         ...prevErrors,
-  //         image: "",
-  //       }));
-  //     }, 4000);
-  //   }
-  // };
   const [useSocialPhoto, useSocialPhotoActive] = useState(false);
 
   const [response, setResponse] = useState(false);
@@ -376,7 +322,7 @@ export const FormComments = ({ onClose }) => {
     setSteps(5);
     try {
       const response = await axios.post(
-        "https://portfolio-back-production-9a9d.up.railway.app/recomendation/add",
+        "https://portfolio-backend-8kqa.onrender.com/recomendation/add",
         form
       );
       if (response.data === true) {
@@ -388,6 +334,7 @@ export const FormComments = ({ onClose }) => {
 
             setTimeout(() => {
               onClose();
+              dispatch(openCloseModals(false));
 
               setTimeout(() => {
                 dispatch(forceUpdateComments());
@@ -1071,6 +1018,7 @@ export const FormComments = ({ onClose }) => {
                                     ? "grayscale(100%)"
                                     : "grayscale(0%)",
                               }}
+                              title="Linkedin"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -1096,6 +1044,7 @@ export const FormComments = ({ onClose }) => {
                                     ? "grayscale(100%)"
                                     : "grayscale(0%)",
                               }}
+                              title="Instagram"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -1116,6 +1065,7 @@ export const FormComments = ({ onClose }) => {
                               style={{
                                 opacity: socialMediaActive == "x" ? 1 : 0.25,
                               }}
+                              title="X/Twitter"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -1137,6 +1087,7 @@ export const FormComments = ({ onClose }) => {
                               onClick={() => {
                                 setSocialMediaActive("github");
                               }}
+                              title="Github"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -1698,6 +1649,7 @@ export const FormComments = ({ onClose }) => {
                   setExit(true);
                   setTimeout(() => {
                     onClose();
+                    dispatch(openCloseModals(false));
                   }, 500);
                 }}
               >

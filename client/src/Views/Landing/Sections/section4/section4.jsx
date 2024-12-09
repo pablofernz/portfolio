@@ -2,15 +2,22 @@ import { useEffect, useRef, useState } from "react";
 import style from "./section4.module.css";
 import { AnimatePresence, motion } from "framer-motion";
 import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
-import { useDispatch, useSelector } from "react-redux";
-import { openCloseModals, openTheChatbox } from "../../../../Redux/actions";
+import { useDispatch } from "react-redux";
+import {
+  backgroundModalNeeded,
+  openCloseModals,
+  updateCursorOptions,
+} from "../../../../Redux/actions";
 import ReactDOM from "react-dom";
 import { Projects } from "./projects";
 import axios from "axios";
+import useOutsideClick from "../../../../Components/Hooks/clickOutside";
+import { Opulento } from "uvcanvas";
 
 // --------------- Project Modal Component -------------------
 const ProjectModal = ({ setProjectOpen, projectOpen }) => {
   const modal = useRef(null);
+  const bigImage = useRef(null);
   const width = useViewportWidth();
 
   const project = Projects.find(
@@ -18,7 +25,6 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
   );
 
   const userData = JSON.parse(localStorage.getItem("user_data"));
-
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape" && !imageOpen) setProjectOpen("none");
@@ -31,19 +37,23 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
     };
   });
 
-  const [projectStages, setProjectStages] = useState("gallery");
+  const [projectStages, setProjectStages] = useState("description");
   const [imageLookingAt, setImageLookingAt] = useState(0);
   const [imageHovering, setImageHovering] = useState(false);
   const [imageOpen, setImageOpen] = useState(null);
+
   const [projectLiked, setProjectLiked] = useState(
     userData && userData.projects.length !== 0
-      ? userData.projects[projectOpen.toLowerCase()].liked
+      ? userData.projects[projectOpen.toLowerCase()]?.liked
       : false
   );
   const [projectLikesCounter, setProjectLikesCounter] = useState();
   const [projectViewsCounter, setProjectViewsCounter] = useState();
+  const [viewsTooltip, setViewsTooltip] = useState(false);
+  const [likesTooltip, setLikesTooltip] = useState(false);
 
-  // Logic for the pointer circle
+  // Logic for the pointer circles
+  const [arrowPointerVisible, setArrowPointerVisible] = useState(false);
   const [pointerData, setPointerData] = useState({ x: "", y: "" });
   const handleMouseMove = (event) => {
     const x = event.clientX;
@@ -56,7 +66,7 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
     setProjectLiked((prev) => !prev); // Inviertes el valor actual
     setProjectLikesCounter((prev) => (projectLiked ? prev - 1 : prev + 1));
     axios.post(
-      `https://portfolio-back-production-9a9d.up.railway.app/metrics/projects/${projectOpen}/likes?set=${!projectLiked}`
+      `https://portfolio-backend-8kqa.onrender.com/metrics/projects/${projectOpen}/likes?set=${!projectLiked}`
     );
   };
 
@@ -83,13 +93,13 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
 
     try {
       const response = await axios.get(
-        `https://portfolio-back-production-9a9d.up.railway.app/metrics/projects/${projectOpen}/getlikes`
+        `https://portfolio-backend-8kqa.onrender.com/metrics/projects/${projectOpen}/getlikes`
       );
       setProjectLikesCounter(response.data);
 
       // this post update the views of the proyect everytime is open
       const views = await axios.post(
-        `https://portfolio-back-production-9a9d.up.railway.app/metrics/projects/${projectOpen}/views`
+        `https://portfolio-backend-8kqa.onrender.com/metrics/projects/${projectOpen}/views`
       );
 
       setProjectViewsCounter(
@@ -105,6 +115,31 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
   useEffect(() => {
     fetchLikesAndUpdateStorage();
   }, [projectOpen]);
+
+  useOutsideClick(
+    modal,
+    () => projectOpen !== "none" && !imageOpen && setProjectOpen("none")
+  );
+
+  // Variant for useOutsideClick hook but for the image component, because doesn't work with the original hook
+  useEffect(() => {
+    if (!imageOpen) return;
+
+    const timeout = setTimeout(() => {
+      const handleClickOutside = (event) => {
+        if (bigImage.current && !bigImage.current.contains(event.target)) {
+          setImageOpen(null);
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, 50);
+
+    return () => clearTimeout(timeout);
+  }, [imageOpen, bigImage]);
 
   return ReactDOM.createPortal(
     <motion.div
@@ -122,6 +157,25 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
       }}
       className={style.backgroundModal}
     >
+      {width > 900 && (
+        <p className={style.exitp}>
+          Press
+          <button onClick={() => setProjectOpen("none")}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20px"
+              height="20px"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M1 7h6v2H3v2h4v2H3v2h4v2H1zm10 0h4v2h-4v2h2a2 2 0 0 1 2 2v2c0 1.11-.89 2-2 2H9v-2h4v-2h-2a2 2 0 0 1-2-2V9c0-1.1.9-2 2-2m8 0h2a2 2 0 0 1 2 2v1h-2V9h-2v6h2v-1h2v1c0 1.11-.89 2-2 2h-2a2 2 0 0 1-2-2V9c0-1.1.9-2 2-2"
+              />
+            </svg>
+          </button>
+          key to exit
+        </p>
+      )}
       {/* ---------------Open image modal--------------- */}
       <AnimatePresence>
         {imageOpen && (
@@ -132,8 +186,27 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
             transition={{ duration: 0.3 }}
             className={style.projectImageModal}
           >
+            {width > 900 && (
+              <p className={style.exitp}>
+                Press
+                <button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M1 7h6v2H3v2h4v2H3v2h4v2H1zm10 0h4v2h-4v2h2a2 2 0 0 1 2 2v2c0 1.11-.89 2-2 2H9v-2h4v-2h-2a2 2 0 0 1-2-2V9c0-1.1.9-2 2-2m8 0h2a2 2 0 0 1 2 2v1h-2V9h-2v6h2v-1h2v1c0 1.11-.89 2-2 2h-2a2 2 0 0 1-2-2V9c0-1.1.9-2 2-2"
+                    />
+                  </svg>
+                </button>
+                key to close
+              </p>
+            )}
             <header>
-              {imageOpen.name ? <p>{imageOpen.name}</p> : <p>Loading...</p>}
+              <p>{imageOpen.name ? imageOpen.name : "Loading..."}</p>
             </header>
             <div>
               <motion.img
@@ -145,19 +218,79 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                 src={imageOpen.imageFullSize}
                 alt="projectImage"
                 className={style.bigImage}
+                ref={bigImage}
               />
+              {width < 900 && (
+                <p className={style.exitphoto}>
+                  Touch outside of the image to close.
+                </p>
+              )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
       {/* ----------------------------------------------------- */}
 
-      <div
+      <motion.div
         className={style.projectModalContainer}
+        initial={{ backgroundPositionX: "0px" }}
+        animate={{
+          backgroundPositionX:
+            projectStages == "screenshots"
+              ? "-300px"
+              : projectStages == "techStack"
+              ? "-600px"
+              : "-0px",
+        }}
+        transition={{
+          type: "spring",
+          damping: 15,
+          stiffness: 70,
+        }}
         ref={modal}
         onMouseMove={handleMouseMove}
       >
         <div className={style.content}>
+          {width < 900 && (
+            <button
+              className={style.exitButton}
+              onClick={() => setProjectOpen("none")}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                height="30"
+                width="30"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          )}
+
+          {width < 900 && (
+            <button
+              className={style.likeButtonPhone}
+              onClick={projectLikeHandler}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill={projectLiked === true ? "red" : "rgb(210,210,210)"}
+                height="30"
+                width="30"
+              >
+                <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+              </svg>
+            </button>
+          )}
+
           {/* -------------------- HEADER -------------------------- */}
           <header>
             <p style={{ fontFamily: project.style.fontFamily }}>
@@ -170,35 +303,56 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className={style.likesContainer}
+                  onMouseEnter={() => setViewsTooltip(true)}
+                  onMouseLeave={() => setViewsTooltip(false)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
-                    fill="rgb(140,140,140)"
+                    fill="rgb(160,160,160)"
                     height="20"
                     width="20"
                   >
                     <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     />
                   </svg>
 
                   <p className={style.likeCounter}>{projectViewsCounter}</p>
+                  <AnimatePresence>
+                    {viewsTooltip && (
+                      <motion.p
+                        initial={{ opacity: 0, y: 50, scale: 0 }}
+                        exit={{ opacity: 0, y: 50, scale: 0 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{
+                          type: "spring",
+                          damping: 15,
+                          stiffness: 150,
+                        }}
+                        className={style.tooltip}
+                      >
+                        People who viewed this project
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </motion.a>
               )}
 
-              {projectLikesCounter && (
+              {projectLikesCounter && width > 600 && (
                 <motion.button
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   style={{ cursor: "pointer" }}
                   onClick={projectLikeHandler}
+                  onMouseEnter={() => setLikesTooltip(true)}
+                  onMouseLeave={() => setLikesTooltip(false)}
                   className={style.likesContainer}
                 >
-                  <div className={style.likeButton}>
+                  <div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -210,10 +364,28 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                     </svg>
                   </div>
                   <p className={style.likeCounter}>{projectLikesCounter}</p>
+                  <AnimatePresence>
+                    {likesTooltip && width > 800 && (
+                      <motion.p
+                        initial={{ opacity: 0, y: 50, scale: 0 }}
+                        exit={{ opacity: 0, y: 50, scale: 0 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{
+                          type: "spring",
+                          damping: 15,
+                          stiffness: 150,
+                        }}
+                        className={style.tooltip}
+                      >
+                        Cool people who liked this project
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </motion.button>
               )}
+
               <a
-                href={project.github_link}
+                href={project.links.github}
                 target="blank"
                 className={style.githubButton}
               >
@@ -237,12 +409,12 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
           {/* --------------------------------------------------------- */}
 
           <main>
-            <div className={style.visible}>
+            <motion.div className={style.visible}>
               <motion.div
                 initial={{ x: "0%" }}
                 animate={{
                   x:
-                    projectStages == "gallery"
+                    projectStages == "screenshots"
                       ? "-33.3%"
                       : projectStages == "techStack"
                       ? "-66.66%"
@@ -257,41 +429,302 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
               >
                 {/* --------------- DESCRIPTION SECTION --------------------- */}
                 <section className={style.descriptionSection}>
-                  <div>
-                    <p>
-                      An <label> online restaurant</label> with a solid
-                      structure, fast ordering, and seamless interactions.
-                    </p>
-                    <p>
-                      Thoughtfully designed with attention to{" "}
-                      <label>detail</label>.
-                    </p>
-                  </div>
-                  <footer>
-                    <a
-                      href={project.github_link}
-                      target="blank"
-                      className={style.siteButton}
+                  {width > 600 && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0 }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      animate={{
+                        opacity: arrowPointerVisible == true ? 1 : 0,
+                        scale: arrowPointerVisible == true ? 1 : 0,
+                        top: pointerData.y - 130,
+                        left: pointerData.x - 224,
+                      }}
+                      transition={{
+                        type: "spring",
+                        damping: 100, // Ajusta el valor para un movimiento más suave
+                        stiffness: 2000, // Baja la rigidez para suavizar el rebote
+                      }}
+                      className={style.siteIcon}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
                         viewBox="0 0 24 24"
-                        fill="white"
-                        width="18"
-                        height="18"
+                        strokeWidth="3"
+                        stroke="black"
+                        height="20"
+                        width="20"
                       >
-                        <path d="M21.721 12.752a9.711 9.711 0 0 0-.945-5.003 12.754 12.754 0 0 1-4.339 2.708 18.991 18.991 0 0 1-.214 4.772 17.165 17.165 0 0 0 5.498-2.477ZM14.634 15.55a17.324 17.324 0 0 0 .332-4.647c-.952.227-1.945.347-2.966.347-1.021 0-2.014-.12-2.966-.347a17.515 17.515 0 0 0 .332 4.647 17.385 17.385 0 0 0 5.268 0ZM9.772 17.119a18.963 18.963 0 0 0 4.456 0A17.182 17.182 0 0 1 12 21.724a17.18 17.18 0 0 1-2.228-4.605ZM7.777 15.23a18.87 18.87 0 0 1-.214-4.774 12.753 12.753 0 0 1-4.34-2.708 9.711 9.711 0 0 0-.944 5.004 17.165 17.165 0 0 0 5.498 2.477ZM21.356 14.752a9.765 9.765 0 0 1-7.478 6.817 18.64 18.64 0 0 0 1.988-4.718 18.627 18.627 0 0 0 5.49-2.098ZM2.644 14.752c1.682.971 3.53 1.688 5.49 2.099a18.64 18.64 0 0 0 1.988 4.718 9.765 9.765 0 0 1-7.478-6.816ZM13.878 2.43a9.755 9.755 0 0 1 6.116 3.986 11.267 11.267 0 0 1-3.746 2.504 18.63 18.63 0 0 0-2.37-6.49ZM12 2.276a17.152 17.152 0 0 1 2.805 7.121c-.897.23-1.837.353-2.805.353-.968 0-1.908-.122-2.805-.353A17.151 17.151 0 0 1 12 2.276ZM10.122 2.43a18.629 18.629 0 0 0-2.37 6.49 11.266 11.266 0 0 1-3.746-2.504 9.754 9.754 0 0 1 6.116-3.985Z" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
+                        />
                       </svg>
+                    </motion.div>
+                  )}
+                  <div className={style.bentoGrid}>
+                    <div
+                      className={style.one}
+                      style={{
+                        flexDirection:
+                          width > 600 && project.style.gridReverse
+                            ? "column-reverse"
+                            : width > 600
+                            ? "column"
+                            : project.style.gridReverse
+                            ? "row-reverse"
+                            : "row",
+                      }}
+                    >
+                      <div
+                        className={style.oneUpper}
+                        style={{
+                          backgroundColor: project.style.primaryColorDark,
+                        }}
+                      >
+                        <div className={style.oneUpperAux}>
+                          <motion.div
+                            className={style.screen}
+                            style={{
+                              backgroundColor: project.style.primaryColor,
+                            }}
+                          >
+                            {width > 600 && (
+                              <img
+                                className={style.logo}
+                                src="https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718250070/Logo-portfolio_jxapuu.webp"
+                                alt="logoPortfolio"
+                              />
+                            )}
+                            <p>FUN FACT</p>
+                            {width > 600 && (
+                              <div className={style.hoverTextContainer}>
+                                <p
+                                  className={style.hoverText}
+                                  style={{
+                                    color: project.style.primaryColorLight,
+                                  }}
+                                >
+                                  HOVER HOVER HOVER HOVER
+                                </p>
+                              </div>
+                            )}
+                          </motion.div>
+                          <motion.div
+                            className={style.screenText}
+                            style={{
+                              color: project.style.primaryColor,
+                              backgroundColor: project.style.primaryColorDark,
+                            }}
+                          >
+                            <p>{project.funFacts[0].toUpperCase()}</p>
+                          </motion.div>
+                        </div>
+                      </div>
+                      <div
+                        className={style.oneBottom}
+                        style={{
+                          backgroundImage: `url(${project.style.gridBackground})`,
+                        }}
+                      ></div>
+                    </div>
+                    <div className={style.two}>
+                      {width > 600 && (
+                        <div className={style.twoUpper}>
+                          <div
+                            className={style.uvCanvasContainer}
+                            style={{ filter: "brightness(35%)" }}
+                          >
+                            <Opulento />
+                          </div>
+                        </div>
+                      )}
+                      <div className={style.twoCenter}>
+                        <div
+                          className={style.circleBlurred}
+                          style={{
+                            backgroundColor: project.style.primaryColor,
+                          }}
+                        ></div>
+                        <div
+                          className={style.circleBlurred2}
+                          style={{
+                            backgroundColor: project.style.primaryColor,
+                          }}
+                        ></div>
+                        <article>
+                          <h1>
+                            A WEBSITE{" "}
+                            <label
+                              style={{
+                                fontSize: "15px",
+                                color: project.style.primaryColor,
+                              }}
+                            >
+                              CONCEPT
+                            </label>{" "}
+                            {width > 600 || (width < 400 && <br />)} FOR A
+                            ECO-FRIENDLY RESTAURANT
+                          </h1>
+                          <p>
+                            Designed with a focus on user experience, featuring
+                            database management and an intuitive interface.
+                          </p>
+                          <p>
+                            Fully designed and developed to showcasing <br />{" "}
+                            Front-End and Back-End skills.
+                          </p>
+                        </article>
+                      </div>
+                      {width > 600 && (
+                        <div className={style.twoBottom}>
+                          <div
+                            className={style.uvCanvasContainer}
+                            style={{ filter: "brightness(35%)" }}
+                          >
+                            <Opulento />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div
+                      className={style.third}
+                      style={{
+                        flexDirection:
+                          width > 600 && project.style.gridReverse
+                            ? "column-reverse"
+                            : width > 600
+                            ? "column"
+                            : project.style.gridReverse
+                            ? "row-reverse"
+                            : "row",
+                      }}
+                    >
+                      <div className={style.thirdUpper}>
+                        <picture>
+                          <img
+                            src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718654550/logo_Indico_white_vmxbxp.png"
+                            alt=""
+                          />
+                        </picture>
+                        <p style={{ top: "0", left: "0" }}>
+                          {project.name.toUpperCase()}{" "}
+                          <sup style={{ fontSize: "6px" }}>TM</sup>
+                        </p>
+                        <p style={{ bottom: "0", right: "0" }}>2024</p>
 
-                      <p>WEBSITE</p>
-                    </a>
-                  </footer>
+                        <svg
+                          style={{
+                            bottom: "0",
+                            left: "0",
+                            position: "absolute",
+                            margin: "10px",
+                          }}
+                          className={style.svgFooter}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill={project.style.primaryColor}
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 2L14.012 7.23109C14.294 7.96432 14.435 8.33093 14.6542 8.63931C14.8486 8.91262 15.0874 9.15141 15.3607 9.34575C15.6691 9.56503 16.0357 9.70603 16.7689 9.98804L22 12L16.7689 14.012C16.0357 14.294 15.6691 14.435 15.3607 14.6542C15.0874 14.8486 14.8486 15.0874 14.6542 15.3607C14.435 15.6691 14.294 16.0357 14.012 16.7689L12 22L9.98804 16.7689C9.70603 16.0357 9.56503 15.6691 9.34575 15.3607C9.15141 15.0874 8.91262 14.8486 8.63931 14.6542C8.33093 14.435 7.96432 14.294 7.23109 14.012L2 12L7.23108 9.98804C7.96431 9.70603 8.33093 9.56503 8.63931 9.34575C8.91262 9.15141 9.15141 8.91262 9.34575 8.63931C9.56503 8.33093 9.70603 7.96431 9.98804 7.23108L12 2Z"
+                            stroke={project.style.primaryColor}
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <svg
+                          style={{
+                            top: "0",
+                            right: "0",
+                            position: "absolute",
+                            margin: "10px",
+                          }}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill={project.style.primaryColor}
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 2V22M19.0711 4.92893L4.92893 19.0711M22 12H2M19.0711 19.0711L4.92893 4.92893"
+                            stroke={project.style.primaryColor}
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <a
+                        href={project.links.website}
+                        target="blank"
+                        className={style.thirdBottom}
+                        style={{ backgroundColor: project.style.primaryColor }}
+                        onMouseEnter={() => {
+                          setArrowPointerVisible(true);
+                        }}
+                        onMouseLeave={() => {
+                          setArrowPointerVisible(false);
+                        }}
+                      >
+                        {width > 600 ? (
+                          <motion.div className={style.siteTextContainer}>
+                            <p> WEBSITE</p>
+                            <p> WEBSITE</p>
+                            <p> WEBSITE</p>
+                            <p> WEBSITE</p>
+                            <p> WEBSITE</p>
+                            <p> WEBSITE</p>
+                            <p> WEBSITE</p>
+                            <p> WEBSITE</p>
+                          </motion.div>
+                        ) : (
+                          <motion.div className={style.siteTextContainerSmall}>
+                            <p>WEB SITE</p>
+                            <motion.div className={style.siteIconSmall}>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="3"
+                                stroke="black"
+                                height="15"
+                                width="15"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
+                                />
+                              </svg>
+                            </motion.div>
+                          </motion.div>
+                        )}
+                        {width > 600 && (
+                          <div className={style.logoContainer}>
+                            <img
+                              style={{
+                                filter: "invert()",
+                                height: "20px",
+                                width: "20px",
+                              }}
+                              src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718250070/Logo-portfolio_jxapuu.png"
+                              alt="logoPortfolio"
+                            />
+                          </div>
+                        )}
+                      </a>
+                    </div>
+                  </div>
                 </section>
 
-                {/* --------------- GALLERY SECTION --------------------- */}
+                {/* --------------- screenshots SECTION --------------------- */}
 
-                <section className={style.gallerySection}>
-                  {/* ------------- GALLERY CURSOR POINTER -------------*/}
+                <section className={style.screenshotsSection}>
+                  {/* ------------- screenshots CURSOR POINTER -------------*/}
                   <AnimatePresence>
                     {width > 600 && (
                       <motion.div
@@ -301,10 +734,10 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                         animate={{
                           opacity: imageHovering == true ? 1 : 0,
                           scale: imageHovering == true ? 1 : 0,
-                          top: pointerData.y - 175,
-                          left: pointerData.x - 320,
-                          height: 100,
-                          width: 100,
+                          top: pointerData.y - 155,
+                          left: pointerData.x - 250,
+                          height: 90,
+                          width: 90,
                         }}
                         style={{ zIndex: "20" }}
                         transition={{
@@ -313,7 +746,10 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                           stiffness: 2000, // Baja la rigidez para suavizar el rebote
                         }}
                       >
-                        <p className={style.cursorText}>
+                        <p
+                          style={{ fontSize: "12px" }}
+                          className={style.cursorText}
+                        >
                           CLICK TO <br />
                           FULL IMAGE
                         </p>
@@ -321,27 +757,27 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                     )}
                   </AnimatePresence>
 
-                  <div>
+                  <div className={style.imageContainerAux}>
                     <header className={style.imagesContainer}>
                       <div className={style.imgContainer}>
                         <picture>
-                          {project.images.map((p, index) => (
+                          {project.images.map((projectImage, index) => (
                             <motion.img
-                              // initial={{ scale: 0 }}
                               animate={{
                                 x: `-${130 * imageLookingAt}%`,
-                                // scale: index === imageLookingAt ? 1 : 0,
+                                scale: index === imageLookingAt ? 1 : 0.5,
                               }}
+                              key={index}
                               transition={{
                                 type: "spring",
                                 damping: 15,
                                 stiffness: 70,
                               }}
-                              src={p?.mockup}
+                              src={projectImage?.mockup}
                               alt="projectImage"
-                              // loading="lazy"
+                              loading="lazy"
                               onClick={() => {
-                                setImageOpen(p);
+                                setImageOpen(projectImage);
                               }}
                               onMouseEnter={() => setImageHovering(true)}
                               onMouseLeave={() => setImageHovering(false)}
@@ -349,38 +785,39 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                           ))}
                         </picture>
                         <AnimatePresence>
-                          {imageLookingAt !== project.images.length - 1 && (
-                            <motion.button
-                              initial={{ opacity: 0, scale: 0 }}
-                              exit={{ opacity: 0, scale: 0 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              className={style.nextButton}
-                              onClick={() =>
-                                setImageLookingAt(imageLookingAt + 1)
-                              }
-                            >
-                              <svg
-                                style={{ marginLeft: "2px" }}
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="2"
-                                stroke="currentColor"
-                                width="30"
-                                height="30"
+                          {width > 600 &&
+                            imageLookingAt !== project.images.length - 1 && (
+                              <motion.button
+                                initial={{ opacity: 0, scale: 0 }}
+                                exit={{ opacity: 0, scale: 0 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className={style.nextButton}
+                                onClick={() =>
+                                  setImageLookingAt(imageLookingAt + 1)
+                                }
                               >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                                />
-                              </svg>
-                            </motion.button>
-                          )}
+                                <svg
+                                  style={{ marginLeft: "2px" }}
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="2"
+                                  stroke="currentColor"
+                                  width="30"
+                                  height="30"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m8.25 4.5 7.5 7.5-7.5 7.5"
+                                  />
+                                </svg>
+                              </motion.button>
+                            )}
                         </AnimatePresence>
 
                         <AnimatePresence>
-                          {imageLookingAt !== 0 && (
+                          {width > 600 && imageLookingAt !== 0 && (
                             <motion.button
                               initial={{ opacity: 0, scale: 0 }}
                               exit={{ opacity: 0, scale: 0 }}
@@ -395,14 +832,14 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
-                                stroke-width="2"
+                                strokeWidth="3"
                                 stroke="currentColor"
-                                width="30"
-                                height="30"
+                                width="25"
+                                height="25"
                               >
                                 <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
                                   d="m8.25 4.5 7.5 7.5-7.5 7.5"
                                 />
                               </svg>
@@ -413,38 +850,92 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                     </header>
 
                     <div className={style.imageIndicators}>
-                      {project.images.map((_, index) => (
-                        <motion.div
-                          key={index}
-                          onClick={() => setImageLookingAt(index)}
-                          className={style.dots}
-                          layout
-                        >
-                          <AnimatePresence>
-                            {imageLookingAt === index && (
-                              <motion.div
-                                initial={{ opacity: 0 }}
-                                exit={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className={style.dotIndicator}
+                      <div className={style.dotsContainer}>
+                        {project.images.map((_, index) => (
+                          <motion.div
+                            key={index}
+                            onClick={() => setImageLookingAt(index)}
+                            className={style.dots}
+                            layout
+                            animate={{
+                              width: imageLookingAt === index ? 20 : 8,
+                              backgroundColor:
+                                imageLookingAt === index
+                                  ? "rgb(40,40,40)"
+                                  : "rgb(180,180,180)",
+                              borderRadius: imageLookingAt === index ? 10 : 10,
+                            }}
+                          />
+                        ))}
+                      </div>
+
+                      {width < 600 && (
+                        <div className={style.carouselButtonsContainer}>
+                          <motion.button
+                            disabled={imageLookingAt == 0}
+                            animate={{
+                              opacity: imageLookingAt == 0 ? 0.3 : 1,
+                            }}
+                            onClick={() =>
+                              setImageLookingAt(imageLookingAt - 1)
+                            }
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              height="30"
+                              width="30"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z"
+                                clipRule="evenodd"
                               />
-                            )}
-                          </AnimatePresence>
-                        </motion.div>
-                      ))}
+                            </svg>
+                          </motion.button>
+
+                          <motion.button
+                            disabled={
+                              imageLookingAt == project.images.length - 1
+                            }
+                            animate={{
+                              opacity:
+                                imageLookingAt == project.images.length - 1
+                                  ? 0.3
+                                  : 1,
+                            }}
+                            onClick={() =>
+                              setImageLookingAt(imageLookingAt + 1)
+                            }
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              height="30"
+                              width="30"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </motion.button>
+                        </div>
+                      )}
                     </div>
-                    <footer className={style.carouselButtonsContainer}></footer>
                   </div>
                 </section>
 
                 {/* --------------- TECH STACK SECTION --------------------- */}
 
                 <section className={style.techStackSection}>
-                  <footer>
-                    <div className={style.techContainer}>
-                      {project.techStack_data
-                        .filter((item) => item.category == "frontend")
-                        .map((tech) => (
+                  <div className={style.stacksContainer}>
+                    {project.techStack_data.map((tech) => (
+                      <div key={tech.name} className={style.techCard}>
+                        <div className={style.techIcon}>
                           <picture key={tech.name}>
                             <img
                               src={tech.url}
@@ -452,41 +943,18 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                               loading="lazy"
                             />
                           </picture>
-                        ))}
-                    </div>
-                  </footer>
+                        </div>
+                        {/* <div className={style.techName}>
+                          <p>{tech.name}</p>
+                        </div> */}
+                      </div>
+                    ))}
+                  </div>
                 </section>
               </motion.div>
-            </div>
+            </motion.div>
           </main>
           <footer>
-            {/* <div className={style.infiniteIconContainer}>
-              {project.techStack_data.map((project) => (
-                <div className={style.techContainer}>
-                  <picture>
-                    <img
-                      src={project.url}
-                      alt="technologiIcon"
-                      loading="lazy"
-                    />
-                  </picture>
-                  <div>{project.name}</div>
-                </div>
-              ))}
-              {project.techStack_data.map((project) => (
-                <div className={style.techContainer}>
-                  <picture>
-                    <img
-                      src={project.url}
-                      alt="technologiIcon"
-                      loading="lazy"
-                    />
-                  </picture>
-                  <div>{project.name}</div>
-                </div>
-              ))}
-            </div> */}
-
             <div className={style.indicatorsButtonsContainer}>
               <button
                 key="description"
@@ -499,7 +967,7 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                   animate={{
                     color:
                       projectStages !== "description"
-                        ? "rgb(100, 100,100)"
+                        ? "rgb(120, 120,120)"
                         : project.style.primaryColor,
                   }}
                 >
@@ -516,23 +984,23 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                 )}
               </button>
               <button
-                key="gallery"
+                key="screenshots"
                 onClick={() => {
-                  setProjectStages("gallery");
+                  setProjectStages("screenshots");
                 }}
                 className={style.indicatorsButtons}
               >
                 <motion.p
                   animate={{
                     color:
-                      projectStages !== "gallery"
-                        ? "rgb(100, 100, 100)"
+                      projectStages !== "screenshots"
+                        ? "rgb(120, 120, 120)"
                         : project.style.primaryColor,
                   }}
                 >
-                  Gallery
+                  Screenshots
                 </motion.p>
-                {projectStages == "gallery" && (
+                {projectStages == "screenshots" && (
                   <motion.div
                     layoutId="stages"
                     className={style.indicator}
@@ -553,11 +1021,11 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                   animate={{
                     color:
                       projectStages !== "techStack"
-                        ? "rgb(100, 100, 100)"
+                        ? "rgb(120, 120, 120)"
                         : project.style.primaryColor,
                   }}
                 >
-                  Tech Stack
+                  {width > 370 ? "Tech Stack" : "Stack"}
                 </motion.p>
                 {projectStages == "techStack" && (
                   <motion.div
@@ -572,7 +1040,7 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
             </div>
           </footer>
         </div>
-      </div>
+      </motion.div>
     </motion.div>,
     document.getElementById("modal")
   );
@@ -581,95 +1049,47 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
 const Section4 = () => {
   const width = useViewportWidth();
 
-  const projectTitle = useRef(null);
   const dispatch = useDispatch();
 
-  const [projectOpen, setProjectOpen] = useState("indico");
+  const [projectOpen, setProjectOpen] = useState("none");
   const [projectHovered, setProjectHovered] = useState("none");
 
   //  Logic to lock the scroll when the form is open
   useEffect(() => {
     if (projectOpen !== "none") {
       dispatch(openCloseModals(true));
+      updateCursorOptions({
+        isVisible: false,
+      });
+      dispatch(backgroundModalNeeded(true));
     } else {
       dispatch(openCloseModals(false));
+      dispatch(backgroundModalNeeded(false));
     }
   }, [projectOpen]);
 
-  // Logic for the pointer circle
-  const [pointerData, setPointerData] = useState({ x: "", y: "" });
-  const handleMouseMove = (event) => {
-    const x = event.clientX;
-    const y = event.clientY;
-    setPointerData({ x, y });
-  };
-
-  // useEffect(() => {
-  //   console.log(Projects.filter((project) => project.id == projectHovered)[0]?.dontOpen);
-  // }, [projectHovered]);
   return (
     <section
-      className={`${style.section4} ${
-        projectOpen !== "none" ? style.lessBright : ""
-      }`}
-      onMouseMove={handleMouseMove}
+      className={`${style.section4} `}
+      onMouseLeave={() => {
+        updateCursorOptions({
+          isVisible: false,
+          width: null,
+          height: null,
+          textContent: null,
+        });
+      }}
+      onMouseEnter={() => {
+        dispatch(
+          updateCursorOptions({
+            isVisible: true,
+            width: 8,
+            height: 8,
+            textContent: null,
+          })
+        );
+      }}
     >
-      {/* -------------- Cursor pointer-------------- */}
-      <AnimatePresence>
-        {projectOpen == "none" && width > 800 && (
-          <motion.div
-            className={style.cursorPointer}
-            initial={{ opacity: 0, scale: 0 }}
-            exit={{ opacity: 0, scale: 0 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              top:
-                projectHovered === "title"
-                  ? projectTitle.current.getBoundingClientRect().top
-                  : pointerData.y + (projectHovered !== "none" ? -45 : -3),
-              left:
-                projectHovered === "title"
-                  ? projectTitle.current.getBoundingClientRect().left
-                  : pointerData.x + (projectHovered !== "none" ? -45 : -3),
-              height:
-                projectHovered === "title"
-                  ? projectTitle.current.getBoundingClientRect().height
-                  : projectHovered !== "none"
-                  ? 90
-                  : 8,
-              width:
-                projectHovered === "title"
-                  ? projectTitle.current.getBoundingClientRect().width
-                  : projectHovered !== "none"
-                  ? 90
-                  : 8,
-            }}
-            transition={{
-              type: "spring",
-              damping: 100, // Ajusta el valor para un movimiento más suave
-              stiffness: 900, // Baja la rigidez para suavizar el rebote
-            }}
-          >
-            <AnimatePresence>
-              {projectHovered !== "none" && projectHovered !== "title" && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  exit={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    duration: 0.2,
-                  }}
-                  className={style.cursorText}
-                >
-                  CLICK TO <br /> SEE MORE
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* -------------- Project Modal -------------- */}
 
       <AnimatePresence>
@@ -680,68 +1100,45 @@ const Section4 = () => {
           />
         )}
       </AnimatePresence>
-
       <motion.div
-        animate={
-          {
-            // scale: projectOpen !== "none" ? 3 : 1,
-            // opacity: projectOpen !== "none" ? 0 : 1,
-            // rotate: projectOpen !== "none" ? 20 : 0,
-          }
-        }
         transition={{
           type: "spring",
           damping: 15,
           stiffness: 70,
         }}
-        className={style.testZone}
+        className={style.pageContent}
       >
         <div className={style.top}>
-          <motion.p
-            className={style.projectTitle}
-            ref={projectTitle}
-            onMouseEnter={() => {
-              setProjectHovered("title");
-            }}
-            onMouseLeave={() => {
-              setProjectHovered("none");
-            }}
-          >
-            PROJECTS
-          </motion.p>
+          <motion.p className={style.projectTitle}>PROJECTS</motion.p>
         </div>
         <div className={style.bottom}>
-          {/* <motion.div
-            initial={{ opacity: 0 }}
-            exit={{ opacity: 0 }}
-            animate={{
-              opacity: projectHovered !== "none" ? 1 : 0,
-              y:
-                projectHovered == "indico"
-                  ? 0
-                  : projectHovered == "globber"
-                  ? 105
-                  : projectHovered == "unknown1"
-                  ? 210
-                  : projectHovered == "unknown2" && 315,
-            }}
-            transition={{
-              type: "spring",
-              damping: 20,
-              stiffness: 200,
-            }}
-            className={style.backgroundRow}
-          ></motion.div> */}
-
-          {Projects.map((project) => {
+          {Projects.map((project, index) => {
             return (
               <motion.div key={project.id} className={style.projectDetail}>
                 <button
                   onMouseEnter={() => {
                     setProjectHovered(project.id);
+                    dispatch(
+                      updateCursorOptions({
+                        isVisible: true,
+                        width: 90,
+                        height: 90,
+                        textContent: project.comingSoon
+                          ? "COMING <br/> SOON"
+                          : "CLICK TO <br/>SEE MORE",
+                      })
+                    );
                   }}
                   onMouseLeave={() => {
                     setProjectHovered("none");
+                    dispatch(
+                      updateCursorOptions({
+                        isVisible: true,
+                        width: 8,
+                        height: 8,
+                        textContent: null,
+                      })
+                    );
                   }}
                   onClick={() => {
                     if (project.dontOpen === false && project.id) {
@@ -751,15 +1148,67 @@ const Section4 = () => {
                   className={style.row}
                 >
                   <p className={style.project}>{project.name}</p>
+                  {!project.dontOpen && width > 900 && (
+                    <label>#00{index + 1}</label>
+                  )}
+                  {!project.dontOpen && width > 900 && <span>12-06-2024</span>}
+                  <AnimatePresence>
+                    {projectHovered === project.id &&
+                      project.dontOpen === false && (
+                        <motion.p
+                          initial={{ opacity: 0 }}
+                          exit={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          layoutId="arrow"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            height="30"
+                            width="30"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
+                            />
+                          </svg>
+                        </motion.p>
+                      )}
+                  </AnimatePresence>
                 </button>
               </motion.div>
             );
           })}
         </div>
       </motion.div>
-      <div className={style.callToAction}>
-        <motion.div className={style.mouse} />
+      <div
+        className={style.callToAction}
+        onMouseEnter={() => {
+          dispatch(
+            updateCursorOptions({
+              isVisible: false,
+            })
+          );
+        }}
+        onMouseLeave={() => {
+          dispatch(
+            updateCursorOptions({
+              isVisible: true,
+            })
+          );
+        }}
+      >
         <div className={style.textContainer}>
+          <div
+            className={style.uvCanvasContainer}
+            style={{ filter: "brightness(25%)" }}
+          >
+            <Opulento />
+          </div>
           <h1 className={style.text1}>Ready to start your project?</h1>
           <h2 className={style.text2}>
             Let's work together to bring it to life!
@@ -767,18 +1216,11 @@ const Section4 = () => {
         </div>
 
         <div className={style.buttonsContainer}>
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            className={style.emailButton}
-          >
-            <p className={style.emailButtonText}>Send a email</p>
-          </motion.button>
-          <motion.button
+          <motion.a
             whileTap={{ scale: 0.95 }}
             className={style.sendMessageButton}
-            onClick={() => {
-              dispatch(openTheChatbox(true));
-            }}
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=pablodanyfer@gmail.com&su=Hi!%20I would%20like%20to%20talk%20about%20a%20project"
+            target="_blank"
           >
             <p className={style.buttonIcon}>
               <svg
@@ -791,14 +1233,14 @@ const Section4 = () => {
                 <path
                   d="M10.4995 13.5001L20.9995 3.00005M10.6271 13.8281L13.2552 20.5861C13.4867 21.1815 13.6025 21.4791 13.7693 21.566C13.9139 21.6414 14.0862 21.6415 14.2308 21.5663C14.3977 21.4796 14.5139 21.1821 14.7461 20.587L21.3364 3.69925C21.5461 3.16207 21.6509 2.89348 21.5935 2.72185C21.5437 2.5728 21.4268 2.45583 21.2777 2.40604C21.1061 2.34871 20.8375 2.45352 20.3003 2.66315L3.41258 9.25349C2.8175 9.48572 2.51997 9.60183 2.43326 9.76873C2.35809 9.91342 2.35819 10.0857 2.43353 10.2303C2.52043 10.3971 2.81811 10.5128 3.41345 10.7444L10.1715 13.3725C10.2923 13.4195 10.3527 13.443 10.4036 13.4793C10.4487 13.5114 10.4881 13.5509 10.5203 13.596C10.5566 13.6468 10.5801 13.7073 10.6271 13.8281Z"
                   stroke="currentColor"
-                  strokeWidth="1.5"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
               </svg>
             </p>
-            <p className={style.buttonText}>Send a message</p>
-          </motion.button>
+            <p className={style.buttonText}>Let's talk about it</p>
+          </motion.a>
         </div>
       </div>
     </section>

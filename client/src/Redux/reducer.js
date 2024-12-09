@@ -1,11 +1,11 @@
-import { LOADED, SECTION, GET_RECOMMENDATIONS, ALERT_NEW_COMMENT, FORCE_UPDATE_COMMENTS, OPEN_THE_CHATBOX, MODALS_STATES } from "./actions";
+import { LOADED, SECTION, GET_RECOMMENDATIONS, ALERT_NEW_COMMENT, FORCE_UPDATE_COMMENTS, OPEN_THE_CHATBOX, MODALS_STATES, TEST, BACKGROUND_MODAL_NEEDED } from "./actions";
 
 let initialstate = {
     sectionLoaded: { section1: true, section2: true, section3: false, section4: true, section5: false, footer: false },
-    admin: true,
+    admin: false,
     isLoading: true,
     isNavbarVisible: true,
-    section: "home",
+    section: "Home",
     recommendations: [],
     updateComments: true,
     newComment: false,
@@ -14,7 +14,9 @@ let initialstate = {
     },
     modalOpen: false,
 
-    projectsData: []
+    projectsData: [],
+    backgroundModalNeeded: false,
+    cursor: { isVisible: false, width: 8, heigth: 8, x: null, y: null, textContent: null }
 };
 
 let reducer = (state = initialstate, action) => {
@@ -64,6 +66,22 @@ let reducer = (state = initialstate, action) => {
                 ...state,
                 modalOpen: action.payload
             }
+
+
+
+        case TEST:
+            return {
+                ...state,
+                cursor: { ...state.cursor, ...action.payload }
+            }
+
+        case BACKGROUND_MODAL_NEEDED:
+            return {
+                ...state,
+                backgroundModalNeeded: action.payload
+            }
+
+
 
 
         default:
