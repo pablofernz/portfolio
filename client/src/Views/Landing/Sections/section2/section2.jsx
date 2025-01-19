@@ -4,61 +4,52 @@ import { motion } from "framer-motion";
 import Section1Footer from "../section1/Footer/section1Footer";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { setSection } from "../../../../Redux/actions";
-import { useDispatch } from "react-redux";
+import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Section2 = () => {
+  const width = useViewportWidth();
   const containerRef = useRef(null);
   const childRef = useRef(null);
-  const dispatch = useDispatch()
-  gsap.set("#text1", { x: "-100vw" });
-  gsap.set("#text2", { x: "100vw" });
 
   useEffect(() => {
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: `.${style.section2}`,
-        start: "top top", 
-        end: "bottom top", 
-        scrub: 1,
-        onEnter: () => {
-          dispatch(setSection("About"));
+    if (width >= 900) {
+      gsap.set("#text1", { x: "-100svw" });
+      gsap.set("#text2", { x: "100svw" });
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "+=1000",
+          scrub: 1,
+          pin: true,
         },
-      },
-    });
-    const timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "+=1000",
-        scrub: 1,
-        // markers: true,
-        pin: true,
-      },
-    });
+      });
 
-    timeline.to("#text1", {
-      x: "0vw",
-      ease: "power1.out",
-    });
-    timeline.to("#text2", {
-      x: "0vw",
-      ease: "power1.out",
-    });
+      timeline.to("#text1", {
+        x: "0vw",
+        ease: "power1.out",
+      });
 
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    };
-  }, []);
+      timeline.to("#text2", {
+        x: "0vw",
+        ease: "power1.out",
+      });
+
+      return () => {
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      };
+    }
+  }, [width]);
 
   return (
     <motion.section ref={containerRef} className={style.section2}>
       <Section1Footer />
 
       <motion.main ref={childRef} className={style.main}>
-        <div className={style.text100vh}>
+        <div className={style.text100svh}>
           <div className={style.top}>
             <motion.p
               id="text1"

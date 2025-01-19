@@ -375,9 +375,9 @@ export const FormComments = ({ onClose }) => {
         className={style.component}
       >
         <motion.div
-          initial={{ y: "100vh" }}
+          initial={{ y: "100svh" }}
           animate={{
-            y: exit ? "100vh" : "0vh",
+            y: exit ? "100svh" : "0vh",
             width: sectionsSizes[steps].width,
             height: sectionsSizes[steps].height,
           }}

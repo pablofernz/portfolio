@@ -1,16 +1,18 @@
 import style from "./Landing.module.css";
-import { useEffect, useRef, lazy } from "react";
+import { useEffect, useRef, lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
 
-import { useScroll, motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Lenis from "@studio-freight/lenis";
 
-import useViewportWidth from "../../Components/Hooks/useViewportSize";
-import { Animation } from "../../Components/LoadingPage/loadingPage";
+const Animation = lazy(() =>
+  import("../../Components/LoadingPage/loadingPage")
+);
 
-// import Navbar from "./Sections/Navbar/navbar";
-import { Metrics } from "../../Components/Hooks/metrics";
-import CircleCursor from "../../Components/circleCursor/circleCursor";
+import useViewportWidth from "../../Components/Hooks/useViewportSize";
+const CircleCursor = lazy(() =>
+  import("../../Components/circleCursor/circleCursor")
+);
 const Section1 = lazy(() => import("./Sections/section1/section1"));
 const Section2 = lazy(() => import("./Sections/section2/section2"));
 const Section3 = lazy(() => import("./Sections/section3/section3"));
@@ -21,54 +23,53 @@ const Footer = lazy(() => import("./Sections/Footer/footer"));
 
 const Landing = () => {
   const width = useViewportWidth();
+  const sectionsLoaded = useSelector((state) => state.sectionLoaded);
   const isLoading = useSelector((state) => state.isLoading);
-  const sectionLoader = useSelector((state) => state.sectionLoaded);
-  const sectionViewed = useSelector((state) => state.section);
-
   const modalsOpen = useSelector((state) => state.modalOpen);
   const backgroundModalNeeded = useSelector(
     (state) => state.backgroundModalNeeded
   );
+  const lenisRef = useRef(null);
+
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: "vertical", // vertical, horizontal
-      gestureDirection: "both", // vertical, horizontal, both
-      smooth: true,
-      smoothTouch: false,
-      touchMultiplier: 2,
-    });
+    if (width > 900) {
+      if (!lenisRef.current) {
+        lenisRef.current = new Lenis({
+          duration: 2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          direction: "vertical",
+          gestureDirection: "both",
+          smooth: true,
+          smoothTouch: false,
+          touchMultiplier: 2,
+        });
 
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
+        const lenis = lenisRef.current;
+
+        function raf(time) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+      }
+
+      if (modalsOpen) {
+        lenisRef.current.stop();
+      } else if (sectionsLoaded) {
+        lenisRef.current.start();
+      }
     }
 
-    requestAnimationFrame(raf);
-
-    if (modalsOpen) {
-      lenis.stop();
-    }
     return () => {
-      lenis.destroy();
+      lenisRef.current?.destroy();
+      lenisRef.current = null;
     };
-  }, [modalsOpen]);
-
-  const targetRef = useRef(null);
-
-  const { scrollYProgress } = useScroll();
-
-  Metrics();
+  }, [width, modalsOpen, sectionsLoaded]);
 
   return (
     <div className={style.background}>
       <div className={style.test}></div>
-      {/* <motion.div
-        ref={targetRef}
-        style={{ scaleX: scrollYProgress }}
-        className={style.topScrollIndicator }
-      ></motion.div> */}
 
       <AnimatePresence>
         {backgroundModalNeeded && (
@@ -80,47 +81,28 @@ const Landing = () => {
           ></motion.div>
         )}
       </AnimatePresence>
+      
+      {useViewportWidth() > 900 && (
+        <div className={style.cursorContainer}>
+          <CircleCursor />
+        </div>
+      )}
+      <Suspense fallback={<div></div>}>
+        {width > 900 ? (
+          isLoading === true ? (
+            <Animation animation={true} />
+          ) : (
+            <Animation animation={false} />
+          )
+        ) : null}
+      </Suspense>
 
-      <div className={style.cursorContainer}>
-        <CircleCursor />
-      </div>
-{/* 
-      {isLoading === true ? (
-        <Animation animation={true} width={width} />
-      ) : (
-        <Animation animation={false} width={width} />
-      )} */}
-
-      {/* <Navbar /> */}
       <Section1 />
       <Section2 />
       <Section3 />
-      <Section4 /> 
-      <Section5 />
+      <Section4 />
       <Footer />
-      {/* 
-      {sectionViewed == "About" && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <Section3 />
-        </Suspense>
-      )} */}
-      {/* {sectionLoader.section4 && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <Section4 />
-        </Suspense>
-      )} */}
-      {/* {sectionLoader.section5 && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <Section5 />
-        </Suspense>
-      )}
-      {sectionLoader.footer && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <Footer />
-        </Suspense>
-      )} */}
-
-      {/* <Chatbox /> */}
+      {/* <Section5 /> */}
     </div>
   );
 };

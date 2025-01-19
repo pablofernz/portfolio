@@ -46,6 +46,7 @@
     word-break: break-word;
     display: -webkit-box;
     animation: infinity 30s linear infinite;
+    will-change: transform;
 }
 
 @keyframes infinity {
@@ -69,7 +70,14 @@
 }
 
 .svgFooter {
-    animation: rotate 10s linear infinite
+    animation: rotate 10s linear infinite;
+    will-change: transform;
+}
+
+@media (max-width: 900px) {
+    .svgFooter {
+        animation: none;
+    }
 }
 
 @keyframes rotate {

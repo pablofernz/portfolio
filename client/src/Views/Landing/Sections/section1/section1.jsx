@@ -1,11 +1,11 @@
-import Spline from "@splinetool/react-spline";
 import style from "./section1.module.css";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { lazy, Suspense, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoaded } from "../../../../Redux/actions";
 import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
 
+const Spline = lazy(() => import("@splinetool/react-spline"));
 const Section1 = ({ setLoading }) => {
   const width = useViewportWidth();
   const dispatch = useDispatch();
@@ -24,16 +24,16 @@ const Section1 = ({ setLoading }) => {
     <div
       className={style.test}
       style={{
-        position: sectionActive !== "Home" ? "relative" : "-webkit-sticky",
+        position: sectionActive !== "Home" ? "relative" : "sticky",
       }}
     >
       <motion.section
         ref={targetRef}
         style={{
-          scale,
-          rotateX,
-          rotate,
-          borderRadius,
+          scale: width > 900 && scale,
+          rotateX: width > 900 && rotateX,
+          rotate: width > 900 && rotate,
+          borderRadius: width > 900 && borderRadius,
         }}
         className={style.section1}
       >
@@ -46,7 +46,7 @@ const Section1 = ({ setLoading }) => {
               >
                 <img
                   className={style.img}
-                  src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718074229/sss_livrub.png"
+                  src="https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718074229/sss_livrub.webp"
                   alt=""
                 />
               </motion.div>
@@ -98,12 +98,7 @@ const Section1 = ({ setLoading }) => {
               </div>
 
               <div className={style.buttonContainer}>
-                <button
-                  onClick={() => {
-                    setLoading(true);
-                  }}
-                  className={style.button}
-                >
+                <div className={style.button}>
                   <p
                     style={{
                       display: "flex",
@@ -134,11 +129,11 @@ const Section1 = ({ setLoading }) => {
                     </svg>
                   </p>
                   Explore more
-                </button>
+                </div>
 
                 <a
                   style={{ textDecoration: "none" }}
-                  href="https://drive.google.com/file/d/1yOUL-DI4ns4JNnq1fQfGoMwL0VBPMSB0/view?usp=drive_link"
+                  href="https://drive.google.com/file/d/1z59e0ZBfDTV2PKi5RfF1xTLjkjIU82TP/view?usp=drive_link"
                   className={style.button2}
                   target="blank"
                 >
@@ -149,11 +144,20 @@ const Section1 = ({ setLoading }) => {
           </div>
         </div>
         <div className={style.section1Background}>
-          <Spline
-            className={style.Spline}
-            scene="https://prod.spline.design/Y-QUYxldOQgyp3mN/scene.splinecode"
-            onLoad={() => dispatch(setLoaded())}
-          />
+          {width > 900 ? (
+            <Suspense fallback={<div>Loading...</div>}>
+              <Spline
+                className={style.Spline}
+                scene="https://prod.spline.design/Y-QUYxldOQgyp3mN/scene.splinecode"
+                onLoad={() => dispatch(setLoaded())}
+              />
+            </Suspense>
+          ) : (
+            <img
+              src="https://res.cloudinary.com/dnrprmypf/image/upload/q_0/v1733879337/Wish_you_a_blobly_day10-1358x642_1_1_gze8p0.webp"
+              alt="section1Background"
+            />
+          )}
         </div>
       </motion.section>
     </div>

@@ -11,7 +11,16 @@ export const MODALS_STATES = 'MODALS_STATES'
 export const HIDE_OR_SHOW_CIRCLE_CURSOR = 'HIDE_OR_SHOW_CIRCLE_CURSOR'
 export const TEST = 'TEST'
 export const BACKGROUND_MODAL_NEEDED = 'BACKGROUND_MODAL_NEEDED'
+export const SET_SECTION_LOADED = "SET_SECTION_LOADED"
 
+export const setSectionLoaded = (section) => {
+    return async function (dispatch) {
+        dispatch({
+            type: SET_SECTION_LOADED,
+            payload: section
+        })
+    }
+}
 export const setLoaded = () => {
     return async function (dispatch) {
         dispatch({

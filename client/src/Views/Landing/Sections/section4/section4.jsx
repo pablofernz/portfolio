@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import {
   backgroundModalNeeded,
   openCloseModals,
+  setSectionLoaded,
   updateCursorOptions,
 } from "../../../../Redux/actions";
 import ReactDOM from "react-dom";
@@ -13,9 +14,13 @@ import { Projects } from "./projects";
 import axios from "axios";
 import useOutsideClick from "../../../../Components/Hooks/clickOutside";
 import { Opulento } from "uvcanvas";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // --------------- Project Modal Component -------------------
-const ProjectModal = ({ setProjectOpen, projectOpen }) => {
+const ProjectModal = ({ setProjectOpen, projectOpen, Projects }) => {
   const modal = useRef(null);
   const bigImage = useRef(null);
   const width = useViewportWidth();
@@ -233,20 +238,6 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
 
       <motion.div
         className={style.projectModalContainer}
-        initial={{ backgroundPositionX: "0px" }}
-        animate={{
-          backgroundPositionX:
-            projectStages == "screenshots"
-              ? "-300px"
-              : projectStages == "techStack"
-              ? "-600px"
-              : "-0px",
-        }}
-        transition={{
-          type: "spring",
-          damping: 15,
-          stiffness: 70,
-        }}
         ref={modal}
         onMouseMove={handleMouseMove}
       >
@@ -294,7 +285,9 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
           {/* -------------------- HEADER -------------------------- */}
           <header>
             <p style={{ fontFamily: project.style.fontFamily }}>
-              {project.name}
+              {project.name == "Nimbus"
+                ? project.name.toUpperCase()
+                : project.name}
             </p>
 
             <div>
@@ -534,7 +527,7 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                         <div className={style.twoUpper}>
                           <div
                             className={style.uvCanvasContainer}
-                            style={{ filter: "brightness(35%)" }}
+                            style={{ filter: "brightness(20%)" }}
                           >
                             <Opulento />
                           </div>
@@ -546,42 +539,20 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                           style={{
                             backgroundColor: project.style.primaryColor,
                           }}
-                        ></div>
+                        />
                         <div
                           className={style.circleBlurred2}
                           style={{
                             backgroundColor: project.style.primaryColor,
                           }}
-                        ></div>
-                        <article>
-                          <h1>
-                            A WEBSITE{" "}
-                            <label
-                              style={{
-                                fontSize: "15px",
-                                color: project.style.primaryColor,
-                              }}
-                            >
-                              CONCEPT
-                            </label>{" "}
-                            {width > 600 || (width < 400 && <br />)} FOR A
-                            ECO-FRIENDLY RESTAURANT
-                          </h1>
-                          <p>
-                            Designed with a focus on user experience, featuring
-                            database management and an intuitive interface.
-                          </p>
-                          <p>
-                            Fully designed and developed to showcasing <br />{" "}
-                            Front-End and Back-End skills.
-                          </p>
-                        </article>
+                        />
+                        {project.getDescription()}
                       </div>
                       {width > 600 && (
                         <div className={style.twoBottom}>
                           <div
                             className={style.uvCanvasContainer}
-                            style={{ filter: "brightness(35%)" }}
+                            style={{ filter: "brightness(20%)" }}
                           >
                             <Opulento />
                           </div>
@@ -603,10 +574,18 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
                     >
                       <div className={style.thirdUpper}>
                         <picture>
-                          <img
-                            src="https://res.cloudinary.com/dnrprmypf/image/upload/v1718654550/logo_Indico_white_vmxbxp.png"
-                            alt=""
-                          />
+                          {project.iconURL !== "text" ? (
+                            <img src={project.iconURL} alt="projectImg" />
+                          ) : (
+                            <p
+                              style={{
+                                fontFamily: project.style.fontFamily,
+                                color: "white",
+                              }}
+                            >
+                              {project.name.toUpperCase()}
+                            </p>
+                          )}
                         </picture>
                         <p style={{ top: "0", left: "0" }}>
                           {project.name.toUpperCase()}{" "}
@@ -1047,9 +1026,33 @@ const ProjectModal = ({ setProjectOpen, projectOpen }) => {
 };
 
 const Section4 = () => {
-  const width = useViewportWidth();
+  const [Projects, setProjects] = useState([]);
 
+  useEffect(() => {
+    import("./projects").then((module) => {
+      setProjects(module.Projects);
+    });
+  }, []);
+  const width = useViewportWidth();
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   gsap.timeline({
+  //     scrollTrigger: {
+  //       trigger: `.${style.section4}`,
+  //       start: "top top",
+  //       end: "+=1000",
+  //       onEnter: () => {
+  //         dispatch(setSectionLoaded("section5"));
+  //         dispatch(setSectionLoaded("footer"));
+  //       },
+  //     },
+  //   });
+
+  //   return () => {
+  //     ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+  //   };
+  // }, []);
 
   const [projectOpen, setProjectOpen] = useState("none");
   const [projectHovered, setProjectHovered] = useState("none");
@@ -1070,7 +1073,7 @@ const Section4 = () => {
 
   return (
     <section
-      className={`${style.section4} `}
+      className={style.section4}
       onMouseLeave={() => {
         updateCursorOptions({
           isVisible: false,
@@ -1097,6 +1100,7 @@ const Section4 = () => {
           <ProjectModal
             setProjectOpen={setProjectOpen}
             projectOpen={projectOpen}
+            Projects={Projects}
           />
         )}
       </AnimatePresence>
@@ -1120,7 +1124,7 @@ const Section4 = () => {
                     setProjectHovered(project.id);
                     dispatch(
                       updateCursorOptions({
-                        isVisible: true,
+                        isVisible: project.dontOpen === true ? false : true,
                         width: 90,
                         height: 90,
                         textContent: project.comingSoon
@@ -1151,7 +1155,6 @@ const Section4 = () => {
                   {!project.dontOpen && width > 900 && (
                     <label>#00{index + 1}</label>
                   )}
-                  {!project.dontOpen && width > 900 && <span>12-06-2024</span>}
                   <AnimatePresence>
                     {projectHovered === project.id &&
                       project.dontOpen === false && (

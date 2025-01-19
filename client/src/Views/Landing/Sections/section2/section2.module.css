@@ -2,8 +2,8 @@
     position: sticky;
     overflow-x: hidden;
     top: 0;
-    height: 100dvh;
-    width: 100dvw;
+    height: 100svh;
+    width: 100svw;
     z-index: 2;
     background-size: cover;
     background-repeat: repeat;
@@ -17,7 +17,7 @@
     top: 0;
     left: 0;
     overflow: hidden;
-    height: 100dvh;
+    height: 100svh;
     width: 100%;
     display: flex;
     justify-content: start;
@@ -26,8 +26,8 @@
 }
 
 /* ----------------------------------------------------------------------------------------------------------------- */
-.text100vh {
-    height: 100dvh;
+.text100svh {
+    height: 100svh;
     width: 100%;
     display: flex;
     align-items: start;
@@ -56,18 +56,19 @@
 
 .text {
     font-family: Unbounded;
-    font-size: 6.6vw;
+    font-size: 6.5vw;
     font-weight: 700;
     user-select: none;
     will-change: transform;
     pointer-events: none;
+    /* background-color: red; */
 }
 
 .text>label {
     background-color: #ffffff;
     color: #000000;
     padding-left: 15px;
-    border-radius: 20px 0px 0px 20px;
+    border-radius: 2svw 0px 0px 2svw;
 }
 
 .text>label::selection {

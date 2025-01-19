@@ -49,9 +49,9 @@ export const AdminModal = ({ onClose, sortedRecommendations }) => {
         className={style.component}
       >
         <motion.div
-          initial={{ y: "100vh" }}
+          initial={{ y: "100svh" }}
           animate={{
-            y: exit ? "100vh" : "0vh",
+            y: exit ? "100svh" : "0vh",
           }}
           transition={{
             type: "spring",

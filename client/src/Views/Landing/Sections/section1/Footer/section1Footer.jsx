@@ -1,4 +1,3 @@
-import { useDispatch } from "react-redux";
 import style from "./section1Footer.module.css";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";

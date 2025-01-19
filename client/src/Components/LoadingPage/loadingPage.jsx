@@ -1,13 +1,22 @@
+import useViewportWidth from "../Hooks/useViewportSize";
 import style from "./loadingPage.module.css";
 import { motion } from "framer-motion";
+import { setLoaded } from "../../Redux/actions";
+import { useDispatch } from "react-redux";
 
-export function Animation({ animation, width }) {
+const Animation = ({ animation }) => {
+  const dispatch = useDispatch();
+  const width = useViewportWidth();
   const opacityValue = animation === false ? 0 : 1;
+
+  setTimeout(() => {
+    if (width < 900) dispatch(setLoaded());
+  }, 2000);
   return (
     <motion.div
       initial={{ y: 0 }}
       animate={{
-        y: animation === false && "-100vh",
+        y: animation === false && "-100svh",
       }}
       transition={{
         duration: 0,
@@ -20,7 +29,7 @@ export function Animation({ animation, width }) {
         <motion.div
           initial={{ y: 0 }}
           animate={{
-            y: animation === false && "-100vh",
+            y: animation === false && "-100svh",
           }}
           transition={{
             duration: 2,
@@ -32,7 +41,7 @@ export function Animation({ animation, width }) {
         <motion.div
           initial={{ y: 0 }}
           animate={{
-            y: animation === false && "-100vh",
+            y: animation === false && "-100svh",
           }}
           transition={{
             duration: 2,
@@ -44,7 +53,7 @@ export function Animation({ animation, width }) {
         <motion.div
           initial={{ y: 0 }}
           animate={{
-            y: animation === false && "-100vh",
+            y: animation === false && "-100svh",
           }}
           transition={{
             duration: 2,
@@ -56,7 +65,7 @@ export function Animation({ animation, width }) {
         <motion.div
           initial={{ y: 0 }}
           animate={{
-            y: animation === false && "-100vh",
+            y: animation === false && "-100svh",
           }}
           transition={{
             duration: 2,
@@ -68,7 +77,7 @@ export function Animation({ animation, width }) {
         <motion.div
           initial={{ y: 0 }}
           animate={{
-            y: animation === false && "-100vh",
+            y: animation === false && "-100svh",
           }}
           transition={{
             duration: 2,
@@ -234,3 +243,5 @@ export function Animation({ animation, width }) {
     </motion.div>
   );
 }
+
+export default Animation

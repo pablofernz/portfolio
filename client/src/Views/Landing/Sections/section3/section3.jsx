@@ -1,12 +1,14 @@
-import { useDispatch } from "react-redux";
 import style from "./section3.module.css";
+import { Suspense, useEffect, useRef, lazy } from "react";
+import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
+const IconComponent = lazy(() => import("../../../../assets/icons/iconsImg"));
 import { setSection, updateCursorOptions } from "../../../../Redux/actions";
-import IconComponent from "../../../../assets/icons/iconsImg";
-import { useEffect, useRef } from "react";
 import useViewportWidth from "../../../../Components/Hooks/useViewportSize";
+
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
+
 gsap.registerPlugin(ScrollTrigger);
 
 gsap.registerPlugin(ScrollTrigger);
@@ -25,35 +27,21 @@ const Section3 = () => {
     "FramerMotion",
     "Sequelize",
     "Slack",
+    "Firebase",
     "Git",
     "PostgreSQL",
     "Javascript",
     "Mongoose",
     "React",
     "Node",
+    "Sass",
     "Jest",
     "CSS",
     "Redux",
   ];
 
-  // const skillsSorted = skills.sort(() => Math.random() - 0.5);
-
   const skillsContainer = useRef(null);
-
   useEffect(() => {
-// This timeline changes the section value of their respective page
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: `.${style.section3}`,
-        start: "top top", 
-        end: "bottom top", 
-        scrub: 1,
-        onEnter: () => {
-          dispatch(setSection("Stack"));
-        },
-      },
-    });
-
     gsap.set(`.${style.test}`, { scale: 60, opacity: 1, rotate: "0deg" });
 
     const timeline = gsap.timeline({
@@ -63,6 +51,12 @@ const Section3 = () => {
         end: "bottom top", // Cuando el bottom del contenedor toca el top del viewport
         scrub: 1,
         // markers: true,
+        onEnterBack: () => {
+          dispatch(setSection("Home"));
+        },
+        onLeave: () => {
+          dispatch(setSection("Projects"));
+        },
       },
     });
 
@@ -116,9 +110,16 @@ const Section3 = () => {
       },
     });
 
-    circle
-      .to(`.${style.circle}`, { scale: 0 }, 0)
-      .to(`.${style.circle}`, { scale: 380 }, "100%");
+    circle.to(`.${style.circle}`, { scale: 0 }, 0).to(
+      `.${style.circle}`,
+      {
+        scale: 380,
+        // onStart: () => {
+        //   dispatch(setSectionLoaded("section4"));
+        // },
+      },
+      "10%"
+    );
 
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
@@ -168,11 +169,13 @@ const Section3 = () => {
               key="row1"
             >
               {skills.map((skill, index) => (
-                <IconComponent
-                  icon={skill}
-                  reference="iconsContainer"
-                  key={`row1-1-${index}`}
-                />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <IconComponent
+                    icon={skill}
+                    reference="iconsContainer"
+                    key={`row1-1-${index}`}
+                  />
+                </Suspense>
               ))}
               {skills.map((skill, index) => (
                 <IconComponent

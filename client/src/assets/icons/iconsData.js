@@ -88,6 +88,11 @@ const iconsData = [
         url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1718823664/firebase_ymcpvf.webp",
         size: "large",
     },
+    {
+        name: "Sass",
+        url: "https://res.cloudinary.com/dnrprmypf/image/upload/q_auto:low/v1736996952/Proyecto_nuevo_mpyb8a.webp",
+        size: "large",
+    },
 
     {
         name: "FramerMotion",

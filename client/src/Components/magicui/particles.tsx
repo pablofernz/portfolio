@@ -128,8 +128,8 @@ const Particles: React.FC<ParticlesProps> = ({
       canvasSize.current.h = canvasContainerRef.current.offsetHeight;
       canvasRef.current.width = canvasSize.current.w * dpr;
       canvasRef.current.height = canvasSize.current.h * dpr;
-      canvasRef.current.style.width = `100vw`;
-      canvasRef.current.style.height = `100vh`;
+      canvasRef.current.style.width = `100svw`;
+      canvasRef.current.style.height = `100svh`;
       context.current.scale(dpr, dpr);
     }
   };

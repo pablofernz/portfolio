@@ -1,7 +1,7 @@
-import { LOADED, SECTION, GET_RECOMMENDATIONS, ALERT_NEW_COMMENT, FORCE_UPDATE_COMMENTS, OPEN_THE_CHATBOX, MODALS_STATES, TEST, BACKGROUND_MODAL_NEEDED } from "./actions";
+import { SET_SECTION_LOADED, LOADED, SECTION, GET_RECOMMENDATIONS, ALERT_NEW_COMMENT, FORCE_UPDATE_COMMENTS, OPEN_THE_CHATBOX, MODALS_STATES, TEST, BACKGROUND_MODAL_NEEDED } from "./actions";
 
 let initialstate = {
-    sectionLoaded: { section1: true, section2: true, section3: false, section4: true, section5: false, footer: false },
+    sectionLoaded: { section1: true, section2: true, section3: true, section4: true, section5: true, footer: true },
     admin: false,
     isLoading: true,
     isNavbarVisible: true,
@@ -21,6 +21,14 @@ let initialstate = {
 
 let reducer = (state = initialstate, action) => {
     switch (action.type) {
+
+
+        case SET_SECTION_LOADED:
+            return {
+                ...state,
+                sectionLoaded: { ...state.sectionLoaded, [action.payload]: true }
+            }
+
         case LOADED:
             return {
                 ...state,

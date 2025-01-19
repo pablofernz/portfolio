@@ -1,6 +1,6 @@
 .section5 {
     height: auto;
-    width: 100dvw;
+    width: 100svw;
     z-index: 1;
     display: flex;
     align-items: center;
@@ -38,7 +38,7 @@
 .text>p {
     padding: 20px;
     /* font-size: 80px; */
-    font-size: 6dvw;
+    font-size: 6svw;
 
     font-family: unbounded;
     font-weight: 900;
@@ -292,7 +292,7 @@
     }
 
     .openModalButton {
-        font-size: 2dvw;
+        font-size: 2svw;
         height: 30px;
         padding: 20px 40px;
         white-space: nowrap;
@@ -341,9 +341,9 @@
     .text>p {
         text-align: center;
         height: calc(100%);
-        padding-top: 10px;
+        padding-top: 10px;font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         width: 100%;
-        font-size: 6dvw;
+        font-size: 6svw;
         border-radius: 0px 0px 50px 0px;
     }
 
@@ -381,6 +381,6 @@
 
 /* @media (min-width: 500px){
     .text>p {
-        font-size: 5.5dvw;
+        font-size: 5.5svw;
     }
 } */

@@ -23,8 +23,8 @@ const IconComponent = ({ icon, reference }) => {
           backgroundImage: `url(${chosedData.url})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: viewportWidth > 600 ? "130px" : "80px",
-          width: viewportWidth > 600 ? "130px" : "80px",
+          height: viewportWidth > 600 ? "10svw" : "80px",
+          width: viewportWidth > 600 ? "10svw" : "80px",
           borderRadius: viewportWidth > 600 ? "30px" : "20px",
           filter: hasLowBrightness ? "brightness(40%)" : "brightness(100%)",
         }}
